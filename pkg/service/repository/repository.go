@@ -1,6 +1,6 @@
 package repository
 
-type RepositoryInterface interface{}
+type Interface interface{}
 
 type Repository struct{}
 
