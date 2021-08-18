@@ -1,8 +1,6 @@
-package conditional
+package endpoints
 
-import (
-	"errors"
-)
+import "errors"
 
 var ErrEncoding = errors.New("encoding error")
 var ErrInvalidArgument = errors.New("invalid argument")

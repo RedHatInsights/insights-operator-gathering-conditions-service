@@ -8,8 +8,8 @@ import (
 	"syscall"
 
 	"github.com/go-kit/kit/log"
-	"github.com/openshift/insights-operator-conditional-gathering/pkg/conditional"
-	"github.com/openshift/insights-operator-conditional-gathering/pkg/health"
+	"github.com/openshift/insights-operator-conditional-gathering/pkg/service"
+	"github.com/openshift/insights-operator-conditional-gathering/pkg/service/transport"
 )
 
 const (
@@ -17,23 +17,23 @@ const (
 )
 
 func main() {
+
 	// Logger
 	var logger log.Logger
 	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 
 	// Services
-	conditionalsvc := conditional.NewService()
-	healthsvc := health.NewService()
+	svc := service.NewService()
 
 	httplogger := log.With(logger, "component", "http")
 
 	mux := http.NewServeMux()
+	// Control CORs and other stuff
 	http.Handle("/", accessControl(mux))
 
 	// Handlers
-	mux.Handle("/", conditional.NewHandler(conditionalsvc, httplogger))
-	mux.Handle("/health", health.NewHandler(healthsvc, httplogger))
+	mux.Handle("/", transport.NewHTTPHandler(svc, httplogger))
 
 	// HTTP
 	errs := make(chan error, 2)

@@ -1,6 +1,6 @@
-package conditional
+package service
 
-type ServiceInterface interface {
+type Interface interface {
 }
 
 type Service struct{}
