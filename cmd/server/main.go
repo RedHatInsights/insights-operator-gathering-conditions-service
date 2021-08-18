@@ -17,14 +17,13 @@ const (
 )
 
 func main() {
-
 	// Logger
 	var logger log.Logger
 	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 
 	// Services
-	svc := service.NewService()
+	svc := service.New()
 
 	httplogger := log.With(logger, "component", "http")
 
