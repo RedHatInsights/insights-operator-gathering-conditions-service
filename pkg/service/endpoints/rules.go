@@ -23,7 +23,7 @@ func MakeRulesEndpoint(svc service.Interface) endpoint.Endpoint {
 
 		return &RulesResponse{
 			Version: "1.0",
-			Rules:   rules,
+			Rules:   rules.Items,
 		}, nil
 	}
 }
