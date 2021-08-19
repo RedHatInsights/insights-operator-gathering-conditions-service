@@ -22,8 +22,12 @@ func main() {
 	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 
+	// Repository
+	dataPath := os.Getenv("RULES_DATA_PATH")
+	repo := service.NewRepository(dataPath)
+
 	// Services
-	svc := service.New()
+	svc := service.New(repo)
 
 	httplogger := log.With(logger, "component", "http")
 

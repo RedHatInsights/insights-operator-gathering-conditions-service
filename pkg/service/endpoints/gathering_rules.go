@@ -9,31 +9,31 @@ import (
 	"github.com/openshift/insights-operator-conditional-gathering/pkg/service"
 )
 
-type RulesResponse struct {
+type GatheringRulesResponse struct {
 	Version string      `json:"version"`
 	Rules   interface{} `json:"rules"`
 }
 
-func MakeRulesEndpoint(svc service.Interface) endpoint.Endpoint {
+func MakeGatheringRulesEndpoint(svc service.Interface) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		rules, err := svc.Rules()
 		if err != nil {
 			return nil, err
 		}
 
-		return &RulesResponse{
+		return &GatheringRulesResponse{
 			Version: "1.0",
 			Rules:   rules.Items,
 		}, nil
 	}
 }
 
-func DecodeRulesRequest(_ context.Context, r *http.Request) (interface{}, error) {
+func DecodeGatheringRulesRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	return nil, nil
 }
 
-func EncodeRulesResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
-	resp, ok := response.(*RulesResponse)
+func EncodeGatheringRulesResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
+	resp, ok := response.(*GatheringRulesResponse)
 	if !ok {
 		return ErrEncoding
 	}

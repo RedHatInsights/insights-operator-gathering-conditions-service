@@ -19,16 +19,16 @@ func NewHTTPHandler(svc service.Interface, logger log.Logger) http.Handler {
 		kithttp.ServerErrorEncoder(encodeError),
 	}
 
-	rulesHandler := kithttp.NewServer(
-		endpoints.MakeRulesEndpoint(svc),
-		endpoints.DecodeRulesRequest,
-		endpoints.EncodeRulesResponse,
+	gatheringRulesHandler := kithttp.NewServer(
+		endpoints.MakeGatheringRulesEndpoint(svc),
+		endpoints.DecodeGatheringRulesRequest,
+		endpoints.EncodeGatheringRulesResponse,
 		opts...,
 	)
 
 	r := mux.NewRouter()
 
-	r.Handle("/rules", rulesHandler).Methods(http.MethodGet)
+	r.Handle("/gathering_rules", gatheringRulesHandler).Methods(http.MethodGet)
 
 	return r
 }
