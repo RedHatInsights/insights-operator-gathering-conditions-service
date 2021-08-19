@@ -19,16 +19,16 @@ func NewHTTPHandler(svc service.Interface, logger log.Logger) http.Handler {
 		kithttp.ServerErrorEncoder(encodeError),
 	}
 
-	healthHandler := kithttp.NewServer(
-		endpoints.MakeHealthEndpoint(),
-		endpoints.DecodeHealthRequest,
-		endpoints.EncodeHealthResponse,
+	rulesHandler := kithttp.NewServer(
+		endpoints.MakeRulesEndpoint(svc),
+		endpoints.DecodeRulesRequest,
+		endpoints.EncodeRulesResponse,
 		opts...,
 	)
 
 	r := mux.NewRouter()
 
-	r.Handle("/health", healthHandler).Methods(http.MethodGet)
+	r.Handle("/rules", rulesHandler).Methods(http.MethodGet)
 
 	return r
 }
