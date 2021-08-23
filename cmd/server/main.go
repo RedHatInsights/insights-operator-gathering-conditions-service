@@ -18,7 +18,7 @@ import (
 func main() {
 	var (
 		// Flags
-		httpAddr = flag.String("httpAddr", ":8080", "http port")
+		httpAddr = flag.String("httpAddr", ":8080", "http listen address")
 
 		httpServer *http.Server
 	)
