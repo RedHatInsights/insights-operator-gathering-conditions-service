@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-kit/kit/endpoint"
-	"github.com/openshift/insights-operator-conditional-gathering/pkg/service"
+	"github.com/redhatinsights/insights-operator-conditional-gathering/pkg/service"
 )
 
 type GatheringRulesResponse struct {

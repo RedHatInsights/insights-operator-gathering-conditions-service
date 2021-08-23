@@ -8,8 +8,8 @@ import (
 	"syscall"
 
 	"github.com/go-kit/kit/log"
-	"github.com/openshift/insights-operator-conditional-gathering/pkg/service"
-	"github.com/openshift/insights-operator-conditional-gathering/pkg/service/transport"
+	"github.com/redhatinsights/insights-operator-conditional-gathering/pkg/service"
+	"github.com/redhatinsights/insights-operator-conditional-gathering/pkg/service/transport"
 )
 
 const (

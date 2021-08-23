@@ -9,8 +9,8 @@ import (
 	"github.com/go-kit/kit/transport"
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
-	"github.com/openshift/insights-operator-conditional-gathering/pkg/service"
-	"github.com/openshift/insights-operator-conditional-gathering/pkg/service/endpoints"
+	"github.com/redhatinsights/insights-operator-conditional-gathering/pkg/service"
+	"github.com/redhatinsights/insights-operator-conditional-gathering/pkg/service/endpoints"
 )
 
 func NewHTTPHandler(svc service.Interface, logger log.Logger) http.Handler {

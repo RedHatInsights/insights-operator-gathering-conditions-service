@@ -1,4 +1,4 @@
-module github.com/openshift/insights-operator-conditional-gathering
+module github.com/redhatinsights/insights-operator-conditional-gathering
 
 go 1.16
 
