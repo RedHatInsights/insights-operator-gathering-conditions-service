@@ -32,8 +32,8 @@ func main() {
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 
 	// Repository
-	if _, err := os.Stat(*rulesPath); os.IsNotExist(err) {
-		logger.Log("msg", "repository data path not exists", err) // nolint: errcheck
+	if _, err := os.Stat(*rulesPath); err != nil {
+		logger.Log("msg", "repository data path error", err) // nolint: errcheck
 		os.Exit(1)
 	}
 	repo := service.NewRepository(*rulesPath)
