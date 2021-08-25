@@ -18,7 +18,8 @@ import (
 func main() {
 	var (
 		// Flags
-		httpAddr = flag.String("httpAddr", ":8080", "http listen address")
+		httpAddr  = flag.String("httpAddr", ":8080", "http listen address")
+		rulesPath = flag.String("rulesPath", "./rules", "the path where to find the rules files")
 
 		httpServer *http.Server
 	)
@@ -35,8 +36,11 @@ func main() {
 	defer cancel()
 
 	// Repository
-	dataPath := os.Getenv("RULES_DATA_PATH")
-	repo := service.NewRepository(dataPath)
+	if _, err := os.Stat(*rulesPath); os.IsNotExist(err) {
+		logger.Log("msg", "repository data path not exists", err) // nolint: errcheck
+		os.Exit(1)
+	}
+	repo := service.NewRepository(*rulesPath)
 
 	// Services
 	svc := service.New(repo)
@@ -72,8 +76,6 @@ func main() {
 		}
 		return nil
 	})
-
-	// @TODO Implement gRPC
 
 	select {
 	case <-interrupt:

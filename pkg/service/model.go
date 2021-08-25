@@ -1,8 +1,5 @@
 package service
 
-type GatheringFunctions struct {
-}
-
 type Conditions struct {
 	Type   string      `json:"type"`
 	Params interface{} `json:"params"`
