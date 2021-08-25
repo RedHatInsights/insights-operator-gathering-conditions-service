@@ -31,10 +31,6 @@ func main() {
 	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 
-	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
 	// Repository
 	if _, err := os.Stat(*rulesPath); os.IsNotExist(err) {
 		logger.Log("msg", "repository data path not exists", err) // nolint: errcheck
@@ -48,6 +44,10 @@ func main() {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 	defer signal.Stop(interrupt)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
 	g, ctx := errgroup.WithContext(ctx)
 
@@ -97,11 +97,11 @@ func main() {
 
 	err := g.Wait()
 	if err != nil {
-		logger.Log("msg", "server returning an error", "error", err)
-		os.Exit(2)
+		logger.Log("msg", "server returning an error", "error", err) // nolint: errcheck
+		defer os.Exit(2)
 	}
 
-	logger.Log("msg", "server successfully closed")
+	logger.Log("msg", "server closed") // nolint: errcheck
 }
 
 func accessControl(h http.Handler) http.Handler {
