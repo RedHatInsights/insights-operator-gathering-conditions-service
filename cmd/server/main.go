@@ -2,29 +2,36 @@ package main
 
 import (
 	"context"
-	"flag"
-	"net/http"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/go-kit/kit/log"
-	"github.com/redhatinsights/insights-operator-conditional-gathering/pkg/service"
-	"github.com/redhatinsights/insights-operator-conditional-gathering/pkg/service/transport"
+	"github.com/gorilla/mux"
+	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/config"
+	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/server"
+	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/service"
 	"golang.org/x/sync/errgroup"
 )
 
+const (
+	defaultConfigFile = "config"
+)
+
 func main() {
-	var (
-		// Flags
-		httpAddr  = flag.String("httpAddr", ":8080", "http listen address")
-		rulesPath = flag.String("rulesPath", "./rules", "the path where to find the rules files")
+	var httpServer *server.Server
 
-		httpServer *http.Server
-	)
+	// Load config
+	err := config.LoadConfiguration(defaultConfigFile)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%v", config.Config)
 
-	flag.Parse()
+	serverConfig := config.ServerConfig()
+	serviceConfig := config.ServiceConfig()
 
 	// Logger
 	var logger log.Logger
@@ -32,13 +39,11 @@ func main() {
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 
 	// Repository
-	if _, err := os.Stat(*rulesPath); err != nil {
+	if _, err = os.Stat(serviceConfig.RulesPath); err != nil {
 		logger.Log("msg", "repository data path error", err) // nolint: errcheck
 		os.Exit(1)
 	}
-	repo := service.NewRepository(*rulesPath)
-
-	// Services
+	repo := service.NewRepository(serviceConfig.RulesPath)
 	svc := service.New(repo)
 
 	interrupt := make(chan os.Signal, 1)
@@ -53,27 +58,21 @@ func main() {
 
 	// HTTP
 	g.Go(func() error {
-		httplogger := log.With(logger, "component", "http")
+		logger.Log("transport", "http", "address", serverConfig.Address, "msg", "listening") // nolint: errcheck
 
-		mux := http.NewServeMux()
-		// Access Control and CORS
-		http.Handle("/", accessControl(mux))
+		router := mux.NewRouter().StrictSlash(true)
 
-		// Handlers
-		mux.Handle("/", transport.NewHTTPHandler(svc, httplogger))
+		// Register the service
+		service.NewHandler(svc).Register(router)
 
-		logger.Log("transport", "http", "address", *httpAddr, "msg", "listening") // nolint: errcheck
+		// Create the HTTP Server
+		httpServer = server.New(serverConfig, router)
 
-		httpServer = &http.Server{
-			Addr:         *httpAddr,
-			ReadTimeout:  10 * time.Second,
-			WriteTimeout: 10 * time.Second,
-		}
-
-		err := httpServer.ListenAndServe()
-		if err != http.ErrServerClosed {
+		err = httpServer.Start()
+		if err != nil {
 			return err
 		}
+
 		return nil
 	})
 
@@ -92,31 +91,14 @@ func main() {
 	defer shutdownCancel()
 
 	if httpServer != nil {
-		httpServer.Shutdown(shutdownCtx) // nolint: errcheck
+		httpServer.Stop(shutdownCtx) // nolint: errcheck
 	}
 
-	err := g.Wait()
+	err = g.Wait()
 	if err != nil {
 		logger.Log("msg", "server returning an error", "error", err) // nolint: errcheck
 		defer os.Exit(2)
 	}
 
 	logger.Log("msg", "server closed") // nolint: errcheck
-}
-
-func accessControl(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Response type
-		w.Header().Set("Content-Type", "application/json")
-		// CORS
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type")
-
-		if r.Method == "OPTIONS" {
-			return
-		}
-
-		h.ServeHTTP(w, r)
-	})
 }

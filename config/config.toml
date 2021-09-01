@@ -1,0 +1,7 @@
+[server]
+address = ":8081"
+use_https = false
+enable_cors = false
+
+[service]
+rules_path = "/rules"
