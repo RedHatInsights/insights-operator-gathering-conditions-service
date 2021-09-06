@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
+	"github.com/RedHatInsights/insights-operator-utils/logger"
 	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/server"
 	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/service"
 	"github.com/spf13/viper"
@@ -24,8 +25,12 @@ const (
 )
 
 var Config struct {
-	ServerConfig  server.Config  `mapstructure:"server" toml:"server"`
-	ServiceConfig service.Config `mapstructure:"service" toml:"service"`
+	ServerConfig        server.Config                     `mapstructure:"server" toml:"server"`
+	ServiceConfig       service.Config                    `mapstructure:"service" toml:"service"`
+	LoggingConfig       logger.LoggingConfiguration       `mapstructure:"logging" toml:"logging"`
+	CloudWatchConfig    logger.CloudWatchConfiguration    `mapstructure:"cloudwatch" toml:"cloudwatch"`
+	SentryLoggingConfig logger.SentryLoggingConfiguration `mapstructure:"sentry" toml:"sentry"`
+	KafkaZerologConfig  logger.KafkaZerologConfiguration  `mapstructure:"kafka_zerolog" toml:"kafka_zerolog"`
 }
 
 // LoadConfiguration loads configuration from defaultConfigFile, file set in
@@ -89,4 +94,20 @@ func ServerConfig() server.Config {
 
 func ServiceConfig() service.Config {
 	return Config.ServiceConfig
+}
+
+func LoggingConfig() logger.LoggingConfiguration {
+	return Config.LoggingConfig
+}
+
+func CloudWatchConfig() logger.CloudWatchConfiguration {
+	return Config.CloudWatchConfig
+}
+
+func SentryLoggingConfig() logger.SentryLoggingConfiguration {
+	return Config.SentryLoggingConfig
+}
+
+func KafkaZerologConfig() logger.KafkaZerologConfiguration {
+	return Config.KafkaZerologConfig
 }

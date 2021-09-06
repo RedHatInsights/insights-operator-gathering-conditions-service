@@ -8,11 +8,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/go-kit/kit/log"
+	"github.com/RedHatInsights/insights-operator-utils/logger"
 	"github.com/gorilla/mux"
 	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/config"
 	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/server"
 	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/service"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -26,7 +27,8 @@ func main() {
 	// Load config
 	err := config.LoadConfiguration(defaultConfigFile)
 	if err != nil {
-		panic(err)
+		log.Error().Err(err).Msg("Configuration could not be loaded")
+		os.Exit(1)
 	}
 	fmt.Printf("%v", config.Config)
 
@@ -34,13 +36,20 @@ func main() {
 	serviceConfig := config.ServiceConfig()
 
 	// Logger
-	var logger log.Logger
-	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
-	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+	err = logger.InitZerolog(
+		config.LoggingConfig(),
+		config.CloudWatchConfig(),
+		config.SentryLoggingConfig(),
+		config.KafkaZerologConfig(),
+	)
+	if err != nil {
+		log.Error().Err(err).Msg("Logger could not be initialized")
+		os.Exit(1)
+	}
 
 	// Repository
 	if _, err = os.Stat(serviceConfig.RulesPath); err != nil {
-		logger.Log("msg", "repository data path error", err) // nolint: errcheck
+		log.Error().Err(err).Msg("Repository data path not found")
 		os.Exit(1)
 	}
 	repo := service.NewRepository(serviceConfig.RulesPath)
@@ -58,8 +67,6 @@ func main() {
 
 	// HTTP
 	g.Go(func() error {
-		logger.Log("transport", "http", "address", serverConfig.Address, "msg", "listening") // nolint: errcheck
-
 		router := mux.NewRouter().StrictSlash(true)
 
 		// Register the service
@@ -83,7 +90,7 @@ func main() {
 		break
 	}
 
-	logger.Log("msg", "received shutdown signal") // nolint: errcheck
+	log.Info().Msg("Received shutdown signal")
 
 	cancel()
 
@@ -96,9 +103,9 @@ func main() {
 
 	err = g.Wait()
 	if err != nil {
-		logger.Log("msg", "server returning an error", "error", err) // nolint: errcheck
+		log.Error().Err(err).Msg("Server returning an error")
 		defer os.Exit(2)
 	}
 
-	logger.Log("msg", "server closed") // nolint: errcheck
+	log.Info().Msg("Server closed")
 }

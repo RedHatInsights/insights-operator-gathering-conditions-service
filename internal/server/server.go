@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/zerolog/log"
 )
 
 type Config struct {
@@ -31,7 +32,7 @@ func (server *Server) Start() error {
 	var err error
 
 	addr := server.Config.Address
-	// log.Info().Msgf("Starting HTTP server at '%s'", addr)
+	log.Info().Msgf("Starting HTTP server at '%s'", addr)
 
 	if server.Config.EnableCORS {
 		server.Router.Use(CORSMiddleware())
@@ -49,7 +50,7 @@ func (server *Server) Start() error {
 	}
 
 	if err != nil && err != http.ErrServerClosed {
-		// log.Error().Err(err).Msg("Unable to start HTTP/S server")
+		log.Error().Err(err).Msg("Unable to start HTTP/S server")
 		return err
 	}
 
