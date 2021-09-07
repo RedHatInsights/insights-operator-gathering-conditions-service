@@ -26,7 +26,7 @@ const (
 
 var Config struct {
 	ServerConfig        server.Config                     `mapstructure:"server" toml:"server"`
-	ServiceConfig       service.Config                    `mapstructure:"service" toml:"service"`
+	StorageConfig       service.StorageConfig             `mapstructure:"storage" toml:"storage"`
 	LoggingConfig       logger.LoggingConfiguration       `mapstructure:"logging" toml:"logging"`
 	CloudWatchConfig    logger.CloudWatchConfiguration    `mapstructure:"cloudwatch" toml:"cloudwatch"`
 	SentryLoggingConfig logger.SentryLoggingConfiguration `mapstructure:"sentry" toml:"sentry"`
@@ -92,8 +92,8 @@ func ServerConfig() server.Config {
 	return Config.ServerConfig
 }
 
-func ServiceConfig() service.Config {
-	return Config.ServiceConfig
+func StorageConfig() service.StorageConfig {
+	return Config.StorageConfig
 }
 
 func LoggingConfig() logger.LoggingConfiguration {

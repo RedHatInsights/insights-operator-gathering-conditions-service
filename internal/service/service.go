@@ -4,10 +4,6 @@ type Interface interface {
 	Rules() (*Rules, error)
 }
 
-type Config struct {
-	RulesPath string `mapstructure:"rules_path" toml:"rules_path"`
-}
-
 type Service struct {
 	repo RepositoryInterface
 }

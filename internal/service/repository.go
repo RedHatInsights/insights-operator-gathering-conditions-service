@@ -3,8 +3,6 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"os"
 )
 
 type RepositoryInterface interface {
@@ -26,37 +24,22 @@ type Rules struct {
 }
 
 type Repository struct {
-	path string
+	store StorageInterface
 }
 
-func NewRepository(path string) *Repository {
-	return &Repository{
-		path,
-	}
-}
-
-func (r Repository) readFile(filePath string) ([]byte, error) {
-	f, err := os.Open(fmt.Sprintf("%s/%s", r.path, filePath))
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	byteValue, err := ioutil.ReadAll(f)
-	if err != nil {
-		return nil, err
-	}
-	return byteValue, nil
+func NewRepository(s StorageInterface) *Repository {
+	return &Repository{store: s}
 }
 
 func (r *Repository) Rules() (*Rules, error) {
-	data, err := r.readFile("rules.json")
-	if err != nil {
-		return nil, err
+	filepath := "rules.json"
+	data := r.store.Find(filepath)
+	if data == nil {
+		return nil, fmt.Errorf("store data not found for '%s'", filepath)
 	}
 
 	var rules Rules
-	err = json.Unmarshal(data, &rules)
+	err := json.Unmarshal(data, &rules)
 	if err != nil {
 		return nil, err
 	}

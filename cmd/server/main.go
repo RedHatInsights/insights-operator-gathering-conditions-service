@@ -33,7 +33,7 @@ func main() {
 	fmt.Printf("%v", config.Config)
 
 	serverConfig := config.ServerConfig()
-	serviceConfig := config.ServiceConfig()
+	storageConfig := config.StorageConfig()
 
 	// Logger
 	err = logger.InitZerolog(
@@ -47,12 +47,15 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Repository
-	if _, err = os.Stat(serviceConfig.RulesPath); err != nil {
-		log.Error().Err(err).Msg("Repository data path not found")
+	// Storage
+	if _, err = os.Stat(storageConfig.RulesPath); err != nil {
+		log.Error().Err(err).Msg("Storage data path not found")
 		os.Exit(1)
 	}
-	repo := service.NewRepository(serviceConfig.RulesPath)
+	store := service.NewStorage(storageConfig)
+
+	// Repository & Service
+	repo := service.NewRepository(store)
 	svc := service.New(repo)
 
 	interrupt := make(chan os.Signal, 1)
