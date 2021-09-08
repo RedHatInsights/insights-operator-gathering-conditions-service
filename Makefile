@@ -6,7 +6,7 @@ GOBIN=$(shell go env GOBIN)
 endif
 
 # Service
-SERVICE_NAME = insights-conditional-service
+SERVICE_NAME = insights-conditions-service
 BIN_NAME = $(SERVICE_NAME)
 
 # Container

@@ -1,6 +1,6 @@
-# Insights Operator Conditional Gathering Services (IOCGS)
+# Insights Operator Gathering Conditions Service
 
-Conditional Gathering Services to [Insights Operator](https://github.com/openshift/insights-operator).
+Gathering Conditions Services to [Insights Operator](https://github.com/openshift/insights-operator).
 
 # Build
 
@@ -31,7 +31,7 @@ It will build the gathering conditions image.
 To execute the service, run:
 
 ```shell script
-bin/insights-conditional-service
+bin/insights-conditions-service
 ```
 
 # Container
