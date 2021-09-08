@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -30,7 +29,6 @@ func main() {
 		log.Error().Err(err).Msg("Configuration could not be loaded")
 		os.Exit(1)
 	}
-	fmt.Printf("%v", config.Config)
 
 	serverConfig := config.ServerConfig()
 	storageConfig := config.StorageConfig()
