@@ -3,7 +3,7 @@ address = ":8081"
 use_https = false
 enable_cors = false
 
-[service]
+[storage]
 rules_path = "/rules"
 
 [sentry]
