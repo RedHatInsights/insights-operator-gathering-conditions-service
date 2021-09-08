@@ -24,7 +24,7 @@ type Storage struct {
 func NewStorage(cfg StorageConfig) *Storage {
 	return &Storage{
 		path:  cfg.RulesPath,
-		cache: make(map[string][]byte, 0),
+		cache: make(map[string][]byte),
 	}
 }
 
