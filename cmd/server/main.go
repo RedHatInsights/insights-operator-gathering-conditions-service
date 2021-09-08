@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	defaultConfigFile = "config"
+	defaultConfigFile = "config/config"
 )
 
 func main() {
