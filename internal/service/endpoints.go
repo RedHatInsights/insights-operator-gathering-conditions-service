@@ -5,6 +5,8 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/rs/zerolog/log"
+
 	merrors "github.com/redhatinsights/insights-operator-conditional-gathering/internal/errors"
 )
 
@@ -52,6 +54,8 @@ func renderResponse(w http.ResponseWriter, resp interface{}, code int) {
 func renderErrorResponse(w http.ResponseWriter, msg string, err error) {
 	resp := ErrorResponse{Error: msg}
 	code := http.StatusInternalServerError
+
+	log.Error().Msgf("%v", err)
 
 	var ierr *merrors.Error
 	if !errors.As(err, &ierr) {
