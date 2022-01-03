@@ -37,6 +37,8 @@ func main() {
 func parseFlags() (cliFlags cli.CliFlags) {
 	flag.BoolVar(&cliFlags.ShowConfiguration, "show-configuration", false, "show configuration")
 	flag.BoolVar(&cliFlags.ShowAuthors, "show-authors", false, "show authors")
+	flag.BoolVar(&cliFlags.ShowVersion, "show-version", false, "show version")
+
 	flag.Parse()
 	return
 }
@@ -47,6 +49,8 @@ func doSelectedOperation(cliFlags cli.CliFlags) {
 		cli.PrintConfiguration(config.Config)
 	case cliFlags.ShowAuthors:
 		cli.PrintAuthors()
+	case cliFlags.ShowVersion:
+		cli.PrintVersionInfo()
 	default:
 		runServer()
 	}

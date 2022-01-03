@@ -4,4 +4,5 @@ package cli
 type CliFlags struct {
 	ShowConfiguration bool
 	ShowAuthors       bool
+	ShowVersion       bool
 }
