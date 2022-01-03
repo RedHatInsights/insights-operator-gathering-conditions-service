@@ -26,6 +26,7 @@ jobs:
         - ./gofmt.sh
         - ./govet.sh
         - ./goconst.sh
+        - ./gosec.sh
     - stage: unit tests
       before_script: make build
       script:
