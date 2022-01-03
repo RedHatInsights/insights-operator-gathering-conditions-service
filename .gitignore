@@ -179,3 +179,4 @@ $RECYCLE.BIN/
 bin/*
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,visualstudiocode,intellij
+cover.out
