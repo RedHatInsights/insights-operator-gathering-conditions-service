@@ -99,7 +99,10 @@ func main() {
 	defer shutdownCancel()
 
 	if httpServer != nil {
-		httpServer.Stop(shutdownCtx) // nolint: errcheck
+		err := httpServer.Stop(shutdownCtx)
+		if err != nil {
+			log.Error().Err(err).Msg("HTTP(s) server Shutdown operation failure")
+		}
 	}
 
 	err = g.Wait()
