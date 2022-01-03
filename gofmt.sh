@@ -21,7 +21,8 @@ NC=$(tput sgr0) # No Color
 
 echo -e "${BLUE}Running formatting tool for Go source code${NC}"
 
-if [ -n "$(go fmt "$(go list ./... | grep -v /vendor/)")" ]
+# shellcheck disable=SC2046
+if [ -n "$(go fmt $(go list ./... | grep -v /vendor/))" ]
 then
     echo -e "${RED_BG}[FAIL]${NC} Go code is not formatted:"
     gofmt -d .

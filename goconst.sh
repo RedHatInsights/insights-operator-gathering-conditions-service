@@ -27,7 +27,8 @@ then
     GO111MODULE=off go get github.com/jgautheron/goconst/cmd/goconst
 fi
 
-if [[ $(goconst -min-occurrences=2 "$(go list ./... | grep -v /vendor/)" | tee /dev/tty | wc -l) -ne 0 ]]
+# shellcheck disable=SC2046
+if [[ $(goconst -min-occurrences=2 $(go list ./... | grep -v /vendor/) | tee /dev/tty | wc -l) -ne 0 ]]
 then
     echo -e "${RED_BG}[FAIL]${NC} Duplicated string(s) found"
     exit 1
