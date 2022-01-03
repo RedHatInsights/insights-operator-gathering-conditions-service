@@ -87,7 +87,7 @@ run: ## Executes the service
 
 .PHONY: build
 build: ## Compiles the service
-	go build -o ./bin/$(BIN_NAME) ./cmd/server
+	./build.sh ./bin/$(BIN_NAME) ./cmd/server
 
 ## --------------------------------------
 ## Container
