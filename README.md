@@ -2,6 +2,17 @@
 
 Gathering Conditions Services to [Insights Operator](https://github.com/openshift/insights-operator).
 
+<!-- vim-markdown-toc GFM -->
+
+* [Build](#build)
+    * [Configure](#configure)
+    * [Conditions](#conditions)
+    * [Run](#run)
+* [Container](#container)
+* [License](#license)
+
+<!-- vim-markdown-toc -->
+
 # Build
 
 To build the service, install Go 1.14 or above and run:
