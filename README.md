@@ -4,12 +4,13 @@ Gathering Conditions Services to [Insights Operator](https://github.com/openshif
 
 <!-- vim-markdown-toc GFM -->
 
-* [Build](#build)
-    * [Configure](#configure)
-    * [Conditions](#conditions)
-    * [Run](#run)
-* [Container](#container)
-* [License](#license)
+- [Insights Operator Gathering Conditions Service](#insights-operator-gathering-conditions-service)
+- [Build](#build)
+  - [Configure](#configure)
+  - [Conditions](#conditions)
+  - [Run](#run)
+- [Container](#container)
+- [License](#license)
 
 <!-- vim-markdown-toc -->
 
@@ -44,6 +45,10 @@ To execute the service, run:
 ```shell script
 bin/insights-conditions-service
 ```
+
+There are some flags for different purposes:
+
+- `bin/insights-conditions-service -show-configuration`: used to print the configuration in `stdout`.
 
 # Container
 
