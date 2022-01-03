@@ -54,6 +54,7 @@ There are some flags for different purposes:
 
 - `bin/insights-conditions-service -show-configuration`: used to print the configuration in `stdout`.
 - `bin/insights-conditions-service -show-authors`: used to print the authors of the repository.
+- `bin/insights-conditions-service -show-version`: used to print the binary version including commit, branch and build time.
 
 # Container
 
