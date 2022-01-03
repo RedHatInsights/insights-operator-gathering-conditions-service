@@ -20,7 +20,7 @@ jobs:
   include:
     - stage: build
       script:
-        - go build
+        - Make build
     - stage: style
       script:
         - ./gofmt.sh
