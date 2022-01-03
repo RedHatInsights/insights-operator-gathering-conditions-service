@@ -12,6 +12,8 @@ require (
 	github.com/prometheus/client_golang v1.11.0 // indirect
 	github.com/rs/zerolog v1.24.0
 	github.com/spf13/viper v1.8.1
+	github.com/stretchr/testify v1.7.0
+	github.com/tisnik/go-capture v1.0.1
 	golang.org/x/crypto v0.0.0-20210314154223-e6e6c4f2bb5b // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	google.golang.org/protobuf v1.27.1 // indirect

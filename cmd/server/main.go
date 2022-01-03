@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"os"
 	"os/signal"
 	"syscall"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/RedHatInsights/insights-operator-utils/logger"
 	"github.com/gorilla/mux"
+	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/cli"
 	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/config"
 	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/server"
 	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/service"
@@ -20,8 +22,9 @@ const (
 	defaultConfigFile = "config/config"
 )
 
+// main function perform operation based on the flags defined on command line
 func main() {
-	var httpServer *server.Server
+	var cliFlags cli.CliFlags
 
 	// Load config
 	err := config.LoadConfiguration(defaultConfigFile)
@@ -30,11 +33,25 @@ func main() {
 		os.Exit(1)
 	}
 
+	flag.BoolVar(&cliFlags.ShowConfiguration, "show-configuration", false, "show configuration")
+	flag.Parse()
+
+	switch {
+	case cliFlags.ShowConfiguration:
+		cli.PrintConfiguration(config.Config)
+	default:
+		runServer()
+	}
+}
+
+func runServer() {
+	var httpServer *server.Server
+
 	serverConfig := config.ServerConfig()
 	storageConfig := config.StorageConfig()
 
 	// Logger
-	err = logger.InitZerolog(
+	err := logger.InitZerolog(
 		config.LoggingConfig(),
 		config.CloudWatchConfig(),
 		config.SentryLoggingConfig(),
