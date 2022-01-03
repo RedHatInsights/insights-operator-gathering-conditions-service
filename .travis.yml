@@ -25,6 +25,7 @@ jobs:
       script:
         - ./gofmt.sh
         - ./govet.sh
+        - ./gocyclo.sh
         - ./goconst.sh
         - ./gosec.sh
     - stage: unit tests
