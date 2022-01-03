@@ -24,7 +24,7 @@ const (
 	envPrefix = "INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_"
 )
 
-var Config struct {
+type Configuration struct {
 	ServerConfig        server.Config                     `mapstructure:"server" toml:"server"`
 	StorageConfig       service.StorageConfig             `mapstructure:"storage" toml:"storage"`
 	LoggingConfig       logger.LoggingConfiguration       `mapstructure:"logging" toml:"logging"`
@@ -32,6 +32,8 @@ var Config struct {
 	SentryLoggingConfig logger.SentryLoggingConfiguration `mapstructure:"sentry" toml:"sentry"`
 	KafkaZerologConfig  logger.KafkaZerologConfiguration  `mapstructure:"kafka_zerolog" toml:"kafka_zerolog"`
 }
+
+var Config Configuration
 
 // LoadConfiguration loads configuration from defaultConfigFile, file set in
 // configFileEnvVariableName or from env
