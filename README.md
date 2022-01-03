@@ -13,6 +13,7 @@ Gathering Conditions Services to [Insights Operator](https://github.com/openshif
   - [Configure](#configure)
   - [Conditions](#conditions)
   - [Run](#run)
+  - [Makefile](#makefile)
 - [Container](#container)
 - [License](#license)
 
@@ -55,6 +56,39 @@ There are some flags for different purposes:
 - `bin/insights-conditions-service -show-configuration`: used to print the configuration in `stdout`.
 - `bin/insights-conditions-service -show-authors`: used to print the authors of the repository.
 - `bin/insights-conditions-service -show-version`: used to print the binary version including commit, branch and build time.
+
+## Makefile
+
+There are many options inside the [Makefile](Makefile) that may be useful for debugging/deploying the service:
+
+```
+❯ make help
+Usage: make <OPTIONS> ... <TARGETS>
+
+Available targets are:
+
+clean                Run go clean
+build                Keep this rule for compatibility
+fmt                  Run go fmt -w for all sources
+lint                 Run golint
+vet                  Run go vet. Report likely mistakes in source code
+cyclo                Run gocyclo
+ineffassign          Run ineffassign checker
+shellcheck           Run shellcheck
+errcheck             Run errcheck
+goconst              Run goconst checker
+gosec                Run gosec checker
+abcgo                Run ABC metrics checker
+style                Run all the formatting related commands (fmt, vet, lint, cyclo) + check shell scripts
+run                  Build the project and executes the binary
+test                 Run the unit tests
+integration_tests    Run all integration tests
+before_commit        Checks done before commit
+help                 Show this help screen
+vendor               Runs tiny, vendor and verify the module
+container-build      Build the container image
+container-run        Run the container image
+```
 
 # Container
 
