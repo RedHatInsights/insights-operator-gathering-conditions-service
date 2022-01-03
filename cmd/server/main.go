@@ -24,21 +24,29 @@ const (
 
 // main function perform operation based on the flags defined on command line
 func main() {
-	var cliFlags cli.CliFlags
-
 	// Load config
 	err := config.LoadConfiguration(defaultConfigFile)
 	if err != nil {
 		log.Error().Err(err).Msg("Configuration could not be loaded")
 		os.Exit(1)
 	}
+	cliFlags := parseFlags()
+	doSelectedOperation(cliFlags)
+}
 
+func parseFlags() (cliFlags cli.CliFlags) {
 	flag.BoolVar(&cliFlags.ShowConfiguration, "show-configuration", false, "show configuration")
+	flag.BoolVar(&cliFlags.ShowAuthors, "show-authors", false, "show authors")
 	flag.Parse()
+	return
+}
 
+func doSelectedOperation(cliFlags cli.CliFlags) {
 	switch {
 	case cliFlags.ShowConfiguration:
 		cli.PrintConfiguration(config.Config)
+	case cliFlags.ShowAuthors:
+		cli.PrintAuthors()
 	default:
 		runServer()
 	}

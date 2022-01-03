@@ -24,3 +24,11 @@ func TestPrintConfiguration(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Contains(t, output, "\"Address\": \"test_address\",")
 }
+
+func TestPrintAuthors(t *testing.T) {
+	output, err := capture.StandardOutput(func() {
+		cli.PrintAuthors()
+	})
+	assert.NoError(t, err)
+	assert.Contains(t, output, "Red Hat Inc.")
+}

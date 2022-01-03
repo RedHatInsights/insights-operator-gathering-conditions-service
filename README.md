@@ -53,6 +53,7 @@ bin/insights-conditions-service
 There are some flags for different purposes:
 
 - `bin/insights-conditions-service -show-configuration`: used to print the configuration in `stdout`.
+- `bin/insights-conditions-service -show-authors`: used to print the authors of the repository.
 
 # Container
 
