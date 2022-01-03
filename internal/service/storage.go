@@ -50,7 +50,12 @@ func (s *Storage) readFile(path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			log.Error().Err(err).Msgf("Close file %s", path)
+		}
+	}()
 
 	data, err := ioutil.ReadAll(f)
 	if err != nil {
