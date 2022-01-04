@@ -7,7 +7,7 @@ enable_cors = false
 rules_path = "/conditions"
 
 [sentry]
-dns = ""
+dsn = ""
 
 [kafka_zerolog]
 broker = ""
