@@ -28,6 +28,7 @@ type Config struct {
 	Address    string `mapstructure:"address" toml:"address"`
 	UseHTTPS   bool   `mapstructure:"use_https" toml:"use_https"`
 	EnableCORS bool   `mapstructure:"enable_cors" toml:"enable_cors"`
+	CertFolder string // added for testing purposes
 }
 
 type Server struct {
@@ -60,7 +61,9 @@ func (server *Server) Start() error {
 	}
 
 	if server.Config.UseHTTPS {
-		err = server.HTTPServer.ListenAndServeTLS("server.crt", "server.key")
+		err = server.HTTPServer.ListenAndServeTLS(
+			server.Config.CertFolder+"server.crt",
+			server.Config.CertFolder+"server.key")
 	} else {
 		err = server.HTTPServer.ListenAndServe()
 	}
