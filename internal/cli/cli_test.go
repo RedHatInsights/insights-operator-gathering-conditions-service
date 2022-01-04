@@ -34,8 +34,7 @@ func TestPrintConfiguration(t *testing.T) {
 	}
 
 	output, err := capture.StandardOutput(func() {
-		err := cli.PrintConfiguration(testConfig)
-		assert.NoError(t, err)
+		cli.PrintConfiguration(testConfig)
 	})
 	assert.NoError(t, err)
 	assert.Contains(t, output, "\"Address\": \"test_address\",")

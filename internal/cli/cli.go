@@ -27,12 +27,16 @@ const (
 	authorsMessage = "Ricardo Lüders, Serhii Zakharov, and CCX Processing team members, Red Hat Inc."
 )
 
-func PrintConfiguration(conf config.Configuration) error {
+func PrintConfiguration(conf config.Configuration) {
 	// err should be nil as config contains valid fields
 	configBytes, err := json.MarshalIndent(conf, "", "    ")
-	fmt.Println(string(configBytes))
+	if err != nil {
+		// in case of error, don't print the marshalled buffer
+		fmt.Printf("error retrieving configuration: %s\n", err)
+		return
+	}
 
-	return err
+	fmt.Println(string(configBytes))
 }
 
 func PrintAuthors() {
