@@ -1,6 +1,5 @@
-#!/bin/bash
-
-# Copyright 2020, 2021, 2022 Red Hat, Inc
+#!/usr/bin/env bash
+# Copyright 2020 Red Hat, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,20 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-BLUE=$(tput setaf 4)
-RED_BG=$(tput setab 1)
-GREEN_BG=$(tput setab 2)
-NC=$(tput sgr0) # No Color
+echo "Testing OpenAPI specifications file"
+# shellcheck disable=2181
 
-echo -e "${BLUE}Running formatting tool for Go source code${NC}"
-
-# shellcheck disable=SC2046
-if [ -n "$(go fmt $(go list ./... | grep -v /vendor/))" ]
-then
-    echo -e "${RED_BG}[FAIL]${NC} Go code is not formatted:"
-    gofmt -d .
-    exit 1
+if docker run --rm -v "${PWD}":/local/:Z openapitools/openapi-generator-cli validate -i ./local/openapi.json; then
+    echo "OpenAPI spec file is OK"
 else
-    echo -e "${GREEN_BG}[OK]${NC} Go code is formatted"
-    exit 0
+    echo "OpenAPI spec file validation failed"
+    exit 1
 fi

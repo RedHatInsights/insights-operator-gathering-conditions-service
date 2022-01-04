@@ -1,93 +1,119 @@
-# Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
-ifeq (,$(shell go env GOBIN))
-GOBIN=$(shell go env GOPATH)/bin
-else
-GOBIN=$(shell go env GOBIN)
-endif
+SHELL := /bin/bash
 
-# Service
-SERVICE_NAME = insights-conditions-service
-BIN_NAME = $(SERVICE_NAME)
+.PHONY: default clean build fmt lint vet cyclo ineffassign shellcheck errcheck goconst gosec abcgo json-check openapi-check style run test test-postgres cover integration_tests rest_api_tests sqlite_db license before_commit help godoc install_docgo install_addlicense
 
-# Container
-CONTAINER_NAME = $(SERVICE_NAME)
-CONTAINER_NAMESPACE ?= redhatinsights
-CONTAINER_TAG = $(shell git describe --tags --exact-match 2>/dev/null || echo latest)
-CONTAINER_IMAGE_NAME = ${CONTAINER_NAMESPACE}/${CONTAINER_NAME}:${CONTAINER_TAG}
+SOURCES:=$(shell find . -name '*.go')
+BINARY:=insights-operator-conditional-gathering
+DOCFILES:=$(addprefix docs/packages/, $(addsuffix .html, $(basename ${SOURCES})))
 
-# Testing
-GO_TEST_FLAGS = $(VERBOSE)
-COVER_PROFILE = cover.out
+default: build
 
-# Configuration
-RUN_FLAGS ?= 
+clean: ## Run go clean
+	@go clean
 
-# Tools
-CONTAINER_RUNTIME := $(shell command -v podman 2> /dev/null || echo docker)
-GOLANGCI_LINT := $(GOBIN)/golangci-lint
+build: ${BINARY} ## Keep this rule for compatibility
 
-export GO111MODULE=on
-export GOFLAGS=-mod=vendor
+${BINARY}: ${SOURCES}
+	./build.sh
 
-.PHONY: help
-help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+fmt: ## Run go fmt -w for all sources
+	@echo "Running go formatting"
+	./gofmt.sh
 
-.PHONY: githooks
-githooks: ## Configure the repository to use the git hooks
-	git config core.hooksPath ./.githooks
+lint: ## Run golint
+	@echo "Running go lint"
+	./golint.sh
+
+vet: ## Run go vet. Report likely mistakes in source code
+	@echo "Running go vet"
+	./govet.sh
+
+cyclo: ## Run gocyclo
+	@echo "Running gocyclo"
+	./gocyclo.sh
+
+ineffassign: ## Run ineffassign checker
+	@echo "Running ineffassign checker"
+	./ineffassign.sh
+
+shellcheck: ## Run shellcheck
+	./shellcheck.sh
+
+errcheck: ## Run errcheck
+	@echo "Running errcheck"
+	./goerrcheck.sh
+
+goconst: ## Run goconst checker
+	@echo "Running goconst checker"
+	./goconst.sh ${VERBOSE}
+
+gosec: ## Run gosec checker
+	@echo "Running gosec checker"
+	./gosec.sh ${VERBOSE}
+
+abcgo: ## Run ABC metrics checker
+	@echo "Run ABC metrics checker"
+	./abcgo.sh ${VERBOSE}
+
+openapi-check:
+	./check_openapi.sh
+
+style: fmt vet lint cyclo shellcheck errcheck goconst gosec ineffassign abcgo ## Run all the formatting related commands (fmt, vet, lint, cyclo) + check shell scripts
+
+run: ${BINARY} ## Build the project and executes the binary
+	./$^
+
+test: ${BINARY} ## Run the unit tests
+	./unit-tests.sh
+
+cover: test
+	@go tool cover -html=coverage.out
+
+integration_tests: ${BINARY} ## Run all integration tests
+	@echo "Running all integration tests"
+	@./test.sh
+
+license: install_addlicense
+	addlicense -c "Red Hat, Inc" -l "apache" -v ./
+
+before_commit: style test integration_tests openapi-check license ## Checks done before commit
+	./check_coverage.sh
+
+help: ## Show this help screen
+	@echo 'Usage: make <OPTIONS> ... <TARGETS>'
+	@echo ''
+	@echo 'Available targets are:'
+	@echo ''
+	@grep -E '^[ a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@echo ''
+
+docs/packages/%.html: %.go
+	mkdir -p $(dir $@)
+	docgo -outdir $(dir $@) $^
+	addlicense -c "Red Hat, Inc" -l "apache" -v $@
+
+godoc: export GO111MODULE=off
+godoc: install_docgo install_addlicense ${DOCFILES}
+
+install_docgo: export GO111MODULE=off
+install_docgo:
+	[[ `command -v docgo` ]] || go get -u github.com/dhconnelly/docgo
+
+install_addlicense: export GO111MODULE=off
+install_addlicense:
+	[[ `command -v addlicense` ]] || GO111MODULE=off go get -u github.com/google/addlicense
+
 
 ## --------------------------------------
-## Tests
+## Go Module
 ## --------------------------------------
 
-# Run the tests
-.PHONY: test
-test: unit ## Run all the tests
-
-# Run the unit tests
-.PHONY: unit
-unit: ## Run the unit tests
-	go test $(GO_TEST_FLAGS) -coverprofile $(COVER_PROFILE) ./...
-
-.PHONY: coverage
-coverage:
-	./.citools/check-coverage.sh
-
-.PHONE: unit-verbose
-unit-verbose:
-	VERBOSE=-v make unit
-
-## --------------------------------------
-## Linting
-## --------------------------------------
-
-.PHONY: precommit
-precommit: ## Executes the pre-commit hook (check the stashed changes)
-	./.githooks/pre-commit
-
-.PHONY: lint
-lint: $(GOLANGCI_LINT) ## Executes the linting tool (vet, sec, and others)
-	$(GOLANGCI_LINT) run
-
-.PHONY: lint-fix
-lint-fix: $(GOLANGCI_LINT) ## Executes the linting with fix
-	$(GOLANGCI_LINT) run --fix $(RUN_FLAGS)
-
-$(GOLANGCI_LINT):
-	./.citools/install-golangci-lint.sh
-
-## --------------------------------------
-## Build/Run
-## --------------------------------------
-
-.PHONY: run
-run: ## Executes the service
-	go run ./cmd/server/main.go $(RUN_FLAGS)
-
-.PHONY: build
-build: ## Compiles the service
-	./build.sh ./bin/$(BIN_NAME) ./cmd/server
+.PHONY: vendor
+vendor: ## Runs tiny, vendor and verify the module
+	go mod tidy
+	go mod vendor
+	go mod verify
 
 ## --------------------------------------
 ## Container
@@ -104,13 +130,3 @@ container-run: ## Run the container image
 		--name $(CONTAINER_NAME) \
 		-p 8081:8081 \
 		$(CONTAINER_IMAGE_NAME)
-
-## --------------------------------------
-## Go Module
-## --------------------------------------
-
-.PHONY: vendor
-vendor: ## Runs tiny, vendor and verify the module
-	go mod tidy
-	go mod vendor
-	go mod verify

@@ -1,6 +1,5 @@
 #!/bin/bash
-
-# Copyright 2020, 2021, 2022 Red Hat, Inc
+# Copyright 2020 Red Hat, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,20 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-BLUE=$(tput setaf 4)
-RED_BG=$(tput setab 1)
-GREEN_BG=$(tput setab 2)
-NC=$(tput sgr0) # No Color
-
-echo -e "${BLUE}Running formatting tool for Go source code${NC}"
-
-# shellcheck disable=SC2046
-if [ -n "$(go fmt $(go list ./... | grep -v /vendor/))" ]
-then
-    echo -e "${RED_BG}[FAIL]${NC} Go code is not formatted:"
-    gofmt -d .
-    exit 1
+if ! command -v shellcheck > /dev/null 2>&1; then
+    scversion="stable" # or "v0.4.7", or "latest"
+    wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv
+    shellcheck-stable/shellcheck --version
+    shellcheck-stable/shellcheck --exclude=SC1090,SC2086,SC2034,SC1091 -- *.sh
 else
-    echo -e "${GREEN_BG}[OK]${NC} Go code is formatted"
-    exit 0
+    shellcheck --exclude=SC1090,SC2086,SC2034,SC1091 -- *.sh
 fi

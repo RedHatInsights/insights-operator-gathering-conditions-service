@@ -22,5 +22,5 @@ commit=$(git rev-parse HEAD)
 
 package_prefix=github.com/redhatinsights/insights-operator-conditional-gathering/internal
 
-go build  -o $1 -ldflags="-X '$package_prefix/cli.BuildTime=$buildtime' -X '$package_prefix/cli.BuildVersion=$version' -X '$package_prefix/cli.BuildBranch=$branch' -X '$package_prefix/cli.BuildCommit=$commit'" $2
+go build -ldflags="-X '$package_prefix/cli.BuildTime=$buildtime' -X '$package_prefix/cli.BuildVersion=$version' -X '$package_prefix/cli.BuildBranch=$branch' -X '$package_prefix/cli.BuildCommit=$commit'"
 exit $?

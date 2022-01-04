@@ -1,6 +1,5 @@
 #!/bin/bash
-
-# Copyright 2020, 2021, 2022 Red Hat, Inc
+# Copyright 2020 Red Hat, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,20 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-BLUE=$(tput setaf 4)
-RED_BG=$(tput setab 1)
-GREEN_BG=$(tput setab 2)
-NC=$(tput sgr0) # No Color
 
-echo -e "${BLUE}Running formatting tool for Go source code${NC}"
-
-# shellcheck disable=SC2046
-if [ -n "$(go fmt $(go list ./... | grep -v /vendor/))" ]
+if ! [ -x "$(command -v errcheck)" ]
 then
-    echo -e "${RED_BG}[FAIL]${NC} Go code is not formatted:"
-    gofmt -d .
-    exit 1
-else
-    echo -e "${GREEN_BG}[OK]${NC} Go code is formatted"
-    exit 0
+    echo -e "${BLUE}Installing errcheck ${NC}"
+    GO111MODULE=off go get github.com/kisielk/errcheck
 fi
+
+errcheck ./...
