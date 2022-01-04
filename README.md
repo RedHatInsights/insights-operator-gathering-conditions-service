@@ -16,6 +16,7 @@ Gathering Conditions Services to [Insights Operator](https://github.com/openshif
   - [Makefile](#makefile)
 - [Container](#container)
 - [License](#license)
+- [Package manifest](#package-manifest)
 
 <!-- vim-markdown-toc -->
 
@@ -113,3 +114,7 @@ curl -s http://localhost:8081/gathering_rules | jq
 # License
 
 This project is licensed by the Apache License 2.0. For more information check the LICENSE file.
+
+## Package manifest
+
+Package manifest is available at [docs/manifest.txt](docs/manifest.txt).
