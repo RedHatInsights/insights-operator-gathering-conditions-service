@@ -48,3 +48,15 @@ func TestPrintAuthors(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Contains(t, output, "Red Hat Inc.")
 }
+
+func TestPrintVersion(t *testing.T) {
+	output, err := capture.StandardOutput(func() {
+		cli.PrintVersionInfo()
+	})
+	assert.NoError(t, err)
+
+	assert.Contains(t, output, "Version:\t*not set")
+	assert.Contains(t, output, "Build time:\t*not set")
+	assert.Contains(t, output, "Branch:\t*not set")
+	assert.Contains(t, output, "Commit:\t*not set")
+}
