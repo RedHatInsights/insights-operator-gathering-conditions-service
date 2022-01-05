@@ -26,6 +26,7 @@ jobs:
         - ./gofmt.sh
         - ./govet.sh
         - ./gocyclo.sh
+        - ./goerrcheck.sh
         - ./goconst.sh
         - ./gosec.sh
     - stage: unit tests
