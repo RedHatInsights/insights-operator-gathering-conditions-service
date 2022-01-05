@@ -73,7 +73,7 @@ func (s *Storage) readFile(path string) ([]byte, error) {
 		}
 	}()
 
-	data, err := ioutil.ReadAll(f)
+	data, err := io.ReadAll(f)
 	if err != nil {
 		return nil, err
 	}
