@@ -7,14 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type mockStorage struct {
-	mockData []byte
-}
-
-func (m *mockStorage) Find(string) []byte {
-	return m.mockData
-}
-
 type testCase struct {
 	name            string
 	mockData        []byte
@@ -23,16 +15,6 @@ type testCase struct {
 }
 
 func TestRepository(t *testing.T) {
-	validRules := `
-	{
-		"rules": [
-			{
-				"conditions": ["condition 1", "condition 2"],
-				"gathering_functions": "the gathering functions"
-			}
-		]
-	}
-	`
 	testCases := []testCase{
 		{
 			name:            "unparsable rule",
@@ -46,19 +28,9 @@ func TestRepository(t *testing.T) {
 		},
 		{
 			name:            "valid rules returned by storage",
-			mockData:        []byte(validRules),
+			mockData:        []byte(validRulesJSON),
 			expectedAnError: false,
-			expectedRules: service.Rules{
-				Items: []service.Rule{
-					{
-						Conditions: []interface{}{
-							"condition 1",
-							"condition 2",
-						},
-						GatheringFunctions: "the gathering functions",
-					},
-				},
-			},
+			expectedRules:   validRules,
 		},
 	}
 	for _, tc := range testCases {
