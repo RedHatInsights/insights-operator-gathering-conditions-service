@@ -27,7 +27,7 @@ then
     GO111MODULE=off go get github.com/gordonklaus/ineffassign
 fi
 
-if ! ineffassign main.go internal/
+if ! ineffassign github.com/redhatinsights/insights-operator-conditional-gathering
 then
     echo -e "${RED_BG}[FAIL]${NC} Code with ineffectual assignments detected"
     exit 1
