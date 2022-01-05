@@ -38,7 +38,17 @@ if [ "$VERBOSE_OUTPUT" = true ]; then
     echo -e "${BLUE}Functions with ABC metrics greater than ${threshold}${NC}:"
 fi
 
-if [[ $(abcgo -path . -sort -format raw | awk "\$4>${threshold}" | tee /dev/tty | wc -l) -ne 0 ]]
+if [[ $(abcgo -path main.go -sort -format raw | awk "\$4>${threshold}" | tee /dev/tty | wc -l) -ne 0 ]]
+then
+    echo -e "${RED_BG}[FAIL]${NC} Functions with too high ABC metrics detected!"
+    exit 1
+else
+    echo -e "${GREEN_BG}[OK]${NC} ABC metrics are ok for all functions in all packages"
+    exit 0
+fi
+
+
+if [[ $(abcgo -path internal -sort -format raw | awk "\$4>${threshold}" | tee /dev/tty | wc -l) -ne 0 ]]
 then
     echo -e "${RED_BG}[FAIL]${NC} Functions with too high ABC metrics detected!"
     exit 1
