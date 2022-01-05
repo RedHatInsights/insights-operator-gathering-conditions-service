@@ -61,7 +61,7 @@ func TestNewHandler(t *testing.T) {
 			assert.Contains(
 				t,
 				rr.Body.String(),
-				`"rules":[{"conditions":["condition 1","condition 2"],"gathering_functions":"the gathering functions"}]`)
+				`"version":"1.0","rules":[{"conditions":["condition 1","condition 2"],"gathering_functions":"the gathering functions"}]`)
 		}
 	}
 
