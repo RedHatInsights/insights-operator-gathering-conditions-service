@@ -7,14 +7,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type testCase struct {
-	name            string
-	mockData        []byte
-	expectedAnError bool
-	expectedRules   service.Rules
-}
-
 func TestRepository(t *testing.T) {
+	type testCase struct {
+		name            string
+		mockData        []byte
+		expectedAnError bool
+		expectedRules   service.Rules
+	}
+
 	testCases := []testCase{
 		{
 			name:            "unparsable rule",
