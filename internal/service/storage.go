@@ -18,7 +18,7 @@ package service
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/rs/zerolog/log"
@@ -40,7 +40,7 @@ type Storage struct {
 func NewStorage(cfg StorageConfig) *Storage {
 	return &Storage{
 		path:  cfg.RulesPath,
-		cache: make(map[string][]byte),
+		cache: make(map[string][]byte), // TODO: Make it an own type
 	}
 }
 
@@ -73,7 +73,7 @@ func (s *Storage) readFile(path string) ([]byte, error) {
 		}
 	}()
 
-	data, err := ioutil.ReadAll(f)
+	data, err := io.ReadAll(f)
 	if err != nil {
 		return nil, err
 	}

@@ -1,0 +1,16 @@
+[server]
+address = "address"
+use_https = true
+enable_cors = true
+
+[storage]
+rules_path = "rules_path"
+
+[sentry]
+dsn = "dsn"
+
+[kafka_zerolog]
+broker = "broker"
+topic = "topic"
+cert_path = "cert_path"
+level = "level"

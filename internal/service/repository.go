@@ -43,7 +43,7 @@ func NewRepository(s StorageInterface) *Repository {
 }
 
 func (r *Repository) Rules() (*Rules, error) {
-	filepath := "rules.json"
+	filepath := "rules.json" // TODO: Make this configurable
 	data := r.store.Find(filepath)
 	if data == nil {
 		return nil, fmt.Errorf("store data not found for '%s'", filepath)

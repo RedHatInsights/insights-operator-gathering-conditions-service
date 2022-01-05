@@ -77,6 +77,7 @@ func renderErrorResponse(w http.ResponseWriter, msg string, err error) {
 	if !errors.As(err, &ierr) {
 		resp.Error = "internal error"
 	} else {
+		// TODO: These codes are never used, shall we remove them?
 		switch ierr.Code() {
 		case merrors.ErrorCodeNotFound:
 			code = http.StatusNotFound
