@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewHandler(t *testing.T) {
+func TestService(t *testing.T) {
 	type testCase struct {
 		name            string
 		mockData        []byte
