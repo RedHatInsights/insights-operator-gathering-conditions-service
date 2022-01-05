@@ -11,31 +11,58 @@ import (
 )
 
 func TestNewHandler(t *testing.T) {
-	store := mockStorage{
-		mockData: []byte(validRulesJSON),
-	}
-	repo := service.NewRepository(&store)
-	svc := service.New(repo)
-
-	// Create the request:
-	req, err := http.NewRequest("GET", "/gathering_rules", nil)
-	if err != nil {
-		t.Fatal(err)
+	type testCase struct {
+		name            string
+		mockData        []byte
+		expectedAnError bool
 	}
 
-	rr := httptest.NewRecorder() // Used to record the response.
-	handler := service.NewHandler(svc)
+	testCases := []testCase{
+		{
+			name:            "valid rule stored",
+			mockData:        []byte(validRulesJSON),
+			expectedAnError: false,
+		},
+		{
+			name:            "invalid rule stored",
+			mockData:        []byte("not a rule"),
+			expectedAnError: true,
+		},
+	}
 
-	router := mux.NewRouter()
+	for _, tc := range testCases {
 
-	handler.Register(router)
+		store := mockStorage{
+			mockData: tc.mockData,
+		}
+		repo := service.NewRepository(&store)
+		svc := service.New(repo)
 
-	router.ServeHTTP(rr, req)
+		// Create the request:
+		req, err := http.NewRequest("GET", "/gathering_rules", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
 
-	assert.Equal(t, http.StatusOK, rr.Code)
-	assert.Contains(
-		t,
-		rr.Body.String(),
-		`"rules":[{"conditions":["condition 1","condition 2"],"gathering_functions":"the gathering functions"}]`)
+		rr := httptest.NewRecorder() // Used to record the response.
+		handler := service.NewHandler(svc)
+
+		router := mux.NewRouter()
+
+		handler.Register(router)
+
+		router.ServeHTTP(rr, req)
+
+		if tc.expectedAnError {
+			assert.Equal(t, http.StatusInternalServerError, rr.Code)
+			assert.Contains(t, rr.Body.String(), "error")
+		} else {
+			assert.Equal(t, http.StatusOK, rr.Code)
+			assert.Contains(
+				t,
+				rr.Body.String(),
+				`"rules":[{"conditions":["condition 1","condition 2"],"gathering_functions":"the gathering functions"}]`)
+		}
+	}
 
 }
