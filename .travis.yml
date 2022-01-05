@@ -29,6 +29,7 @@ jobs:
         - ./goerrcheck.sh
         - ./goconst.sh
         - ./gosec.sh
+        - ./ineffassign.sh
     - stage: unit tests
       before_script: make build
       script:
