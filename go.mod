@@ -1,6 +1,6 @@
 module github.com/redhatinsights/insights-operator-conditional-gathering
 
-go 1.14
+go 1.16
 
 require (
 	github.com/BurntSushi/toml v0.4.1
