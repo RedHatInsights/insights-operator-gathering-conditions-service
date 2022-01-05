@@ -20,4 +20,4 @@ then
     GO111MODULE=off go get github.com/kisielk/errcheck
 fi
 
-errcheck ./...
+errcheck $(go list ./... | grep -v /vendor/)
