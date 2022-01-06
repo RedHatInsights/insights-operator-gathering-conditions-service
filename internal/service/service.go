@@ -20,6 +20,7 @@ type Interface interface {
 	Rules() (*Rules, error)
 }
 
+// Service data type represents the whole service for repository interface.
 type Service struct {
 	repo RepositoryInterface
 }
