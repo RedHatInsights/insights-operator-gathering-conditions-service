@@ -50,6 +50,7 @@ type Configuration struct {
 	KafkaZerologConfig  logger.KafkaZerologConfiguration  `mapstructure:"kafka_zerolog" toml:"kafka_zerolog"`
 }
 
+// Config has exactly the same structure as *.toml file
 var Config Configuration
 
 // LoadConfiguration loads configuration from defaultConfigFile, file set in
