@@ -107,6 +107,7 @@ func LoadConfiguration(defaultConfigFile string) error {
 	return nil
 }
 
+// ServerConfig returns actual server configuration.
 func ServerConfig() server.Config {
 	return Config.ServerConfig
 }
