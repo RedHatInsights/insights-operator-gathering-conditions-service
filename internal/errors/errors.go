@@ -27,6 +27,7 @@ type Error struct {
 	code ErrorCode
 }
 
+// ErrorCode is enumeration type to specify numeric error code
 type ErrorCode uint
 
 const (
