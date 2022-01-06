@@ -30,6 +30,7 @@ func NewHandler(svc Interface) *Handler {
 	}
 }
 
+// Register function registers new handler for given endpoint URL.
 func (s *Handler) Register(r *mux.Router) {
 	r.Handle("/gathering_rules", gatheringRulesEndpoint(s.svc))
 }
