@@ -18,11 +18,12 @@ package service
 
 import "github.com/gorilla/mux"
 
-// Handler structure represents HTTP request handler
+// Handler structure represents HTTP request handler.
 type Handler struct {
 	svc Interface
 }
 
+// NewHandler function constructs new HTTP request handler.
 func NewHandler(svc Interface) *Handler {
 	return &Handler{
 		svc: svc,
