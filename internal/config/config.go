@@ -40,6 +40,7 @@ const (
 	envPrefix = "INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_"
 )
 
+// Configuration is a structure holding the whole service configuration
 type Configuration struct {
 	ServerConfig        server.Config                     `mapstructure:"server" toml:"server"`
 	StorageConfig       service.StorageConfig             `mapstructure:"storage" toml:"storage"`
