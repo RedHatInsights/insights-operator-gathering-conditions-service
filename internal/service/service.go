@@ -24,6 +24,7 @@ type Service struct {
 	repo RepositoryInterface
 }
 
+// New function constructs new service for given repository interface.
 func New(repo RepositoryInterface) *Service {
 	return &Service{
 		repo,
