@@ -24,6 +24,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// Config data structure represents HTTP/HTTPS server configuration.
 type Config struct {
 	Address    string `mapstructure:"address" toml:"address"`
 	UseHTTPS   bool   `mapstructure:"use_https" toml:"use_https"`
@@ -31,12 +32,14 @@ type Config struct {
 	CertFolder string // added for testing purposes
 }
 
+// Server data structure represents instances of HTTP/HTTPS server.
 type Server struct {
 	Config     Config
 	Router     *mux.Router
 	HTTPServer *http.Server
 }
 
+// New fucntion constructs new server instance.
 func New(cfg Config, router *mux.Router) *Server {
 	return &Server{
 		Config: cfg,

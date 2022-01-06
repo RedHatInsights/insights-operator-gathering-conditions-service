@@ -26,10 +26,13 @@ import (
 	merrors "github.com/redhatinsights/insights-operator-conditional-gathering/internal/errors"
 )
 
+// ErrorResponse structure represents HTTP response with error message.
 type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
+// GatheringRulesResponse structure represents HTTP response with rules-related
+// content.
 type GatheringRulesResponse struct {
 	Version string      `json:"version"`
 	Rules   interface{} `json:"rules"`
