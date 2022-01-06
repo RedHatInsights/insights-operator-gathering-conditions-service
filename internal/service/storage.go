@@ -28,6 +28,7 @@ type StorageInterface interface {
 	Find(res string) []byte
 }
 
+// StorageConfig structure contains configuration for resource storage.
 type StorageConfig struct {
 	RulesPath string `mapstructure:"rules_path" toml:"rules_path"`
 }
