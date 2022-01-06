@@ -31,6 +31,7 @@ type Error struct {
 type ErrorCode uint
 
 const (
+	// ErrorCodeUnknown represents numeric error code for unknown error
 	ErrorCodeUnknown ErrorCode = iota
 	ErrorCodeNotFound
 	ErrorCodeInvalidArgument
