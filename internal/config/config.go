@@ -117,6 +117,7 @@ func StorageConfig() service.StorageConfig {
 	return Config.StorageConfig
 }
 
+// LoggingConfig function returns actual logger configuration.
 func LoggingConfig() logger.LoggingConfiguration {
 	return Config.LoggingConfig
 }
