@@ -39,6 +39,7 @@ type Server struct {
 	HTTPServer *http.Server
 }
 
+// New fucntion constructs new server instance.
 func New(cfg Config, router *mux.Router) *Server {
 	return &Server{
 		Config: cfg,
