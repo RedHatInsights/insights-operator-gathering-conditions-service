@@ -54,6 +54,8 @@ func (e *Error) Code() ErrorCode {
 	return e.code
 }
 
+// WrapErrorf function constructs Error data structure with original error
+// object, numeric error code, and message.
 func WrapErrorf(orig error, code ErrorCode, format string, a ...interface{}) error {
 	return &Error{
 		orig: orig,
