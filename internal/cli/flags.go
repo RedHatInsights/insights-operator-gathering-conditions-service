@@ -16,8 +16,8 @@ limitations under the License.
 
 package cli
 
-// CliFlags represents structure holding all command line arguments and flags.
-type CliFlags struct {
+// Flags represents structure holding all command line arguments and flags.
+type Flags struct {
 	ShowConfiguration bool
 	ShowAuthors       bool
 	ShowVersion       bool
