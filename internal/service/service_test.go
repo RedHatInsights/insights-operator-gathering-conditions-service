@@ -39,7 +39,7 @@ func TestService(t *testing.T) {
 		svc := service.New(repo)
 
 		// Create the request:
-		req, err := http.NewRequest("GET", "/gathering_rules", nil)
+		req, err := http.NewRequest("GET", "/gathering_rules", http.NoBody)
 		if err != nil {
 			t.Fatal(err)
 		}
