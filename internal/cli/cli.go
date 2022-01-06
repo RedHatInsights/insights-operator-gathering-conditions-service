@@ -41,6 +41,7 @@ func PrintConfiguration(conf config.Configuration) {
 	fmt.Println(string(configBytes))
 }
 
+// PrintAuthors function displays list of authors on standard output.
 func PrintAuthors() {
 	fmt.Println(authorsMessage)
 }
