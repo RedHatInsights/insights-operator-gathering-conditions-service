@@ -127,6 +127,7 @@ func CloudWatchConfig() logger.CloudWatchConfiguration {
 	return Config.CloudWatchConfig
 }
 
+// SentryLoggingConfig function returns the sentry log configuration.
 func SentryLoggingConfig() logger.SentryLoggingConfiguration {
 	return Config.SentryLoggingConfig
 }
