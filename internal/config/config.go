@@ -132,6 +132,7 @@ func SentryLoggingConfig() logger.SentryLoggingConfiguration {
 	return Config.SentryLoggingConfig
 }
 
+// KafkaZerologConfig function returns the configuration of ZeroLog for Kafka.
 func KafkaZerologConfig() logger.KafkaZerologConfiguration {
 	return Config.KafkaZerologConfig
 }
