@@ -107,11 +107,12 @@ func LoadConfiguration(defaultConfigFile string) error {
 	return nil
 }
 
-// ServerConfig returns actual server configuration.
+// ServerConfig function returns actual server configuration.
 func ServerConfig() server.Config {
 	return Config.ServerConfig
 }
 
+// StorageConfig function returns actual storage configuration.
 func StorageConfig() service.StorageConfig {
 	return Config.StorageConfig
 }
