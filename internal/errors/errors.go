@@ -20,15 +20,18 @@ import (
 	"fmt"
 )
 
+// Error data structure contains the original error object + assigned error code
 type Error struct {
 	orig error
 	msg  string
 	code ErrorCode
 }
 
+// ErrorCode is enumeration type to specify numeric error code
 type ErrorCode uint
 
 const (
+	// ErrorCodeUnknown represents numeric error code for unknown error
 	ErrorCodeUnknown ErrorCode = iota
 	ErrorCodeNotFound
 	ErrorCodeInvalidArgument
@@ -46,10 +49,13 @@ func (e *Error) Unwrap() error {
 	return e.orig
 }
 
+// Code method returns numeric error code
 func (e *Error) Code() ErrorCode {
 	return e.code
 }
 
+// WrapErrorf function constructs Error data structure with original error
+// object, numeric error code, and message.
 func WrapErrorf(orig error, code ErrorCode, format string, a ...interface{}) error {
 	return &Error{
 		orig: orig,
@@ -58,6 +64,8 @@ func WrapErrorf(orig error, code ErrorCode, format string, a ...interface{}) err
 	}
 }
 
+// NewErrorf function constructs Error data structure with numeric error code,
+// and message.
 func NewErrorf(code ErrorCode, format string, a ...interface{}) error {
 	return WrapErrorf(nil, code, format, a...)
 }
