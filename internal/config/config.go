@@ -122,6 +122,7 @@ func LoggingConfig() logger.LoggingConfiguration {
 	return Config.LoggingConfig
 }
 
+// CloudWatchConfig function returns actual CloudWatch configuration.
 func CloudWatchConfig() logger.CloudWatchConfiguration {
 	return Config.CloudWatchConfig
 }
