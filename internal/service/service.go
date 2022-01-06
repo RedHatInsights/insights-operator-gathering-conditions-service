@@ -30,6 +30,7 @@ func New(repo RepositoryInterface) *Service {
 	}
 }
 
+// Rules method returns all rules provided by the service.
 func (s *Service) Rules() (*Rules, error) {
 	rules, err := s.repo.Rules()
 	if err != nil {
