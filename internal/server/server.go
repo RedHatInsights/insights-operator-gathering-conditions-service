@@ -24,6 +24,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// Config data structure represents HTTP/HTTPS server configuration.
 type Config struct {
 	Address    string `mapstructure:"address" toml:"address"`
 	UseHTTPS   bool   `mapstructure:"use_https" toml:"use_https"`
