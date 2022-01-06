@@ -26,6 +26,7 @@ import (
 	merrors "github.com/redhatinsights/insights-operator-conditional-gathering/internal/errors"
 )
 
+// ErrorResponse structure represents HTTP response with error message.
 type ErrorResponse struct {
 	Error string `json:"error"`
 }
