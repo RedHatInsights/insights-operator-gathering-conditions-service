@@ -24,6 +24,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// StorageInterface describe interface to be implemented by resource storage
+// implementations.
 type StorageInterface interface {
 	Find(res string) []byte
 }
