@@ -20,6 +20,7 @@ import (
 	"fmt"
 )
 
+// Error data structure contains the original error object + assigned error code
 type Error struct {
 	orig error
 	msg  string
