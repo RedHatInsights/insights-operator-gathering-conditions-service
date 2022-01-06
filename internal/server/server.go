@@ -32,6 +32,7 @@ type Config struct {
 	CertFolder string // added for testing purposes
 }
 
+// Server data structure represents instances of HTTP/HTTPS server.
 type Server struct {
 	Config     Config
 	Router     *mux.Router
