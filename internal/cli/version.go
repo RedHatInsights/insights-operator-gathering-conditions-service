@@ -36,6 +36,8 @@ func printInfo(msg, val string) {
 	fmt.Printf("%s\t%s\n", msg, val)
 }
 
+// PrintVersionInfo function displays info about service version on standard
+// output.
 func PrintVersionInfo() {
 	printInfo("Version:", BuildVersion)
 	printInfo("Build time:", BuildTime)
