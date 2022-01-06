@@ -45,6 +45,7 @@ func NewStorage(cfg StorageConfig) *Storage {
 	}
 }
 
+// Find method tries to find resource with given name in the storage.
 func (s *Storage) Find(path string) []byte {
 	// use the in-memory data
 	data, ok := s.cache[path]
