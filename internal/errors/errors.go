@@ -64,6 +64,8 @@ func WrapErrorf(orig error, code ErrorCode, format string, a ...interface{}) err
 	}
 }
 
+// NewErrorf function constructs Error data structure with numeric error code,
+// and message.
 func NewErrorf(code ErrorCode, format string, a ...interface{}) error {
 	return WrapErrorf(nil, code, format, a...)
 }
