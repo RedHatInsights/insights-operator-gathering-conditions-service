@@ -32,6 +32,7 @@ type StorageConfig struct {
 	RulesPath string `mapstructure:"rules_path" toml:"rules_path"`
 }
 
+// Storage type represents container for resources.
 type Storage struct {
 	path  string
 	cache map[string][]byte
