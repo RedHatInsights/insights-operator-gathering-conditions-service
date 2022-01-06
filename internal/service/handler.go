@@ -18,6 +18,7 @@ package service
 
 import "github.com/gorilla/mux"
 
+// Handler structure represents HTTP request handler
 type Handler struct {
 	svc Interface
 }
