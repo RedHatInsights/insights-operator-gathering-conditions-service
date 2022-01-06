@@ -49,6 +49,7 @@ func (e *Error) Unwrap() error {
 	return e.orig
 }
 
+// Code method returns numeric error code
 func (e *Error) Code() ErrorCode {
 	return e.code
 }
