@@ -16,6 +16,7 @@ limitations under the License.
 
 package service
 
+// Interface defines methods to be implemented by any rules provider
 type Interface interface {
 	Rules() (*Rules, error)
 }
