@@ -47,6 +47,7 @@ func NewRepository(s StorageInterface) *Repository {
 	return &Repository{store: s}
 }
 
+// Rules method reads all and unmarshals all rules stored under given path
 func (r *Repository) Rules() (*Rules, error) {
 	filepath := "rules.json" // TODO: Make this configurable
 	data := r.store.Find(filepath)
