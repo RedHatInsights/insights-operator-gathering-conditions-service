@@ -8,18 +8,32 @@ Gathering Conditions Services to [Insights Operator](https://github.com/openshif
 
 <!-- vim-markdown-toc GFM -->
 
-* [Build](#build)
+* [Description](#description)
+    * [REST API](#rest-api)
+* [Usage](#usage)
+    * [Build](#build)
     * [Configure](#configure)
     * [Conditions](#conditions)
     * [Run](#run)
     * [Makefile](#makefile)
 * [Container](#container)
 * [License](#license)
-    * [Package manifest](#package-manifest)
+* [Package manifest](#package-manifest)
 
 <!-- vim-markdown-toc -->
 
-# Build
+# Description
+
+Simple service that provides conditional gathering-related rules. Such rules
+are read from JSON structures and made available via REST API.
+
+## REST API
+
+REST API is described by [OpenAPI specification](openapi.json).
+
+# Usage
+
+## Build
 
 To build the service, install Go 1.14 or above and run:
 
@@ -114,6 +128,6 @@ curl -s http://localhost:8081/gathering_rules | jq
 
 This project is licensed by the Apache License 2.0. For more information check the LICENSE file.
 
-## Package manifest
+# Package manifest
 
 Package manifest is available at [docs/manifest.txt](docs/manifest.txt).
