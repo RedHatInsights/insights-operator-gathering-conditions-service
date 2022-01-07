@@ -4,7 +4,7 @@ github.com/BurntSushi/toml
 github.com/BurntSushi/toml/internal
 # github.com/RedHatInsights/cloudwatch v0.0.0-20210111105023-1df2bdfe3291
 github.com/RedHatInsights/cloudwatch
-# github.com/RedHatInsights/insights-operator-utils v1.12.0
+# github.com/RedHatInsights/insights-operator-utils v1.21.6
 ## explicit
 github.com/RedHatInsights/insights-operator-utils/logger
 # github.com/RedHatInsights/kafka-zerolog v0.0.0-20210304172207-928f026dc7ec
