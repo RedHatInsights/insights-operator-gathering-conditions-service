@@ -32,6 +32,7 @@ type Rule struct {
 	GatheringFunctions interface{}   `json:"gathering_functions,omitempty"`
 }
 
+// Rules data type definition based on original JSON schema
 type Rules struct {
 	Items []Rule `json:"rules,omitempty"`
 }
