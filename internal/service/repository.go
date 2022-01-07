@@ -37,6 +37,7 @@ type Rules struct {
 	Items []Rule `json:"rules,omitempty"`
 }
 
+// Repository object that implemented the RepositoryInterface
 type Repository struct {
 	store StorageInterface
 }
