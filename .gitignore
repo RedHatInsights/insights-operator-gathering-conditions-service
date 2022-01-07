@@ -180,5 +180,5 @@ bin/*
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,visualstudiocode,intellij
 cover.out
-insights-operator-conditional-gathering
+insights-operator-gathering-conditions-service
 coverage.out

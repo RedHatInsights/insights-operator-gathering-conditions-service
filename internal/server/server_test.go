@@ -22,7 +22,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/server"
+	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/server"
 	"github.com/stretchr/testify/assert"
 )
 

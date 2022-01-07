@@ -21,9 +21,9 @@ import (
 	"testing"
 
 	"github.com/RedHatInsights/insights-operator-utils/logger"
-	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/config"
-	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/server"
-	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/service"
+	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/config"
+	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/server"
+	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/service"
 	"github.com/stretchr/testify/assert"
 )
 

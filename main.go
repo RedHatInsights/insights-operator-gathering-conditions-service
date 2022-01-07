@@ -26,10 +26,10 @@ import (
 
 	"github.com/RedHatInsights/insights-operator-utils/logger"
 	"github.com/gorilla/mux"
-	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/cli"
-	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/config"
-	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/server"
-	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/service"
+	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/cli"
+	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/config"
+	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/server"
+	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/service"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/sync/errgroup"
 )

@@ -1,4 +1,4 @@
-module github.com/redhatinsights/insights-operator-conditional-gathering
+module github.com/RedHatInsights/insights-operator-gathering-conditions-service
 
 go 1.16
 
