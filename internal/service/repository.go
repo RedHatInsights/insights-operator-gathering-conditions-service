@@ -26,6 +26,7 @@ type RepositoryInterface interface {
 	Rules() (*Rules, error)
 }
 
+// Rule data type definition based on original JSON schema
 type Rule struct {
 	Conditions         []interface{} `json:"conditions,omitempty"`
 	GatheringFunctions interface{}   `json:"gathering_functions,omitempty"`
