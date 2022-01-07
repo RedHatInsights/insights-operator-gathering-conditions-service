@@ -66,7 +66,7 @@ func renderResponse(w http.ResponseWriter, resp interface{}, code int) {
 	w.WriteHeader(code)
 
 	if _, err = w.Write(content); err != nil {
-		log.Error().Msgf("Enable to write response data %v", err)
+		log.Error().Msgf("Unable to write response data %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
