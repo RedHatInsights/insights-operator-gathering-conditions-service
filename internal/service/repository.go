@@ -21,6 +21,7 @@ import (
 	"fmt"
 )
 
+// RepositoryInterface defines methods to be implemented by any rules providers
 type RepositoryInterface interface {
 	Rules() (*Rules, error)
 }
