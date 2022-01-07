@@ -37,11 +37,12 @@ type Rules struct {
 	Items []Rule `json:"rules,omitempty"`
 }
 
-// Repository object that implemented the RepositoryInterface
+// Repository is definition of objects that implement the RepositoryInterface
 type Repository struct {
 	store StorageInterface
 }
 
+// NewRepository constructs new instance of Repository
 func NewRepository(s StorageInterface) *Repository {
 	return &Repository{store: s}
 }
