@@ -1,5 +1,6 @@
 #!/bin/bash
-# Copyright 2020 Red Hat, Inc
+
+# Copyright 2020, 2021, 2022 Red Hat, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+BLUE=$(tput setaf 4)
+RED_BG=$(tput setab 1)
+GREEN_BG=$(tput setab 2)
+NC=$(tput sgr0) # No Color
+
+echo -e "${BLUE}Running linter for Go source code${NC}"
 
 cd "$(dirname "$0")" || exit
 
@@ -23,8 +30,13 @@ then
 fi
 
 # shellcheck disable=SC2046
-if golint $(go list ./...) |
+if golint $(go list $(go list ./... | grep -v /vendor/)) |
     grep -v ALL_CAPS |
-    grep .; then
-  exit 1
+    grep .
+then
+    echo -e "${RED_BG}[FAIL]${NC} Linter have found some issues in Go source code"
+    exit 1
+else
+    echo -e "${GREEN_BG}[OK]${NC} No issues has been found"
+    exit 0
 fi
