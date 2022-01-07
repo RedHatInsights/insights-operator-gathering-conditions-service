@@ -21,27 +21,33 @@ import (
 	"fmt"
 )
 
+// RepositoryInterface defines methods to be implemented by any rules providers
 type RepositoryInterface interface {
 	Rules() (*Rules, error)
 }
 
+// Rule data type definition based on original JSON schema
 type Rule struct {
 	Conditions         []interface{} `json:"conditions,omitempty"`
 	GatheringFunctions interface{}   `json:"gathering_functions,omitempty"`
 }
 
+// Rules data type definition based on original JSON schema
 type Rules struct {
 	Items []Rule `json:"rules,omitempty"`
 }
 
+// Repository is definition of objects that implement the RepositoryInterface
 type Repository struct {
 	store StorageInterface
 }
 
+// NewRepository constructs new instance of Repository
 func NewRepository(s StorageInterface) *Repository {
 	return &Repository{store: s}
 }
 
+// Rules method reads all and unmarshals all rules stored under given path
 func (r *Repository) Rules() (*Rules, error) {
 	filepath := "rules.json" // TODO: Make this configurable
 	data := r.store.Find(filepath)

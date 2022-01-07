@@ -33,7 +33,13 @@ type ErrorCode uint
 const (
 	// ErrorCodeUnknown represents numeric error code for unknown error
 	ErrorCodeUnknown ErrorCode = iota
+
+	// ErrorCodeNotFound represents numeric error code for error that
+	// occurs when the rule data are not found
 	ErrorCodeNotFound
+
+	// ErrorCodeInvalidArgument represents numeric error code for error
+	// that occurs when invalid argument is provided in request
 	ErrorCodeInvalidArgument
 )
 
