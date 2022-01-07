@@ -58,6 +58,7 @@ func renderResponse(w http.ResponseWriter, resp interface{}, code int) {
 
 	content, err := json.Marshal(resp)
 	if err != nil {
+		log.Error().Msgf("Unable to marshal response data to JSON %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -65,6 +66,7 @@ func renderResponse(w http.ResponseWriter, resp interface{}, code int) {
 	w.WriteHeader(code)
 
 	if _, err = w.Write(content); err != nil {
+		log.Error().Msgf("Unable to write response data %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
