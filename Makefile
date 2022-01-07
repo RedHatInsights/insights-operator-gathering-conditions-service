@@ -69,6 +69,9 @@ test: ${BINARY} ## Run the unit tests
 cover: test
 	@go tool cover -html=coverage.out
 
+coverage:
+	@go tool cover -func=coverage.out
+
 integration_tests: ${BINARY} ## Run all integration tests
 	@echo "Running all integration tests"
 	@./test.sh

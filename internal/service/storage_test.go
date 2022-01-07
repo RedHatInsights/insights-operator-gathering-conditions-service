@@ -36,6 +36,11 @@ func TestStorage(t *testing.T) {
 			rulesFile:     validRulesFile,
 			expectedRules: validRules,
 		},
+		{
+			name:          "reading from 'directory' instead of file",
+			rulesFile:     "",
+			expectedRules: service.Rules{},
+		},
 	}
 
 	for _, tc := range testCases {
