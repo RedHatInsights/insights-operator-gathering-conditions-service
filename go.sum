@@ -62,14 +62,19 @@ github.com/RedHatInsights/insights-operator-utils v1.4.1-0.20200729093922-bca685
 github.com/RedHatInsights/insights-operator-utils v1.6.2/go.mod h1:RW9Jq4LgqIkV3WY6AS2EkopYyZDIr5BNGiU5I75HryM=
 github.com/RedHatInsights/insights-operator-utils v1.6.7/go.mod h1:ott1/rkxcyQtK6XdYj1Ur3XGSYRAHTplJiV5RKkij2o=
 github.com/RedHatInsights/insights-operator-utils v1.8.3/go.mod h1:L6alrkNSM+uBzlQdIihhGnwTpdw+bD8i8Fdh/OE9rdo=
-github.com/RedHatInsights/insights-operator-utils v1.12.0 h1:cQVdkkRRlQ23QVGFgXLNpvv/FcnH3ZB2tKszNQ6iL0c=
 github.com/RedHatInsights/insights-operator-utils v1.12.0/go.mod h1:mN5jURLpSG+j7y3VPAUTPyHsTWSxrqSHSerSacDBgFU=
+github.com/RedHatInsights/insights-operator-utils v1.21.0/go.mod h1:B2hizFGwXCc8MT34QqVJ1A8ANTyGQZQWXQw/gSCEsaU=
+github.com/RedHatInsights/insights-operator-utils v1.21.2/go.mod h1:3Pfsgsi7GCu2wgIqQlt1llpyQyyxsDWEGdgnPvadM40=
+github.com/RedHatInsights/insights-operator-utils v1.21.6 h1:VSR5DPf4U0QCJWUWJvirRMKNmdhKT5oaw+43ULz87bY=
+github.com/RedHatInsights/insights-operator-utils v1.21.6/go.mod h1:qa1a8NdarIzcZkr5mu9fBw4OarOfg1qZFZC1vNGbyas=
 github.com/RedHatInsights/insights-results-aggregator v0.0.0-20200604090056-3534f6dd9c1c/go.mod h1:7Pc15NYXErx7BMJ4rF1Hacm+29G6atzjhwBpXNFMt+0=
 github.com/RedHatInsights/insights-results-aggregator-data v0.0.0-20200825113234-e84e924194bc/go.mod h1:DcDgoCCmBuUSKQOGrTi0BfFLdSjAp/KxIwyqKUd46sM=
 github.com/RedHatInsights/insights-results-aggregator-data v0.0.0-20201014142608-de97c4b07d5c/go.mod h1:x8IvreR2g24veCKVMXDPOR6a0D86QK9UCBfi5Xm5Gnc=
 github.com/RedHatInsights/insights-results-aggregator-data v0.0.0-20201109115720-126bd0348556/go.mod h1:+j10GLCbx42McRJE7uU+aVayf5Elwx4nKULFiPkki6U=
-github.com/RedHatInsights/insights-results-aggregator-data v1.0.1-0.20210614072933-b25730b1e023 h1:Ot6Rk8utrv02RMVTrGU/+QLSp+m5341pvq8auwlbDls=
 github.com/RedHatInsights/insights-results-aggregator-data v1.0.1-0.20210614072933-b25730b1e023/go.mod h1:SDeBuNY8AIwkD4JB5/I54ArWG7qngP5/Ydn7xbu2iZo=
+github.com/RedHatInsights/insights-results-aggregator-data v1.1.2/go.mod h1:rbiccYJ8whbpLLvNGMiaFzyMPs1A/2/Jh0P2U9DXF+4=
+github.com/RedHatInsights/insights-results-aggregator-data v1.3.1/go.mod h1:Ylo2cWFmraBzkwKLew54kZSsUTgeVvFJdIi/oRkdxtc=
+github.com/RedHatInsights/insights-results-aggregator-data v1.3.2/go.mod h1:E1UaB+IjJ/muxvMstVoqJrB82zVKNykjTtCiM3tMHoM=
 github.com/RedHatInsights/kafka-zerolog v0.0.0-20210304172207-928f026dc7ec h1:/msFfckx6EIj0rZncrMUfNixFvsLbOiRIe4J0AurhDo=
 github.com/RedHatInsights/kafka-zerolog v0.0.0-20210304172207-928f026dc7ec/go.mod h1:HJul5oCsCRNiRlh/ayJDGdW3PzGlid/5aaQwJBn7was=
 github.com/Shopify/goreferrer v0.0.0-20181106222321-ec9c9a553398/go.mod h1:a1uqRtAwp2Xwc6WNPJEufxJ7fx3npB4UV/JOLmbu5I0=
@@ -117,7 +122,6 @@ github.com/bitly/go-simplejson v0.5.0 h1:6IH+V8/tVMab511d5bn4M7EwGXZf9Hj6i2xSwkN
 github.com/bitly/go-simplejson v0.5.0/go.mod h1:cXHtHw4XUPsvGaxgjIAn8PhEWG9NfngEKAMDJEczWVA=
 github.com/bketelsen/crypt v0.0.3-0.20200106085610-5cbc8cc4026c/go.mod h1:MKsuJmJgSg28kpZDP6UIiPt0e0Oz0kqKNGyRaWEPv84=
 github.com/bketelsen/crypt v0.0.4/go.mod h1:aI6NrJ0pMGgvZKL1iVgXLnfIFJtfV+bKCoqOes/6LfM=
-github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 h1:DDGfHa7BWjL4YnC6+E63dPcxHo2sUxDIu8g3QgEJdRY=
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869/go.mod h1:Ekp36dRnpXw/yCqJaO+ZrUyxD+3VXMFFr56k5XYrpB4=
 github.com/boltdb/bolt v1.3.1/go.mod h1:clJnj/oiGkjum5o1McbSZDSLxVThjynRyGBgiAx27Ps=
 github.com/bsm/sarama-cluster v2.1.10+incompatible/go.mod h1:r7ao+4tTNXvWm+VRpRJchr2kQhqxgmAp2iEX5W96gMM=
@@ -509,7 +513,6 @@ github.com/nats-io/nkeys v0.0.2/go.mod h1:dab7URMsZm6Z/jp9Z5UGa87Uutgc2mVpXLC4B7
 github.com/nats-io/nkeys v0.1.0/go.mod h1:xpnFELMwJABBLVhffcfd1MZx6VsNRFpEugbxziKVo7w=
 github.com/nats-io/nkeys v0.1.3/go.mod h1:xpnFELMwJABBLVhffcfd1MZx6VsNRFpEugbxziKVo7w=
 github.com/nats-io/nuid v1.0.1/go.mod h1:19wcPz3Ph3q0Jbyiqsd0kePYG7A95tJPxeL+1OSON2c=
-github.com/nbio/st v0.0.0-20140626010706-e9e8d9816f32 h1:W6apQkHrMkS0Muv8G/TipAy/FJl/rCYT0+EuS8+Z0z4=
 github.com/nbio/st v0.0.0-20140626010706-e9e8d9816f32/go.mod h1:9wM+0iRr9ahx58uYLpLIr5fm8diHn0JbqRycJi6w0Ms=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e h1:fD57ERR4JtEqsWbfPhv4DMiApHyliiK5xCTNVSPiaAs=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
