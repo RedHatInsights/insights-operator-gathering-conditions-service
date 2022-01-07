@@ -1,5 +1,5 @@
 /*
-Copyright © 2021, 2022 Red Hat, Inc.
+Copyright © 2022 Red Hat, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,11 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package cli
+package service
 
-// Flags represents structure holding all command line arguments and flags.
-type Flags struct {
-	ShowConfiguration bool
-	ShowAuthors       bool
-	ShowVersion       bool
-}
+// Export for testing
+//
+// This source file contains name aliases of all package-private functions
+// that need to be called from unit tests. Aliases should start with uppercase
+// letter because unit tests belong to different package.
+//
+// Please look into the following blogpost:
+// https://medium.com/@robiplus/golang-trick-export-for-test-aa16cbd7b8cd
+// to see why this trick is needed.
+var RenderResponse = renderResponse

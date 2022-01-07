@@ -1,0 +1,5 @@
+# Global allowlist
+[allowlist]
+    description = "Files containing keys used only for testing"
+    files = ["internal/server/testdata/server.crt", "internal/server/testdata/server.key"]
+    paths = ["internal/server/testdata/server.crt", "internal/server/testdata/server.key"]

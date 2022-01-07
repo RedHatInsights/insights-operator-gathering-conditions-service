@@ -27,6 +27,8 @@ const (
 	authorsMessage = "Ricardo Lüders, Serhii Zakharov, and CCX Processing team members, Red Hat Inc."
 )
 
+// PrintConfiguration function displays actual configuration on standard
+// output.
 func PrintConfiguration(conf config.Configuration) {
 	// err should be nil as config contains valid fields
 	configBytes, err := json.MarshalIndent(conf, "", "    ")
@@ -39,6 +41,7 @@ func PrintConfiguration(conf config.Configuration) {
 	fmt.Println(string(configBytes))
 }
 
+// PrintAuthors function displays list of authors on standard output.
 func PrintAuthors() {
 	fmt.Println(authorsMessage)
 }

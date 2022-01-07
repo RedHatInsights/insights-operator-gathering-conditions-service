@@ -20,16 +20,19 @@ type Interface interface {
 	Rules() (*Rules, error)
 }
 
+// Service data type represents the whole service for repository interface.
 type Service struct {
 	repo RepositoryInterface
 }
 
+// New function constructs new service for given repository interface.
 func New(repo RepositoryInterface) *Service {
 	return &Service{
 		repo,
 	}
 }
 
+// Rules method returns all rules provided by the service.
 func (s *Service) Rules() (*Rules, error) {
 	rules, err := s.repo.Rules()
 	if err != nil {

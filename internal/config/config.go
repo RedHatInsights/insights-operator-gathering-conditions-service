@@ -40,6 +40,7 @@ const (
 	envPrefix = "INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_"
 )
 
+// Configuration is a structure holding the whole service configuration
 type Configuration struct {
 	ServerConfig        server.Config                     `mapstructure:"server" toml:"server"`
 	StorageConfig       service.StorageConfig             `mapstructure:"storage" toml:"storage"`
@@ -49,6 +50,7 @@ type Configuration struct {
 	KafkaZerologConfig  logger.KafkaZerologConfiguration  `mapstructure:"kafka_zerolog" toml:"kafka_zerolog"`
 }
 
+// Config has exactly the same structure as *.toml file
 var Config Configuration
 
 // LoadConfiguration loads configuration from defaultConfigFile, file set in
@@ -106,26 +108,32 @@ func LoadConfiguration(defaultConfigFile string) error {
 	return nil
 }
 
+// ServerConfig function returns actual server configuration.
 func ServerConfig() server.Config {
 	return Config.ServerConfig
 }
 
+// StorageConfig function returns actual storage configuration.
 func StorageConfig() service.StorageConfig {
 	return Config.StorageConfig
 }
 
+// LoggingConfig function returns actual logger configuration.
 func LoggingConfig() logger.LoggingConfiguration {
 	return Config.LoggingConfig
 }
 
+// CloudWatchConfig function returns actual CloudWatch configuration.
 func CloudWatchConfig() logger.CloudWatchConfiguration {
 	return Config.CloudWatchConfig
 }
 
+// SentryLoggingConfig function returns the sentry log configuration.
 func SentryLoggingConfig() logger.SentryLoggingConfiguration {
 	return Config.SentryLoggingConfig
 }
 
+// KafkaZerologConfig function returns the configuration of ZeroLog for Kafka.
 func KafkaZerologConfig() logger.KafkaZerologConfiguration {
 	return Config.KafkaZerologConfig
 }

@@ -18,16 +18,19 @@ package service
 
 import "github.com/gorilla/mux"
 
+// Handler structure represents HTTP request handler.
 type Handler struct {
 	svc Interface
 }
 
+// NewHandler function constructs new HTTP request handler.
 func NewHandler(svc Interface) *Handler {
 	return &Handler{
 		svc: svc,
 	}
 }
 
+// Register function registers new handler for given endpoint URL.
 func (s *Handler) Register(r *mux.Router) {
 	r.Handle("/gathering_rules", gatheringRulesEndpoint(s.svc))
 }

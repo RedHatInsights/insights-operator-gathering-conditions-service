@@ -50,7 +50,7 @@ func main() {
 	doSelectedOperation(cliFlags)
 }
 
-func parseFlags() (cliFlags cli.CliFlags) {
+func parseFlags() (cliFlags cli.Flags) {
 	flag.BoolVar(&cliFlags.ShowConfiguration, "show-configuration", false, "show configuration")
 	flag.BoolVar(&cliFlags.ShowAuthors, "show-authors", false, "show authors")
 	flag.BoolVar(&cliFlags.ShowVersion, "show-version", false, "show version")
@@ -59,7 +59,7 @@ func parseFlags() (cliFlags cli.CliFlags) {
 	return
 }
 
-func doSelectedOperation(cliFlags cli.CliFlags) {
+func doSelectedOperation(cliFlags cli.Flags) {
 	switch {
 	case cliFlags.ShowConfiguration:
 		cli.PrintConfiguration(config.Config)

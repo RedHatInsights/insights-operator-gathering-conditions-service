@@ -18,32 +18,38 @@ package service
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/rs/zerolog/log"
 )
 
+// StorageInterface describe interface to be implemented by resource storage
+// implementations.
 type StorageInterface interface {
 	Find(res string) []byte
 }
 
+// StorageConfig structure contains configuration for resource storage.
 type StorageConfig struct {
 	RulesPath string `mapstructure:"rules_path" toml:"rules_path"`
 }
 
+// Storage type represents container for resources.
 type Storage struct {
 	path  string
 	cache map[string][]byte
 }
 
+// NewStorage constructs new storage object.
 func NewStorage(cfg StorageConfig) *Storage {
 	return &Storage{
 		path:  cfg.RulesPath,
-		cache: make(map[string][]byte),
+		cache: make(map[string][]byte), // TODO: Make it an own type
 	}
 }
 
+// Find method tries to find resource with given name in the storage.
 func (s *Storage) Find(path string) []byte {
 	// use the in-memory data
 	data, ok := s.cache[path]
@@ -73,7 +79,7 @@ func (s *Storage) readFile(path string) ([]byte, error) {
 		}
 	}()
 
-	data, err := ioutil.ReadAll(f)
+	data, err := io.ReadAll(f)
 	if err != nil {
 		return nil, err
 	}

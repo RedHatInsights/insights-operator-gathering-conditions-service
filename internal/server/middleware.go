@@ -23,6 +23,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// CORSMiddleware handles CORS HTTP headers
+// For more info see https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
 func CORSMiddleware() mux.MiddlewareFunc {
 	headersOK := handlers.AllowedHeaders([]string{
 		"Content-Type",

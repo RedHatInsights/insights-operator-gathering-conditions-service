@@ -8,15 +8,14 @@ Gathering Conditions Services to [Insights Operator](https://github.com/openshif
 
 <!-- vim-markdown-toc GFM -->
 
-- [Insights Operator Gathering Conditions Service](#insights-operator-gathering-conditions-service)
-- [Build](#build)
-  - [Configure](#configure)
-  - [Conditions](#conditions)
-  - [Run](#run)
-  - [Makefile](#makefile)
-- [Container](#container)
-- [License](#license)
-- [Package manifest](#package-manifest)
+* [Build](#build)
+    * [Configure](#configure)
+    * [Conditions](#conditions)
+    * [Run](#run)
+    * [Makefile](#makefile)
+* [Container](#container)
+* [License](#license)
+    * [Package manifest](#package-manifest)
 
 <!-- vim-markdown-toc -->
 
@@ -37,8 +36,8 @@ Configuration is done by `toml` config, taking the `config/config.toml` in the w
 First you need to clone the conditions repository and build it
 
 ```shell script
-git clone https://github.com/redhatinsights/insights-operator-gathering-conditions
-cd insights-operator-gathering-conditions
+git clone https://github.com/RedHatInsights/insights-operator-gathering-conditions-service/
+cd insights-operator-gathering-conditions-service
 ./build.sh
 ```
 
