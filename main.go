@@ -87,13 +87,14 @@ func runServer() {
 	)
 	if err != nil {
 		log.Error().Err(err).Msg("Logger could not be initialized")
-		os.Exit(1)
+		return
 	}
+	defer logger.CloseZerolog()
 
 	// Storage
 	if _, err = os.Stat(storageConfig.RulesPath); err != nil {
 		log.Error().Err(err).Msg("Storage data path not found")
-		os.Exit(1)
+		return
 	}
 	store := service.NewStorage(storageConfig)
 
