@@ -20,7 +20,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/redhatinsights/insights-operator-conditional-gathering/internal/service"
+	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/service"
 	"github.com/stretchr/testify/assert"
 )
 
