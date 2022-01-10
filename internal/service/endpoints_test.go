@@ -24,7 +24,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/service"
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
 )
 
 // mockedWriter is simple httpWriter implementation that fails on Write method.

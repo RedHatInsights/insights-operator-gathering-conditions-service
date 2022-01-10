@@ -16,7 +16,7 @@ limitations under the License.
 
 package service_test
 
-import "github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/service"
+import "github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
 
 var (
 	validRules = service.Rules{

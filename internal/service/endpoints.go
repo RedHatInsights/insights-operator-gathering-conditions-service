@@ -23,7 +23,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	merrors "github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/errors"
+	merrors "github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/errors"
 )
 
 // ErrorResponse structure represents HTTP response with error message.

@@ -19,9 +19,9 @@ package cli_test
 import (
 	"testing"
 
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/cli"
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/config"
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/server"
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/cli"
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/config"
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/server"
 	"github.com/stretchr/testify/assert"
 	"github.com/tisnik/go-capture"
 )
