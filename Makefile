@@ -112,12 +112,6 @@ install_addlicense:
 ## Go Module
 ## --------------------------------------
 
-.PHONY: vendor
-vendor: ## Runs tiny, vendor and verify the module
-	go mod tidy
-	go mod vendor
-	go mod verify
-
 ## --------------------------------------
 ## Container
 ## --------------------------------------

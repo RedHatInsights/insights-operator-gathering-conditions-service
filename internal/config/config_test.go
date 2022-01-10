@@ -105,7 +105,7 @@ func TestLoadConfiguration(t *testing.T) {
 			validConf,
 			false,
 			map[string]string{
-				"INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_CONFIG_FILE": validConfPath,
+				"INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE_CONFIG_FILE": validConfPath,
 			},
 		},
 		{
@@ -115,7 +115,7 @@ func TestLoadConfiguration(t *testing.T) {
 			customConfig,
 			false,
 			map[string]string{
-				"INSIGHTS_OPERATOR_CONDITIONAL_SERVICE__SERVER__ADDRESS": customAddress,
+				"INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SERVER__ADDRESS": customAddress,
 			},
 		},
 	}

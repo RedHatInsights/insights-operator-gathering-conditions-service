@@ -49,7 +49,7 @@ then
 fi
 
 # shellcheck disable=SC2046
-if ! gosec $GO_SEC_ARGS $(go list ./... | grep -v /vendor/)
+if ! gosec $GO_SEC_ARGS $(go list ./...)
 then
     echo -e "${RED_BG}[FAIL]${NC} Potential security issues detected!"
     exit 1

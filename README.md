@@ -10,17 +10,18 @@ Gathering Conditions Services to [Insights Operator](https://github.com/openshif
 
 <!-- vim-markdown-toc GFM -->
 
-* [Description](#description)
-    * [REST API](#rest-api)
-* [Usage](#usage)
-    * [Build](#build)
-    * [Configure](#configure)
-    * [Conditions](#conditions)
-    * [Run](#run)
-    * [Makefile](#makefile)
-* [Container](#container)
-* [License](#license)
-* [Package manifest](#package-manifest)
+- [Insights Operator Gathering Conditions Service](#insights-operator-gathering-conditions-service)
+- [Description](#description)
+  - [REST API](#rest-api)
+- [Usage](#usage)
+  - [Build](#build)
+  - [Configure](#configure)
+  - [Conditions](#conditions)
+  - [Run](#run)
+  - [Makefile](#makefile)
+- [Container](#container)
+- [License](#license)
+- [Package manifest](#package-manifest)
 
 <!-- vim-markdown-toc -->
 
@@ -101,7 +102,6 @@ test                 Run the unit tests
 integration_tests    Run all integration tests
 before_commit        Checks done before commit
 help                 Show this help screen
-vendor               Runs tiny, vendor and verify the module
 container-build      Build the container image
 container-run        Run the container image
 ```

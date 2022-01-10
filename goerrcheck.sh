@@ -28,8 +28,8 @@ then
     GO111MODULE=off go get github.com/kisielk/errcheck
 fi
 
-
-if ! errcheck $(go list ./... | grep -v /vendor/)
+# shellcheck disable=SC2046
+if ! errcheck $(go list ./...)
 then
     echo -e "${RED_BG}[FAIL]${NC} Code with unchecked errors detected"
     exit 1

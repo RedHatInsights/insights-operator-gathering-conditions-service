@@ -35,7 +35,7 @@ import (
 )
 
 const (
-	defaultConfigFile = "config/config"
+	defaultConfigFile = "config"
 )
 
 // main function perform operation based on the flags defined on command line
@@ -93,7 +93,10 @@ func runServer() {
 
 	// Storage
 	if _, err = os.Stat(storageConfig.RulesPath); err != nil {
-		log.Error().Err(err).Msg("Storage data path not found")
+		log.Error().
+			Err(err).
+			Str("rulesPath", storageConfig.RulesPath).
+			Msg("Storage data path not found")
 		return
 	}
 	store := service.NewStorage(storageConfig)
@@ -122,12 +125,7 @@ func runServer() {
 		// Create the HTTP Server
 		httpServer = server.New(serverConfig, router)
 
-		err = httpServer.Start()
-		if err != nil {
-			return err
-		}
-
-		return nil
+		return httpServer.Start()
 	})
 
 	select {
