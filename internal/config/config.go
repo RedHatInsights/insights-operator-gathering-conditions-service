@@ -33,11 +33,11 @@ import (
 const (
 	// configFileEnvVariableName is name of environment variable that
 	// contains name of configuration file
-	configFileEnvVariableName = "INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_CONFIG_FILE"
+	configFileEnvVariableName = "INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE_CONFIG_FILE"
 
 	// envPrefix is prefix for all environment variables that contains
 	// various configuration options
-	envPrefix = "INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_"
+	envPrefix = "INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE_"
 )
 
 // Configuration is a structure holding the whole service configuration
