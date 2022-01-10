@@ -125,12 +125,7 @@ func runServer() {
 		// Create the HTTP Server
 		httpServer = server.New(serverConfig, router)
 
-		err = httpServer.Start()
-		if err != nil {
-			return err
-		}
-
-		return nil
+		return httpServer.Start()
 	})
 
 	select {
