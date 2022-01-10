@@ -21,8 +21,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
 	"github.com/gorilla/mux"
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/service"
 	"github.com/stretchr/testify/assert"
 )
 

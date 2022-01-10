@@ -19,7 +19,7 @@ package service_test
 import (
 	"testing"
 
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/service"
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
 	"github.com/stretchr/testify/assert"
 )
 

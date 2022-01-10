@@ -24,12 +24,12 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/cli"
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/config"
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/server"
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
 	"github.com/RedHatInsights/insights-operator-utils/logger"
 	"github.com/gorilla/mux"
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/cli"
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/config"
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/server"
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/service"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/sync/errgroup"
 )

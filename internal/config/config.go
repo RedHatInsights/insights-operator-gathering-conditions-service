@@ -24,9 +24,9 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/server"
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
 	"github.com/RedHatInsights/insights-operator-utils/logger"
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/server"
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/service"
 	"github.com/spf13/viper"
 )
 

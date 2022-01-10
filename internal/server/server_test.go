@@ -21,8 +21,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/server"
 	"github.com/gorilla/mux"
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/server"
 	"github.com/stretchr/testify/assert"
 )
 

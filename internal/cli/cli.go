@@ -20,7 +20,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/redhatinsights/insights-operator-gathering-conditions-service/internal/config"
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/config"
 )
 
 const (
