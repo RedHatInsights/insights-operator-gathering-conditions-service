@@ -64,6 +64,9 @@ func (server *Server) Start() error {
 	}
 
 	if server.Config.UseHTTPS {
+		log.Info().
+			Str("cert.folder", server.Config.CertFolder).
+			Msg("Using TLS")
 		err = server.HTTPServer.ListenAndServeTLS(
 			server.Config.CertFolder+"server.crt",
 			server.Config.CertFolder+"server.key")
