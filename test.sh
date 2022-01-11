@@ -95,14 +95,13 @@ function test_rest_api() {
         return 1
     fi
 
-    curl http://localhost:8081/openapi.json || {
+    curl http://localhost:8081/openapi.json > /dev/null || {
         echo -e "${COLORS_RED}server is not running(for some reason)${COLORS_RESET}"
         exit 1
     }
 
-    #OUTPUT=$(./rest-api-tests 2>&1)
-    #EXIT_CODE=$?
-    EXIT_CODE=0
+    OUTPUT=$(./rest-api-tests 2>&1)
+    EXIT_CODE=$?
 
     if [ "$VERBOSE_OUTPUT" = true ]; then
         echo "$OUTPUT"
