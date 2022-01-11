@@ -183,3 +183,4 @@ cover.out
 coverage.out
 insights-operator-gathering-conditions-service
 insights-operator-conditional-gathering
+rest-api-tests
