@@ -43,6 +43,7 @@ type Storage struct {
 
 // NewStorage constructs new storage object.
 func NewStorage(cfg StorageConfig) *Storage {
+	log.Info().Str("path to rules", cfg.RulesPath).Msg("Constructing storage object")
 	return &Storage{
 		path:  cfg.RulesPath,
 		cache: make(map[string][]byte), // TODO: Make it an own type
@@ -51,6 +52,8 @@ func NewStorage(cfg StorageConfig) *Storage {
 
 // Find method tries to find resource with given name in the storage.
 func (s *Storage) Find(path string) []byte {
+	log.Info().Str("path to resource", path).Msg("Finding resource")
+
 	// use the in-memory data
 	data, ok := s.cache[path]
 	if ok {
@@ -63,6 +66,8 @@ func (s *Storage) Find(path string) []byte {
 		log.Warn().Msgf("Resource not found: '%s'", path)
 		return nil
 	}
+
+	log.Info().Int("bytes", len(data)).Msg("Resource file has been read")
 
 	return data
 }
