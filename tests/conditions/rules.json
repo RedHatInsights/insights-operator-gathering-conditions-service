@@ -1,1 +1,23 @@
-{}
+{"rules":
+    [
+        {
+            "conditions": [
+                {
+                    "type": "alert_is_firing",
+                    "params": {
+                        "name": "SamplesImagestreamImportFailing"
+                    }
+                }
+            ],
+            "gathering_functions": {
+                "logs_of_namespace": {
+                    "namespace": "openshift-cluster-samples-operator",
+                    "tail_lines": 100
+                },
+                "image_streams_of_namespace": {
+                    "namespace": "openshift-cluster-samples-operator"
+                }
+            }
+        }
+    ]
+}
