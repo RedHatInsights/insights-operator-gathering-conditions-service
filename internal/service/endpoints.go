@@ -46,6 +46,7 @@ func gatheringRulesEndpoint(svc Interface) http.HandlerFunc {
 			return
 		}
 
+		log.Info().Int("rules count", len(rules.Items)).Msg("Serving gathering rules")
 		renderResponse(w, &GatheringRulesResponse{
 			Version: "1.0",
 			Rules:   rules.Items,
@@ -70,6 +71,8 @@ func renderResponse(w http.ResponseWriter, resp interface{}, code int) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	log.Info().Msg("Response has been sent")
 }
 
 func renderErrorResponse(w http.ResponseWriter, msg string, err error) {

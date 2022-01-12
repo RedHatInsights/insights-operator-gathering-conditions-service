@@ -53,7 +53,7 @@ Configuration is done by `toml` config, taking the `config/config.toml` in the w
 First you need to clone the conditions repository and build it
 
 ```shell script
-git clone https://github.com/RedHatInsights/insights-operator-gathering-conditions-service/
+git clone https://github.com/RedHatInsights/insights-operator-gathering-conditions
 cd insights-operator-gathering-conditions-service
 ./build.sh
 ```
