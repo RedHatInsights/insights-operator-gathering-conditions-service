@@ -51,7 +51,8 @@
       }
     },
     "/gathering_rules": {
-      "summary": "Get list of gathering rules",
+      "summary": "Return the list of gathering rules",
+      "description": "This endpoint returns an array of the available rules stored. This array contains the conditions and gathering functions for the Insights Operator. These rules are used in https://github.com/openshift/insights-operator/blob/master/pkg/gatherers/conditional/conditional_gatherer.go.",
       "get": {
         "responses": {
           "200": {
