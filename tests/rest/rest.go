@@ -26,4 +26,7 @@ func ServerTests() {
 	// tests for OpenAPI specification that is accessible via its endpoint as well
 	// implementation of these tests is stored in openapi.go
 	checkOpenAPISpecifications()
+
+	// test if rules endpoint is reachable and that it returns expected data
+	checkRulesEndpoint()
 }
