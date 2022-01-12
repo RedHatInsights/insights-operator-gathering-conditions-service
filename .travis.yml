@@ -38,8 +38,13 @@ jobs:
         - make test
       after_success:
         - bash <(curl -s https://codecov.io/bash)
+    - stage: REST API tests
+      before_script: make build
+      script:
+        - ./test.sh
 
 stages:
   - build
   - style
   - unit tests
+  - REST API tests
