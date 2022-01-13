@@ -49,6 +49,104 @@
         },
         "parameters": []
       }
+    },
+    "/gathering_rules": {
+      "summary": "Return the list of gathering rules",
+      "description": "This endpoint returns an array of the available rules stored. This array contains the conditions and gathering functions for the Insights Operator. These rules are used in https://github.com/openshift/insights-operator/blob/master/pkg/gatherers/conditional/conditional_gatherer.go.",
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string"
+                    },
+                    "rules": {
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "conditions": {
+                              "type": "array",
+                              "items": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "params": {
+                                      "type": "object",
+                                      "properties": {
+                                        "name": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "name"
+                                      ]
+                                    },
+                                    "type": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "params",
+                                    "type"
+                                  ]
+                                }
+                              ]
+                            },
+                            "gathering_functions": {
+                              "type": "object"
+                            }
+                          },
+                          "required": [
+                            "conditions",
+                            "gathering_functions"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                },
+                "examples": {
+                  "List of rules": {
+                    "value": {
+                      "rules": [
+                        {
+                          "conditions": [
+                            {
+                              "type": "alert_is_firing",
+                              "params": {
+                                "name": "SamplesImagestreamImportFailing"
+                              }
+                            }
+                          ],
+                          "gathering_functions": {
+                            "logs_of_namespace": {
+                              "namespace": "openshift-cluster-samples-operator",
+                              "tail_lines": 100
+                            },
+                            "image_streams_of_namespace": {
+                              "namespace": "openshift-cluster-samples-operator"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "description": "Found an unexpected error while geting the rules returned."
+          }
+        }
+      }
     }
   }
 }
