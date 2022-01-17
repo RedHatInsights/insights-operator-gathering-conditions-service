@@ -16,28 +16,28 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: io-gathering-conditions
+  name: io-gathering-service
 objects:
 
 - kind: HorizontalPodAutoscaler
   apiVersion: autoscaling/v1
   metadata:
     labels:
-      app: io-gathering-conditions
-    name: io-gathering-conditions
+      app: io-gathering-service
+    name: io-gathering-service
   spec:
     minReplicas: ${{MIN_REPLICAS}}
     maxReplicas: ${{MAX_REPLICAS}}
     scaleTargetRef:
       apiVersion: apps/v1
       kind: Deployment
-      name: io-gathering-conditions-service
+      name: io-gathering-service-service
     targetCPUUtilizationPercentage: 50
 
 - apiVersion: cloud.redhat.com/v1alpha1
   kind: ClowdApp
   metadata:
-    name: io-gathering-conditions
+    name: io-gathering-service
   spec:
     envName: ${ENV_NAME}
     testing:
@@ -45,7 +45,7 @@ objects:
     dependencies:
       - ingress
     deployments:
-      - name: service
+      - name: instance
         minReplicas: ${{MIN_REPLICAS}}
         webServices:
           public:
@@ -61,11 +61,11 @@ objects:
           image: ${IMAGE}:${IMAGE_TAG}
           volumeMounts:
             - mountPath: /data
-              name: io-gathering-conditions-config
+              name: io-gathering-service-config
           volumes:
             - configMap:
-                name: io-gathering-conditions-config-map
-              name: io-gathering-conditions-config
+                name: io-gathering-service-config-map
+              name: io-gathering-service-config
           resources:
             requests:
               cpu: 500m
@@ -78,8 +78,8 @@ objects:
   apiVersion: v1
   metadata:
     labels:
-      app: io-gathering-conditions
-    name: io-gathering-conditions-config-map
+      app: io-gathering-service
+    name: io-gathering-service-config-map
   data:
     config.toml: |-
       [server]

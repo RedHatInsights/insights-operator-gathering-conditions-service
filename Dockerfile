@@ -15,21 +15,19 @@
 ###################
 # Conditions
 ###################
-FROM quay.io/redhatinsights/insights-operator-gathering-conditions:latest AS conditions
+FROM quay.io/cloudservices/io-gathering-conditions:latest AS conditions
 
 ###################
 # Builder
 ###################
-FROM registry.redhat.io/rhel8/go-toolset:1.14 AS builder
-WORKDIR $GOPATH/src/github.com/redhatinsights/insights-conditions-service
+FROM registry.redhat.io/rhel8/go-toolset:1.16 AS builder
 
 USER 0
 
 COPY . .
 
 RUN make build && \
-    chmod a+x bin/insights-conditions-service
-
+    chmod a+x ./insights-operator-gathering-conditions-service
 
 ###################
 # Service
@@ -37,13 +35,12 @@ RUN make build && \
 FROM registry.redhat.io/ubi8-minimal:latest
 
 # copy the service
-COPY --from=builder $GOPATH/src/github.com/redhatinsights/insights-conditions-service/config/config.toml /config/config.toml
-COPY --from=builder $GOPATH/src/github.com/redhatinsights/insights-conditions-service/bin/insights-conditions-service .
+COPY --from=builder /opt/app-root/src/config.toml /config.toml
+COPY --from=builder /opt/app-root/src/insights-operator-gathering-conditions-service .
 
 # copy the conditions
-COPY --from=conditions /conditions /conditions
-# COPY /rules /conditions
+COPY --from=conditions  /conditions /conditions
 
 USER 1001
 
-CMD ["/insights-conditions-service"]
+CMD ["/insights-operator-gathering-conditions-service"]
