@@ -88,12 +88,7 @@ func runServer() {
 	storageConfig := config.StorageConfig()
 
 	// Logger
-	err := logger.InitZerolog(
-		config.LoggingConfig(),
-		config.CloudWatchConfig(),
-		config.SentryLoggingConfig(),
-		config.KafkaZerologConfig(),
-	)
+	err := initLogger()
 	if err != nil {
 		log.Error().Err(err).Msg("Logger could not be initialized")
 		return
@@ -168,4 +163,14 @@ func runServer() {
 	}
 
 	log.Info().Msg("Server closed")
+}
+
+// initLogger function initializes logger instance
+func initLogger() error {
+	return logger.InitZerolog(
+		config.LoggingConfig(),
+		config.CloudWatchConfig(),
+		config.SentryLoggingConfig(),
+		config.KafkaZerologConfig(),
+	)
 }
