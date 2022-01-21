@@ -97,10 +97,7 @@ func runServer() {
 
 	// Storage
 	if _, err = os.Stat(storageConfig.RulesPath); err != nil {
-		log.Error().
-			Err(err).
-			Str("rulesPath", storageConfig.RulesPath).
-			Msg("Storage data path not found")
+		logStorageError(err, storageConfig.RulesPath)
 		return
 	}
 	store := service.NewStorage(storageConfig)
@@ -173,4 +170,11 @@ func initLogger() error {
 		config.SentryLoggingConfig(),
 		config.KafkaZerologConfig(),
 	)
+}
+
+func logStorageError(err error, path string) {
+	log.Error().
+		Err(err).
+		Str("rulesPath", path).
+		Msg("Storage data path not found")
 }
