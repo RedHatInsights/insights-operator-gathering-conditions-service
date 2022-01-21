@@ -88,12 +88,7 @@ func runServer() {
 	storageConfig := config.StorageConfig()
 
 	// Logger
-	err := logger.InitZerolog(
-		config.LoggingConfig(),
-		config.CloudWatchConfig(),
-		config.SentryLoggingConfig(),
-		config.KafkaZerologConfig(),
-	)
+	err := initLogger()
 	if err != nil {
 		log.Error().Err(err).Msg("Logger could not be initialized")
 		return
@@ -102,10 +97,7 @@ func runServer() {
 
 	// Storage
 	if _, err = os.Stat(storageConfig.RulesPath); err != nil {
-		log.Error().
-			Err(err).
-			Str("rulesPath", storageConfig.RulesPath).
-			Msg("Storage data path not found")
+		logStorageError(err, storageConfig.RulesPath)
 		return
 	}
 	store := service.NewStorage(storageConfig)
@@ -154,6 +146,13 @@ func runServer() {
 	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer shutdownCancel()
 
+	stopHTTPServer(shutdownCtx, g, httpServer)
+
+	log.Info().Msg("Server closed")
+}
+
+// stopHTTPServer function initialize the HTTP server shutdown operations
+func stopHTTPServer(shutdownCtx context.Context, g *errgroup.Group, httpServer *server.Server) {
 	if httpServer != nil {
 		err := httpServer.Stop(shutdownCtx)
 		if err != nil {
@@ -161,11 +160,26 @@ func runServer() {
 		}
 	}
 
-	err = g.Wait()
+	err := g.Wait()
 	if err != nil {
 		log.Error().Err(err).Msg("Server returning an error")
 		defer os.Exit(2)
 	}
+}
 
-	log.Info().Msg("Server closed")
+// initLogger function initializes logger instance
+func initLogger() error {
+	return logger.InitZerolog(
+		config.LoggingConfig(),
+		config.CloudWatchConfig(),
+		config.SentryLoggingConfig(),
+		config.KafkaZerologConfig(),
+	)
+}
+
+func logStorageError(err error, path string) {
+	log.Error().
+		Err(err).
+		Str("rulesPath", path).
+		Msg("Storage data path not found")
 }
