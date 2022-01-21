@@ -146,13 +146,13 @@ func runServer() {
 	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer shutdownCancel()
 
-	stopHttpServer(shutdownCtx, g, httpServer)
+	stopHTTPServer(shutdownCtx, g, httpServer)
 
 	log.Info().Msg("Server closed")
 }
 
-// stopHttpServer function initialize the HTTP server shutdown operations
-func stopHttpServer(shutdownCtx context.Context, g *errgroup.Group, httpServer *server.Server) {
+// stopHTTPServer function initialize the HTTP server shutdown operations
+func stopHTTPServer(shutdownCtx context.Context, g *errgroup.Group, httpServer *server.Server) {
 	if httpServer != nil {
 		err := httpServer.Stop(shutdownCtx)
 		if err != nil {
