@@ -2,6 +2,7 @@
 
 [![GitHub Pages](https://img.shields.io/badge/%20-GitHub%20Pages-informational)](https://redhatinsights.github.io/insights-operator-gathering-conditions-service/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/RedHatInsights/insights-operator-gathering-conditions-service)](https://goreportcard.com/report/github.com/RedHatInsights/insights-operator-gathering-conditions-service)
+[![Build Status](https://app.travis-ci.com/RedHatInsights/insights-operator-gathering-conditions-service.svg?branch=main)](https://app.travis-ci.com/RedHatInsights/insights-operator-gathering-conditions-service)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/RedHatInsights/insights-operator-gathering-conditions-service)
 [![codecov](https://codecov.io/gh/RedHatInsights/insights-operator-gathering-conditions-service/branch/main/graph/badge.svg?token=PJERQFO02H)](https://codecov.io/gh/RedHatInsights/insights-operator-gathering-conditions-service)
 [![License](https://img.shields.io/badge/license-Apache-blue)](https://github.com/RedHatInsights/insights-operator-gathering-conditions-service/blob/main/LICENSE)
