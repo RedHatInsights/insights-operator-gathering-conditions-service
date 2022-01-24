@@ -15,7 +15,7 @@
 ###################
 # Conditions
 ###################
-FROM quay.io/cloudservices/io-gathering-conditions:latest AS conditions
+FROM quay.io/cloudservices/io-gathering-conditions:qa AS conditions
 
 ###################
 # Builder
