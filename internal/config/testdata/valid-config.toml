@@ -3,6 +3,10 @@ address = "address"
 use_https = true
 enable_cors = true
 
+[auth]
+enabled = false
+type = ""
+
 [storage]
 rules_path = "rules_path"
 

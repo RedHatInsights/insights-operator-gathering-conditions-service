@@ -3,8 +3,12 @@ address = ":8081"
 use_https = false
 enable_cors = false
 
+[auth]
+enabled = false
+type = "jwt"
+
 [storage]
-rules_path = "./conditions"
+rules_path = "tests/conditions"
 
 [sentry]
 dsn = "https://daca7436565e4580a85102b9ede9a177@sentry.devshift.net/1020"
