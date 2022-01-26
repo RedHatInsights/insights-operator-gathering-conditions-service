@@ -40,6 +40,10 @@ var (
 			UseHTTPS:   true,
 			EnableCORS: true,
 		},
+		AuthConfig: server.AuthConfig{
+			Enabled: false,
+			Type:    "",
+		},
 		StorageConfig: service.StorageConfig{
 			RulesPath: "rules_path",
 		},
@@ -152,6 +156,9 @@ func TestGetConfigFunctions(t *testing.T) {
 
 	t.Run("ServerConfig", func(t *testing.T) {
 		assert.Equal(t, config.Config.ServerConfig, config.ServerConfig())
+	})
+	t.Run("AuthConfig", func(t *testing.T) {
+		assert.Equal(t, config.Config.AuthConfig, config.AuthConfig())
 	})
 	t.Run("StorageConfig", func(t *testing.T) {
 		assert.Equal(t, config.Config.StorageConfig, config.StorageConfig())
