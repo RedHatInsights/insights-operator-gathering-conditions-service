@@ -8,7 +8,7 @@ enabled = false
 type = "jwt"
 
 [storage]
-rules_path = "tests/conditions"
+rules_path = "./conditions"
 
 [sentry]
 dsn = "https://daca7436565e4580a85102b9ede9a177@sentry.devshift.net/1020"
