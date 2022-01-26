@@ -37,6 +37,7 @@ FROM registry.redhat.io/ubi8-minimal:latest
 # copy the service
 COPY --from=builder /opt/app-root/src/config.toml /config.toml
 COPY --from=builder /opt/app-root/src/insights-operator-gathering-conditions-service .
+COPY --from=builder /opt/app-root/src/openapi.json .
 
 # copy the conditions
 COPY --from=conditions  /conditions /conditions
