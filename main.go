@@ -85,6 +85,7 @@ func runServer() {
 	var httpServer *server.Server
 
 	serverConfig := config.ServerConfig()
+	authConfig := config.AuthConfig()
 	storageConfig := config.StorageConfig()
 
 	// Logger
@@ -127,7 +128,7 @@ func runServer() {
 		service.NewHandler(svc).Register(router)
 
 		// Create the HTTP Server
-		httpServer = server.New(serverConfig, router)
+		httpServer = server.New(serverConfig, authConfig, router)
 
 		return httpServer.Start()
 	})

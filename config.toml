@@ -3,6 +3,10 @@ address = ":8081"
 use_https = false
 enable_cors = false
 
+[auth]
+enabled = false
+type = "jwt"
+
 [storage]
 rules_path = "./conditions"
 

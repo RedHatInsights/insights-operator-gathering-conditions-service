@@ -32,18 +32,26 @@ type Config struct {
 	CertFolder string // added for testing purposes
 }
 
+// AuthConfig structure represents auth. settings for the server
+type AuthConfig struct {
+	Enabled bool   `mapstructure:"enabled" toml:"enabled"`
+	Type    string `mapstructure:"type" toml:"type"`
+}
+
 // Server data structure represents instances of HTTP/HTTPS server.
 type Server struct {
 	Config     Config
+	AuthConfig AuthConfig
 	Router     *mux.Router
 	HTTPServer *http.Server
 }
 
 // New function constructs new server instance.
-func New(cfg Config, router *mux.Router) *Server {
+func New(cfg Config, authCfg AuthConfig, router *mux.Router) *Server {
 	return &Server{
-		Config: cfg,
-		Router: router,
+		Config:     cfg,
+		AuthConfig: authCfg,
+		Router:     router,
 	}
 }
 

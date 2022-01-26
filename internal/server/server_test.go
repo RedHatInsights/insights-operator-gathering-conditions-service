@@ -29,6 +29,7 @@ import (
 type testCase struct {
 	name          string
 	config        server.Config
+	authConfig    server.AuthConfig
 	expectAnError bool
 }
 
@@ -39,12 +40,20 @@ func TestServer(t *testing.T) {
 			config: server.Config{
 				Address: "localhost:1234",
 			},
+			authConfig: server.AuthConfig{
+				Enabled: false,
+				Type:    "",
+			},
 		},
 		{
 			name: "with CORS",
 			config: server.Config{
 				Address:    "localhost:1234",
 				EnableCORS: true,
+			},
+			authConfig: server.AuthConfig{
+				Enabled: false,
+				Type:    "",
 			},
 		},
 		{
@@ -54,6 +63,10 @@ func TestServer(t *testing.T) {
 				UseHTTPS:   true,
 				CertFolder: "testdata/",
 			},
+			authConfig: server.AuthConfig{
+				Enabled: false,
+				Type:    "",
+			},
 		},
 		{
 			name: "with TLS but returning an error",
@@ -62,6 +75,10 @@ func TestServer(t *testing.T) {
 				UseHTTPS:   true,
 				CertFolder: "not-a-folder/",
 			},
+			authConfig: server.AuthConfig{
+				Enabled: false,
+				Type:    "",
+			},
 			expectAnError: true,
 		},
 	}
@@ -69,7 +86,7 @@ func TestServer(t *testing.T) {
 	for _, tc := range testCases {
 
 		t.Run(tc.name, func(t *testing.T) {
-			testServer := server.New(tc.config, mux.NewRouter())
+			testServer := server.New(tc.config, tc.authConfig, mux.NewRouter())
 			go func() {
 				err := testServer.Start()
 				if tc.expectAnError {
