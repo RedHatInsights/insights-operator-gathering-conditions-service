@@ -75,3 +75,84 @@ func WrapErrorf(orig error, code ErrorCode, format string, a ...interface{}) err
 func NewErrorf(code ErrorCode, format string, a ...interface{}) error {
 	return WrapErrorf(nil, code, format, a...)
 }
+
+// ResponseDataError is used as the error message when the responses functions return an error
+const ResponseDataError = "Unexpected error during response data encoding"
+
+// RouterMissingParamError missing parameter in request
+type RouterMissingParamError struct {
+	ParamName string
+}
+
+// Error method transforms error structure to a string representation
+func (e *RouterMissingParamError) Error() string {
+	return fmt.Sprintf("Missing required param from request: %v", e.ParamName)
+}
+
+// RouterParsingError parsing error, for example string when we expected integer
+type RouterParsingError struct {
+	ParamName  string
+	ParamValue interface{}
+	ErrString  string
+}
+
+// Error method transforms error structure to a string representation
+func (e *RouterParsingError) Error() string {
+	return fmt.Sprintf(
+		"Error during parsing param '%v' with value '%v'. Error: '%v'",
+		e.ParamName, e.ParamValue, e.ErrString,
+	)
+}
+
+// AuthenticationError happens during auth problems, for example malformed token
+type AuthenticationError struct {
+	ErrString string
+}
+
+// Error method transforms error structure to a string representation
+func (e *AuthenticationError) Error() string {
+	return e.ErrString
+}
+
+// UnauthorizedError means server can't authorize you, for example the token is missing or malformed
+type UnauthorizedError struct {
+	ErrString string
+}
+
+// Error method transforms error structure to a string representation
+func (e *UnauthorizedError) Error() string {
+	return e.ErrString
+}
+
+// ForbiddenError means user does not have permission to do a particular
+// action, for example the account belongs to a different organization
+type ForbiddenError struct {
+	ErrString string
+}
+
+// Error method transforms error structure to a string representation
+func (e *ForbiddenError) Error() string {
+	return e.ErrString
+}
+
+// NoBodyError error meaning that client didn't provide body when it's required
+type NoBodyError struct{}
+
+func (*NoBodyError) Error() string {
+	return "client didn't provide request body"
+}
+
+// ValidationError validation error, for example when string is longer then expected
+type ValidationError struct {
+	ParamName  string
+	ParamValue interface{}
+	ErrString  string
+}
+
+// Error method transforms error structure to a string representation
+func (e *ValidationError) Error() string {
+	return fmt.Sprintf(
+		"Error during validating param '%v' with value '%v'. Error: '%v'",
+		e.ParamName, e.ParamValue, e.ErrString,
+	)
+}
