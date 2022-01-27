@@ -6,6 +6,7 @@ require (
 	github.com/BurntSushi/toml v0.4.1
 	github.com/RedHatInsights/insights-operator-utils v1.21.6
 	github.com/aws/aws-sdk-go v1.38.68 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/klauspost/compress v1.11.12 // indirect
