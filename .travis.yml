@@ -37,6 +37,7 @@ jobs:
       script:
         - make test
       after_success:
+        - make coverage
         - bash <(curl -s https://codecov.io/bash)
     - stage: REST API tests
       before_script: make build
