@@ -113,6 +113,7 @@ objects:
 parameters:
 - description: Image name
   name: IMAGE
+  value: quay.io/cloudservices/io-gathering-conditions-service
 - description: Image tag
   name: IMAGE_TAG
   required: true
