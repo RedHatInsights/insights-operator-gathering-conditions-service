@@ -18,10 +18,17 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
+
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/errors"
+)
+
+const (
+	openAPIURL = "/openapi.json"
 )
 
 // Config data structure represents HTTP/HTTPS server configuration.
@@ -66,6 +73,23 @@ func (server *Server) Start() error {
 		server.Router.Use(CORSMiddleware())
 	}
 
+	if server.AuthConfig.Enabled {
+		log.Info().Str("type", server.AuthConfig.Type).Msg("Enabling auth")
+		// we have to enable authentication for all endpoints, including endpoints
+		// for Prometheus metrics and OpenAPI specification, because there is not
+		// single prefix of other REST API calls. The special endpoints needs to
+		// be handled in middleware which is not optimal
+		noAuthURLs := []string{
+			openAPIURL,
+			openAPIURL + "?", // to be able to test using Frisby
+		}
+		server.Router.Use(func(next http.Handler) http.Handler {
+			return server.Authentication(next, noAuthURLs)
+		})
+	} else {
+		log.Info().Msg("Auth disabled")
+	}
+
 	server.HTTPServer = &http.Server{
 		Addr:    addr,
 		Handler: server.Router,
@@ -93,4 +117,28 @@ func (server *Server) Start() error {
 // Stop method stops server's execution.
 func (server *Server) Stop(ctx context.Context) error {
 	return server.HTTPServer.Shutdown(ctx)
+}
+
+// HandleServerError handles separate server errors and sends appropriate responses
+func HandleServerError(writer http.ResponseWriter, err error) {
+	log.Error().Err(err).Msg("handleServerError()")
+
+	var respErr error
+
+	switch err := err.(type) {
+	case *errors.RouterMissingParamError, *errors.RouterParsingError, *json.SyntaxError, *errors.NoBodyError, *errors.ValidationError:
+		respErr = SendBadRequest(writer, err.Error())
+	case *json.UnmarshalTypeError:
+		respErr = SendBadRequest(writer, "bad type in json data")
+	case *errors.UnauthorizedError:
+		respErr = SendUnauthorized(writer, err.Error())
+	case *errors.ForbiddenError:
+		respErr = SendForbidden(writer, err.Error())
+	default:
+		respErr = SendInternalServerError(writer, "Internal Server Error")
+	}
+
+	if respErr != nil {
+		log.Error().Err(respErr).Msg(errors.ResponseDataError)
+	}
 }
