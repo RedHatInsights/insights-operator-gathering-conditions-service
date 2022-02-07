@@ -52,7 +52,7 @@ func readGatheringRules(f *frisby.Frisby) Payload {
 // checkResponse checks if the payload returned by server has proper format
 func checkResponse(f *frisby.Frisby, response Payload) {
 	if response.Version != "1.0" {
-		f.AddError("Improper 'version' attribute returned")
+		f.AddError("Improper 'version' attribute returned: " + response.Version)
 	}
 
 	rules := response.Rules
