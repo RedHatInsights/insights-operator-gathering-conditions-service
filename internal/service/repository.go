@@ -34,7 +34,8 @@ type Rule struct {
 
 // Rules data type definition based on original JSON schema
 type Rules struct {
-	Items []Rule `json:"rules,omitempty"`
+	Items   []Rule `json:"rules,omitempty"`
+	Version string `json:"version,omitempty"`
 }
 
 // Repository is definition of objects that implement the RepositoryInterface

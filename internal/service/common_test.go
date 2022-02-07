@@ -20,6 +20,7 @@ import "github.com/RedHatInsights/insights-operator-gathering-conditions-service
 
 var (
 	validRules = service.Rules{
+		Version: "0.0.1",
 		Items: []service.Rule{
 			{
 				Conditions: []interface{}{
@@ -32,6 +33,7 @@ var (
 	}
 	validRulesJSON = `
 	{
+		"version": "0.0.1",
 		"rules": [
 			{
 				"conditions": ["condition 1", "condition 2"],

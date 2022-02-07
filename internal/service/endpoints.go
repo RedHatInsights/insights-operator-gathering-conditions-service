@@ -48,7 +48,7 @@ func gatheringRulesEndpoint(svc Interface) http.HandlerFunc {
 
 		log.Info().Int("rules count", len(rules.Items)).Msg("Serving gathering rules")
 		renderResponse(w, &GatheringRulesResponse{
-			Version: "1.0",
+			Version: rules.Version,
 			Rules:   rules.Items,
 		}, http.StatusOK)
 	}

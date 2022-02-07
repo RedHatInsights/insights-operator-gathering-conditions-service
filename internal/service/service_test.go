@@ -77,7 +77,7 @@ func TestService(t *testing.T) {
 			assert.Contains(
 				t,
 				rr.Body.String(),
-				`"version":"1.0","rules":[{"conditions":["condition 1","condition 2"],"gathering_functions":"the gathering functions"}]`)
+				`"version":"0.0.1","rules":[{"conditions":["condition 1","condition 2"],"gathering_functions":"the gathering functions"}]`)
 		}
 	}
 
