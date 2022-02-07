@@ -15,7 +15,19 @@
 ###################
 # Conditions
 ###################
-FROM quay.io/cloudservices/io-gathering-conditions:qa AS conditions
+
+FROM registry.redhat.io/ubi8/ubi-minimal:latest AS conditions
+
+ARG CONDITIONS_VERSION="0.1.0"
+
+RUN microdnf install --nodocs -y jq git
+
+RUN git clone --depth 1 --branch $CONDITIONS_VERSION https://github.com/RedHatInsights/insights-operator-gathering-conditions
+
+WORKDIR "/insights-operator-gathering-conditions"
+
+RUN ./build.sh && \
+    cp -r ./build/* /conditions
 
 ###################
 # Builder
