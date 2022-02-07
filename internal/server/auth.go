@@ -18,6 +18,7 @@ package server
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -88,8 +89,17 @@ func (server *Server) Authentication(next http.Handler, noAuthURLs []string) htt
 			return
 		}
 
+		log.Info().Msgf("Authentication token: %s", token)
+
+		var decoded []byte
+
 		// decode auth. token to JSON string
-		decoded, err := jwt.DecodeSegment(token)
+		if server.AuthConfig.Type == "jwt" {
+			decoded, err = jwt.DecodeSegment(token)
+		} else {
+			decoded, err = base64.StdEncoding.DecodeString(token)
+		}
+
 		// if token is malformed return HTTP code 403 to client
 		if err != nil {
 			// malformed token, returns with http code 403 as usual
