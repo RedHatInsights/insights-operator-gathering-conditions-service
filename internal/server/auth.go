@@ -102,7 +102,7 @@ func (server *Server) Authentication(next http.Handler, noAuthURLs []string) htt
 
 		// if token is malformed return HTTP code 403 to client
 		if err != nil {
-			// malformed token, returns with http code 403 as usual
+			// malformed token, returns with HTTP code 403 as usual
 			log.Error().Err(err).Msg(malformedTokenMessage)
 			HandleServerError(w, &errors.UnauthorizedError{ErrString: malformedTokenMessage})
 			return
@@ -115,7 +115,7 @@ func (server *Server) Authentication(next http.Handler, noAuthURLs []string) htt
 			jwtPayload := &JWTPayload{}
 			err = json.Unmarshal([]byte(decoded), jwtPayload)
 			if err != nil {
-				// Malformed token, returns with http code 403 as usual
+				// malformed token, returns with HTTP code 403 as usual
 				log.Error().Err(err).Msg(malformedTokenMessage)
 				HandleServerError(w, &errors.UnauthorizedError{ErrString: malformedTokenMessage})
 				return
