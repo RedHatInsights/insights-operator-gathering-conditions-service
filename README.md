@@ -110,7 +110,13 @@ container-run        Run the container image
 
 # Container
 
-To build the container use the command:
+To build the container you need to set up two environment variables:
+
+1. `CONTAINER_RUNTIME` usually `docker` or `podman`
+2. `CONTAINER_IMAGE_NAME` the image name
+
+
+then use the command:
 
 ```shell script
 make container-build
