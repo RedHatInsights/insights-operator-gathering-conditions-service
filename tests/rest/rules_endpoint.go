@@ -71,7 +71,7 @@ func checkResponse(f *frisby.Frisby, response Payload) {
 
 // checkRulesEndpoint tests if rules endpoint is reachable and that it returns expected data
 func checkRulesEndpoint() {
-	f := frisby.Create("Check the /gathering-rules endpoint").Get(apiURL + "gathering_rules")
+	f := frisby.Create("Check the /gathering-rules endpoint").Get(apiURL + "api/gathering/gathering_rules")
 	f.Send()
 	f.ExpectStatus(200)
 	f.ExpectHeader(contentTypeHeader, "application/json")

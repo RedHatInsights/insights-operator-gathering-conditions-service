@@ -19,7 +19,6 @@ package main
 import (
 	"context"
 	"flag"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -73,14 +72,6 @@ func doSelectedOperation(cliFlags cli.Flags) {
 	}
 }
 
-// serveOpenAPI function handles requests to get OpenAPI specification file
-func serveOpenAPI(w http.ResponseWriter, r *http.Request) {
-	log.Info().Msg("Serving openapi.json file")
-	p := "./openapi.json"
-	w.Header().Set("Content-type", "application/json")
-	http.ServeFile(w, r, p)
-}
-
 func runServer() {
 	var httpServer *server.Server
 
@@ -120,9 +111,6 @@ func runServer() {
 	// HTTP
 	g.Go(func() error {
 		router := mux.NewRouter().StrictSlash(true)
-
-		// Handler for static contennt with OpenAPI specification
-		router.HandleFunc("/openapi.json", serveOpenAPI)
 
 		// Register the service
 		service.NewHandler(svc).Register(router)

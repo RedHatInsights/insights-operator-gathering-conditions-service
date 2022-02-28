@@ -51,6 +51,7 @@ func (e *Error) Error() string {
 	return e.msg
 }
 
+// Unwrap will return the original error
 func (e *Error) Unwrap() error {
 	return e.orig
 }

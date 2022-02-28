@@ -62,7 +62,7 @@ objects:
           livenessProbe:
             failureThreshold: 3
             httpGet:
-              path: /openapi.json
+              path: /api/gathering/openapi.json
               port: 8081
               scheme: HTTP
             initialDelaySeconds: 10
@@ -72,7 +72,7 @@ objects:
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: /openapi.json
+              path: /api/gathering/openapi.json
               port: 8081
               scheme: HTTP
             initialDelaySeconds: 5

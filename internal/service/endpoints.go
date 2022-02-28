@@ -38,6 +38,14 @@ type GatheringRulesResponse struct {
 	Rules   interface{} `json:"rules"`
 }
 
+// serveOpenAPI function handles requests to get OpenAPI specification file
+func serveOpenAPI(w http.ResponseWriter, r *http.Request) {
+	log.Info().Msg("Serving openapi.json file")
+	p := "./openapi.json"
+	w.Header().Set("Content-type", "application/json")
+	http.ServeFile(w, r, p)
+}
+
 func gatheringRulesEndpoint(svc Interface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		rules, err := svc.Rules()
