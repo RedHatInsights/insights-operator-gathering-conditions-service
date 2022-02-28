@@ -22,7 +22,7 @@ import (
 
 // checkOpenAPISpecifications checks whether OpenAPI endpoint is handled correctly
 func checkOpenAPISpecifications() {
-	f := frisby.Create("Check the OpenAPI endpoint").Get(apiURL + "openapi.json")
+	f := frisby.Create("Check the OpenAPI endpoint").Get(apiURL + "api/gathering/openapi.json")
 	f.Send()
 	f.ExpectStatus(200)
 	f.ExpectHeader(contentTypeHeader, "application/json")

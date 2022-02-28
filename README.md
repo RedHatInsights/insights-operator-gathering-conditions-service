@@ -131,7 +131,7 @@ make container-run
 Then you can test it:
 
 ```shell script
-curl -s http://localhost:8081/gathering_rules | jq
+curl -s http://localhost:8081/api/gathering/gathering_rules | jq
 ```
 
 # License
