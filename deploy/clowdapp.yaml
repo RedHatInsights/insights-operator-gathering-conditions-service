@@ -103,7 +103,7 @@ objects:
   data:
     config.toml: |-
       [server]
-      address = ":8081"
+      address = ":8000"
       use_https = false
       enable_cors = false
 
