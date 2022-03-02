@@ -58,12 +58,14 @@ objects:
           env:
             - name: INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_CONFIG_FILE
               value: /data/config.toml
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SERVER__ADDRESS
+              value: ":8000"
           image: ${IMAGE}:${IMAGE_TAG}
           livenessProbe:
             failureThreshold: 3
             httpGet:
               path: /api/gathering/openapi.json
-              port: 8081
+              port: 8000
               scheme: HTTP
             initialDelaySeconds: 10
             periodSeconds: 10
@@ -73,7 +75,7 @@ objects:
             failureThreshold: 3
             httpGet:
               path: /api/gathering/openapi.json
-              port: 8081
+              port: 8000
               scheme: HTTP
             initialDelaySeconds: 5
             periodSeconds: 10
