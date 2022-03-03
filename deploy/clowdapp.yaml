@@ -60,6 +60,8 @@ objects:
               value: /data/config.toml
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SERVER__ADDRESS
               value: ":8000"
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__RULES_PATH
+              value: /conditions
           image: ${IMAGE}:${IMAGE_TAG}
           livenessProbe:
             failureThreshold: 3
