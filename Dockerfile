@@ -27,7 +27,7 @@ RUN git clone --depth 1 --branch $CONDITIONS_VERSION https://github.com/RedHatIn
 WORKDIR "/insights-operator-gathering-conditions"
 
 RUN ./build.sh && \
-    cp -r ./build/* /conditions
+    cp -r ./build /conditions
 
 ###################
 # Builder
