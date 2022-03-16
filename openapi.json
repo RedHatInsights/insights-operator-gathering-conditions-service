@@ -7,7 +7,7 @@
     "contact": {}
   },
   "paths": {
-    "/api/gathering/openapi.json": {
+    "/openapi.json": {
       "get": {
         "summary": "Returns the OpenAPI specification JSON.",
         "description": "The OpenAPI specification of this REST API service that is represented in formatted and human-readable JSON is available under this endpoint.",
@@ -50,7 +50,7 @@
         "parameters": []
       }
     },
-    "/api/gathering/gathering_rules": {
+    "/gathering_rules": {
       "summary": "Return the list of gathering rules",
       "description": "This endpoint returns an array of the available rules stored. This array contains the conditions and gathering functions for the Insights Operator. These rules are used in https://github.com/openshift/insights-operator/blob/master/pkg/gatherers/conditional/conditional_gatherer.go.",
       "get": {
@@ -66,14 +66,12 @@
                     },
                     "rules": {
                       "type": "array",
-                      "items": [
-                        {
+                      "items": {
                           "type": "object",
                           "properties": {
                             "conditions": {
                               "type": "array",
-                              "items": [
-                                {
+                              "items": {
                                   "type": "object",
                                   "properties": {
                                     "params": {
@@ -95,8 +93,7 @@
                                     "params",
                                     "type"
                                   ]
-                                }
-                              ]
+                              }
                             },
                             "gathering_functions": {
                               "type": "object"
@@ -106,8 +103,7 @@
                             "conditions",
                             "gathering_functions"
                           ]
-                        }
-                      ]
+                      }
                     }
                   }
                 },
