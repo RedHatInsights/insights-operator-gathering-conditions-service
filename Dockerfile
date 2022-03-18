@@ -18,7 +18,7 @@
 
 FROM registry.redhat.io/ubi8/ubi-minimal:latest AS conditions
 
-ARG CONDITIONS_VERSION="1.0.0"
+ARG CONDITIONS_VERSION="1.0.1"
 
 RUN microdnf install --nodocs -y jq git
 
