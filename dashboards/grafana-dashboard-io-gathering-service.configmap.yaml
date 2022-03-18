@@ -529,7 +529,7 @@ data:
       },
       "timezone": "",
       "title": "CCX Gathering Service",
-      "uid": "playground",
+      "uid": "gathering",
       "version": 1
     }
 kind: ConfigMap
