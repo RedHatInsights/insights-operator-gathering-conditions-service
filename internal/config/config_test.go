@@ -150,6 +150,22 @@ func TestLoadConfiguration(t *testing.T) {
 
 }
 
+func TestEnvVarsOverride(t *testing.T) {
+	os.Clearenv()
+	err := os.Setenv("INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CLOUDWATCH__DEBUG", "true")
+	assert.Equal(t, err, nil)
+	err = os.Setenv("INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__LOGGING__LOGGING_TO_CLOUD_WATCH_ENABLED", "true")
+	assert.Equal(t, err, nil)
+	err = os.Setenv("INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SERVER__ADDRESS", ":0888")
+	assert.Equal(t, err, nil)
+	err = config.LoadConfiguration(validConfPath)
+	assert.Equal(t, err, nil)
+
+	assert.Equal(t, config.Config.ServerConfig.Address, ":0888")
+	assert.Equal(t, config.Config.LoggingConfig.LoggingToCloudWatchEnabled, true)
+	assert.Equal(t, config.Config.CloudWatchConfig.Debug, true)
+}
+
 func TestGetConfigFunctions(t *testing.T) {
 	os.Clearenv()
 	assert.NoError(t, config.LoadConfiguration(validConfPath))
