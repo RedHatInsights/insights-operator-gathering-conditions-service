@@ -166,7 +166,7 @@ parameters:
   value: "true"
   required: true
 - name: CLOUDWATCH_DEBUG
-  value: "true"
+  value: "false"
   required: true
 - name: IOGCS_LOG_STREAM
   value: $HOSTNAME
