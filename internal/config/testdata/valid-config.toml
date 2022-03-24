@@ -18,3 +18,9 @@ broker = "broker"
 topic = "topic"
 cert_path = "cert_path"
 level = "level"
+
+[logging]
+logging_to_cloud_watch_enabled = false 
+
+[cloudwatch]
+debug = false

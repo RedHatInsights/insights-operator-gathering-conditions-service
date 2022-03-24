@@ -158,10 +158,16 @@ func TestEnvVarsOverride(t *testing.T) {
 	assert.Equal(t, err, nil)
 	err = os.Setenv("INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SERVER__ADDRESS", ":0888")
 	assert.Equal(t, err, nil)
+	err = os.Setenv("INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__RULES_PATH", "/test_path")
+	assert.Equal(t, err, nil)
+	err = os.Setenv("INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SENTRY__DSN", "test_dsn")
+	assert.Equal(t, err, nil)
 	err = config.LoadConfiguration(validConfPath)
 	assert.Equal(t, err, nil)
 
 	assert.Equal(t, config.Config.ServerConfig.Address, ":0888")
+	assert.Equal(t, config.Config.StorageConfig.RulesPath, "/test_path")
+	assert.Equal(t, config.Config.SentryLoggingConfig.SentryDSN, "test_dsn")
 	assert.Equal(t, config.Config.LoggingConfig.LoggingToCloudWatchEnabled, true)
 	assert.Equal(t, config.Config.CloudWatchConfig.Debug, true)
 }
