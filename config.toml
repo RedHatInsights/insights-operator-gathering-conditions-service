@@ -17,7 +17,7 @@ environment = "dev"
 [logging]
 debug = true
 log_level="debug"
-logging_to_cloudwatch_enabled = false
+logging_to_cloud_watch_enabled = false
 logging_to_sentry_enabled = true
 logging_to_kafka_enabled = false
 
@@ -26,3 +26,13 @@ broker = ""
 topic = ""
 cert_path = ""
 level = ""
+
+[cloudwatch]
+aws_access_id = "a key id"
+aws_secret_key = "tshhhh it is a secret"
+aws_session_token = ""
+aws_region = "us-east-1"
+log_group = "platform-dev"
+stream_name = "io-gathering-service"
+debug = false
+create_stream_if_not_exists = false
