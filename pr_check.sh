@@ -3,7 +3,7 @@
 # --------------------------------------------
 # Options that must be configured by app owner
 # --------------------------------------------
-export APP_NAME="io-gathering-service"  # name of app-sre "application" folder this component lives in
+export APP_NAME="ccx-data-pipeline"  # name of app-sre "application" folder this component lives in
 export COMPONENT_NAME="io-gathering-service"  # name of app-sre "resourceTemplate" in deploy.yaml for this component
 export IMAGE="quay.io/cloudservices/io-gathering-conditions-service"
 
