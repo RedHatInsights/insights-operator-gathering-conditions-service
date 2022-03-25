@@ -1,16 +1,20 @@
 #!/bin/bash
 
+set -exv
+
 # --------------------------------------------
 # Options that must be configured by app owner
 # --------------------------------------------
-export APP_NAME="ccx-data-pipeline"  # name of app-sre "application" folder this component lives in
-export COMPONENT_NAME="io-gathering-service"  # name of app-sre "resourceTemplate" in deploy.yaml for this component
-export IMAGE="quay.io/cloudservices/io-gathering-conditions-service"
+APP_NAME="ccx-data-pipeline"  # name of app-sre "application" folder this component lives in
+COMPONENT_NAME="io-gathering-service"  # name of app-sre "resourceTemplate" in deploy.yaml for this component
+IMAGE="quay.io/cloudservices/io-gathering-conditions-service"
+COMPONENTS="io-gathering-service"  # space-separated list of components to laod
+COMPONENTS_W_RESOURCES="io-gathering-service"  # component to keep
 
 export IQE_PLUGINS="ccx"
 export IQE_MARKER_EXPRESSION="io_gathering"
 export IQE_FILTER_EXPRESSION=""
-export IQE_CJI_TIMEOUT="10m"
+export IQE_CJI_TIMEOUT="60m"
 
 # Workaround to avoid issue with long name of namespace 'requestor'
 # Jenkins job name is overriden.
