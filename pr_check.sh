@@ -16,15 +16,16 @@ export IQE_MARKER_EXPRESSION="io_gathering"
 export IQE_FILTER_EXPRESSION=""
 export IQE_CJI_TIMEOUT="60m"
 
-# Workaround to avoid issue with long name of namespace 'requestor'
-# Jenkins job name is overriden.
-# Issue: https://github.com/RedHatInsights/bonfire/issues/199
-# FIXME: Remove this line when it is fixed.
-export JOB_NAME="RHI-io-gathering-conditions-service-pr-check"
-
 # Install bonfire repo/initialize
 CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
 curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
+
+# Workaround to avoid issue with long name of namespace 'requestor'
+# Jenkins job name is overriden. Must be exported after 'bootstrap.sh' is sourced.
+# Issue: https://github.com/RedHatInsights/bonfire/issues/199
+# FIXME: Remove this line when it is fixed.
+export BONFIRE_NS_REQUESTER="io-gather-conds-serv-pr-check-${BUILD_NUMBER}"
+
 
 # Build the image and push to quay
 source $CICD_ROOT/build.sh
