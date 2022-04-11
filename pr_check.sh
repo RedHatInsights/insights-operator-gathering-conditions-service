@@ -20,7 +20,7 @@ export IQE_CJI_TIMEOUT="60m"
 # Jenkins job name is overriden.
 # Issue: https://github.com/RedHatInsights/bonfire/issues/199
 # FIXME: Remove this line when it is fixed.
-export JOB_NAME="io-gather-conds-serv-pr-check"
+#export JOB_NAME="io-gather-conds-serv-pr-check"
 
 
 # Install bonfire repo/initialize
@@ -31,7 +31,7 @@ curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
 # Jenkins job name is overriden. Must be exported after 'bootstrap.sh' is sourced.
 # Issue: https://github.com/RedHatInsights/bonfire/issues/199
 # FIXME: Remove this line when it is fixed.
-#export BONFIRE_NS_REQUESTER="io-gather-conds-serv-pr-check-${BUILD_NUMBER}"
+export BONFIRE_NS_REQUESTER="io-gather-conds-serv-pr-check-${BUILD_NUMBER}"
 #export BONFIRE_NS_REQUESTER="${JOB_NAME}-${BUILD_NUMBER}"
 
 
