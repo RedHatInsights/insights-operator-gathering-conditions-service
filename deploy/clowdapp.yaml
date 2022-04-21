@@ -23,7 +23,7 @@ objects:
   apiVersion: autoscaling/v1
   metadata:
     labels:
-      app: io-gathering-service
+      app: ccx-data-pipeline
     name: io-gathering-service
   spec:
     minReplicas: ${{MIN_REPLICAS}}
@@ -31,7 +31,7 @@ objects:
     scaleTargetRef:
       apiVersion: apps/v1
       kind: Deployment
-      name: io-gathering-service-service
+      name: io-gathering-service-instance
     targetCPUUtilizationPercentage: 50
 
 - apiVersion: cloud.redhat.com/v1alpha1
