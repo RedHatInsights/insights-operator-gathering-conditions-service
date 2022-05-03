@@ -21,6 +21,9 @@ import "github.com/gorilla/mux"
 // APIPrefix is the prefix used in the console-dot environment
 const APIPrefix = "/api/gathering"
 
+// V1Prefix is the version prefix used in the console-dot environment
+const V1Prefix = "/v1"
+
 // Handler structure represents HTTP request handler.
 type Handler struct {
 	svc Interface
@@ -37,4 +40,6 @@ func NewHandler(svc Interface) *Handler {
 func (s *Handler) Register(r *mux.Router) {
 	r.HandleFunc(APIPrefix+"/openapi.json", serveOpenAPI)
 	r.Handle(APIPrefix+"/gathering_rules", gatheringRulesEndpoint(s.svc))
+	r.HandleFunc(APIPrefix+V1Prefix+"/openapi.json", serveOpenAPI)
+	r.Handle(APIPrefix+V1Prefix+"/gathering_rules", gatheringRulesEndpoint(s.svc))
 }
