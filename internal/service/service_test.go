@@ -17,6 +17,7 @@ limitations under the License.
 package service_test
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -46,38 +47,46 @@ func TestService(t *testing.T) {
 		},
 	}
 
+	// CCXDEV-7919: for checking with v1 version and without version
+	versions := []string{
+		service.V1Prefix,
+		"",
+	}
+
 	for _, tc := range testCases {
+		for _, version := range versions {
 
-		store := mockStorage{
-			mockData: tc.mockData,
-		}
-		repo := service.NewRepository(&store)
-		svc := service.New(repo)
+			store := mockStorage{
+				mockData: tc.mockData,
+			}
+			repo := service.NewRepository(&store)
+			svc := service.New(repo)
 
-		// Create the request:
-		req, err := http.NewRequest("GET", "/api/gathering/gathering_rules", http.NoBody)
-		if err != nil {
-			t.Fatal(err)
-		}
+			// Create the request:
+			req, err := http.NewRequest("GET", fmt.Sprintf("%s%s/gathering_rules", service.APIPrefix, version), http.NoBody)
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		rr := httptest.NewRecorder() // Used to record the response.
-		handler := service.NewHandler(svc)
+			rr := httptest.NewRecorder() // Used to record the response.
+			handler := service.NewHandler(svc)
 
-		router := mux.NewRouter()
+			router := mux.NewRouter()
 
-		handler.Register(router)
+			handler.Register(router)
 
-		router.ServeHTTP(rr, req)
+			router.ServeHTTP(rr, req)
 
-		if tc.expectedAnError {
-			assert.Equal(t, http.StatusInternalServerError, rr.Code)
-			assert.Contains(t, rr.Body.String(), "error")
-		} else {
-			assert.Equal(t, http.StatusOK, rr.Code)
-			assert.Contains(
-				t,
-				rr.Body.String(),
-				`"version":"0.0.1","rules":[{"conditions":["condition 1","condition 2"],"gathering_functions":"the gathering functions"}]`)
+			if tc.expectedAnError {
+				assert.Equal(t, http.StatusInternalServerError, rr.Code)
+				assert.Contains(t, rr.Body.String(), "error")
+			} else {
+				assert.Equal(t, http.StatusOK, rr.Code)
+				assert.Contains(
+					t,
+					rr.Body.String(),
+					`"version":"0.0.1","rules":[{"conditions":["condition 1","condition 2"],"gathering_functions":"the gathering functions"}]`)
+			}
 		}
 	}
 

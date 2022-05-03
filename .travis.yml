@@ -14,7 +14,7 @@
 
 language: go
 go:
-- 1.16
+- "1.16"
 
 jobs:
   include:
@@ -42,6 +42,7 @@ jobs:
     - stage: openapi-checks
       language: node_js
       node_js:
+        - 17
         - node
       script:
         - npm install -g @openapitools/openapi-generator-cli
