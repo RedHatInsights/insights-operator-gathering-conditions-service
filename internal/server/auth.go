@@ -94,7 +94,7 @@ func (server *Server) Authentication(next http.Handler, noAuthURLs []string) htt
 
 		// decode auth. token to JSON string
 		if server.AuthConfig.Type == "jwt" {
-			decoded, err = base64.RawURLEncoding.DecodeString(seg)
+			decoded, err = base64.RawURLEncoding.DecodeString(token)
 		} else {
 			decoded, err = base64.StdEncoding.DecodeString(token)
 		}
