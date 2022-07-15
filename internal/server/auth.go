@@ -23,7 +23,6 @@ import (
 	"net/http"
 	"strings"
 
-	jwt "github.com/golang-jwt/jwt/v4"
 	"github.com/rs/zerolog/log"
 
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/collections"
@@ -95,7 +94,7 @@ func (server *Server) Authentication(next http.Handler, noAuthURLs []string) htt
 
 		// decode auth. token to JSON string
 		if server.AuthConfig.Type == "jwt" {
-			decoded, err = jwt.DecodeSegment(token)
+			decoded, err = base64.RawURLEncoding.DecodeString(token)
 		} else {
 			decoded, err = base64.StdEncoding.DecodeString(token)
 		}
