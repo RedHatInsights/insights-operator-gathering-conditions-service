@@ -22,7 +22,7 @@ package server_test
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -146,7 +146,7 @@ func checkResponse(
 			t.Errorf("Unexpected content type. Expected %v, got %v", appJSON, contentType)
 		}
 
-		body, err := ioutil.ReadAll(res.Body)
+		body, err := io.ReadAll(res.Body)
 		if err != nil {
 			t.Fatal(err)
 		}
