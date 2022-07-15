@@ -197,7 +197,7 @@ func testServerWithRequest(t *testing.T, configAuth server.AuthConfig, token str
 	time.Sleep(100 * time.Millisecond)
 
 	// perform request with auth. token
-	request, err := http.NewRequest("GET", testedURL, nil)
+	request, err := http.NewRequest("GET", testedURL, http.NoBody)
 	if err != nil {
 		t.Fatal(err)
 	}
