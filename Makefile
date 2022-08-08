@@ -124,6 +124,5 @@ container-build: ## Build the container image
 container-run: ## Run the container image
 	$(CONTAINER_RUNTIME) run \
 		--rm \
-		--name $(CONTAINER_NAME) \
 		-p 8081:8081 \
 		$(CONTAINER_IMAGE_NAME)

@@ -67,7 +67,19 @@ It will build the gathering conditions image.
 To execute the service, run:
 
 ```shell script
-bin/insights-conditions-service
+./insights-operator-gathering-conditions-service
+```
+
+or:
+
+```shell script
+make run
+```
+
+Then you can test it:
+
+```shell script
+curl -s http://localhost:8000/api/gathering/v1/gathering_rules | jq
 ```
 
 There are some flags for different purposes:
