@@ -32,7 +32,7 @@ RUN ./build.sh && \
 ###################
 # Builder
 ###################
-FROM registry.redhat.io/rhel8/go-toolset:1.16 AS builder
+FROM registry.redhat.io/rhel8/go-toolset:1.17 AS builder
 
 USER 0
 
