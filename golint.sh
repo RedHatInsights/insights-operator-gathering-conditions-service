@@ -30,7 +30,7 @@ then
 fi
 
 # shellcheck disable=SC2046
-if golint $(go list $(go list ./...)) |
+if golint $(go list ./...) |
     grep -v ALL_CAPS |
     grep .
 then
