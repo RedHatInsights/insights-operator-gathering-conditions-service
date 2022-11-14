@@ -11,18 +11,17 @@ Gathering Conditions Services to [Insights Operator](https://github.com/openshif
 
 <!-- vim-markdown-toc GFM -->
 
-- [Insights Operator Gathering Conditions Service](#insights-operator-gathering-conditions-service)
-- [Description](#description)
-  - [REST API](#rest-api)
-- [Usage](#usage)
-  - [Build](#build)
-  - [Configure](#configure)
-  - [Conditions](#conditions)
-  - [Run](#run)
-  - [Makefile](#makefile)
-- [Container](#container)
-- [License](#license)
-- [Package manifest](#package-manifest)
+* [Description](#description)
+    * [REST API](#rest-api)
+* [Usage](#usage)
+    * [Build](#build)
+    * [Configure](#configure)
+    * [Conditions](#conditions)
+    * [Run](#run)
+    * [Makefile](#makefile)
+* [Container](#container)
+* [License](#license)
+* [Package manifest](#package-manifest)
 
 <!-- vim-markdown-toc -->
 
@@ -99,7 +98,7 @@ Usage: make <OPTIONS> ... <TARGETS>
 Available targets are:
 
 clean                Run go clean
-build                Keep this rule for compatibility
+build                Build binary containing service executable
 fmt                  Run go fmt -w for all sources
 lint                 Run golint
 vet                  Run go vet. Report likely mistakes in source code
