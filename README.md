@@ -116,6 +116,7 @@ test                 Run the unit tests
 integration_tests    Run all integration tests
 before_commit        Checks done before commit
 help                 Show this help screen
+function_list        List all functions in generated binary file
 container-build      Build the container image
 container-run        Run the container image
 ```
