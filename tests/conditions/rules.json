@@ -6,7 +6,7 @@
             "conditions": [
                 {
                     "type": "alert_is_firing",
-                    "params": {
+                    "alert": {
                         "name": "SamplesImagestreamImportFailing"
                     }
                 }
