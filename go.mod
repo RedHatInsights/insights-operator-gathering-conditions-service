@@ -12,7 +12,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/klauspost/compress v1.11.12 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.21 // indirect
-	github.com/prometheus/client_golang v1.11.0 // indirect
+	github.com/prometheus/client_golang v1.14.0 // indirect
 	github.com/rs/zerolog v1.24.0
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
@@ -20,5 +20,4 @@ require (
 	github.com/verdverm/frisby v0.0.0-20170604211311-b16556248a9a
 	golang.org/x/net v0.1.0 // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
-	google.golang.org/protobuf v1.27.1 // indirect
 )
