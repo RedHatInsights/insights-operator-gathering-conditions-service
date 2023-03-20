@@ -1,5 +1,5 @@
 /*
-Copyright © 2021, 2022 Red Hat, Inc.
+Copyright © 2021, 2022, 2023 Red Hat, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ const (
 
 // PrintConfiguration function displays actual configuration on standard
 // output.
-func PrintConfiguration(conf config.Configuration) {
+func PrintConfiguration(conf *config.Configuration) {
 	// err should be nil as config contains valid fields
 	configBytes, err := json.MarshalIndent(conf, "", "    ")
 	if err != nil {
