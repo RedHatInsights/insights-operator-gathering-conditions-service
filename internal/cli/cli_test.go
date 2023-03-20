@@ -1,5 +1,5 @@
 /*
-Copyright © 2021, 2022 Red Hat, Inc.
+Copyright © 2021, 2022, 2023 Red Hat, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ func TestPrintConfiguration(t *testing.T) {
 	}
 
 	output, err := capture.StandardOutput(func() {
-		cli.PrintConfiguration(testConfig)
+		cli.PrintConfiguration(&testConfig)
 	})
 	assert.NoError(t, err)
 	assert.Contains(t, output, "\"Address\": \"test_address\",")
