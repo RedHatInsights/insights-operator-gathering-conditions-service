@@ -19,6 +19,7 @@ Gathering Conditions Services to [Insights Operator](https://github.com/openshif
     * [Conditions](#conditions)
     * [Run](#run)
     * [Makefile](#makefile)
+    * [BDD tests](#bdd-tests)
 * [Container](#container)
 * [License](#license)
 * [Package manifest](#package-manifest)
@@ -119,6 +120,20 @@ function_list        List all functions in generated binary file
 container-build      Build the container image
 container-run        Run the container image
 ```
+
+## BDD tests
+
+Behaviour tests for this service are included in [Insights Behavioral
+Spec](https://github.com/RedHatInsights/insights-behavioral-spec) repository.
+In order to run these tests, the following steps need to be made:
+
+1. clone the [Insights Behavioral Spec](https://github.com/RedHatInsights/insights-behavioral-spec) repository
+1. go into the cloned subdirectory `insights-behavioral-spec`
+1. run the `aggregator_tests.sh` from this subdirectory
+
+List of all test scenarios prepared for this service is available at
+<https://redhatinsights.github.io/insights-behavioral-spec/feature_list.html#insights-operator-gathering-conditions-service>
+
 
 # Container
 
