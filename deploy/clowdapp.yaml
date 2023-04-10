@@ -96,6 +96,14 @@ objects:
                   name: cloudwatch
                   key: aws_secret_access_key
                   optional: true
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SENTRY__DSN
+              valueFrom:
+                secretKeyRef:
+                  key: dsn
+                  name: io-gathering-conditions-dsn
+                  optional: true
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SENTRY__ENVIRONMENT
+              value: ${ENV_NAME}
           image: ${IMAGE}:${IMAGE_TAG}
           livenessProbe:
             failureThreshold: 3
