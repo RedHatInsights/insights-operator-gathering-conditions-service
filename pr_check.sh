@@ -17,7 +17,7 @@ export IQE_CJI_TIMEOUT="60m"
 # Workaround to avoid issue with long name of namespace 'requestor'
 # Jenkins job name is overriden.
 # Issue: https://github.com/RedHatInsights/bonfire/issues/199
-export JOB_NAME="io-gather-conds-serv-pr-check"
+# export JOB_NAME="io-gather-conds-serv-pr-check"
 
 # Install bonfire repo/initialize
 CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
