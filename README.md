@@ -131,8 +131,8 @@ In order to run these tests, the following steps need to be made:
 1. go into the cloned subdirectory `insights-behavioral-spec`
 1. run the `aggregator_tests.sh` from this subdirectory
 
-List of all test scenarios prepared for this service is available at
-<https://redhatinsights.github.io/insights-behavioral-spec/feature_list.html#insights-operator-gathering-conditions-service>
+List of all test scenarios prepared for this service is available in the
+[insights operator gathering conditions service](https://redhatinsights.github.io/insights-behavioral-spec/feature_list.html#insights-operator-gathering-conditions-service)
 
 
 # Container
