@@ -44,7 +44,7 @@ RUN make build && \
 ###################
 # Service
 ###################
-FROM registry.redhat.io/ubi8-minimal:latest
+FROM registry.redhat.io/ubi8-minimal:8.8-1014
 
 # copy the service
 COPY --from=builder /opt/app-root/src/config.toml /config.toml
