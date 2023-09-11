@@ -21,6 +21,7 @@ Gathering Conditions Services to [Insights Operator](https://github.com/openshif
     * [Makefile](#makefile)
     * [BDD tests](#bdd-tests)
 * [Container](#container)
+    * [Definition of Done for new features and fixes](#definition-of-done-for-new-features-and-fixes)
 * [License](#license)
 * [Package manifest](#package-manifest)
 
@@ -160,6 +161,10 @@ Then you can test it:
 ```shell script
 curl -s http://localhost:8081/api/gathering/gathering_rules | jq
 ```
+
+## Definition of Done for new features and fixes
+
+Please look at [DoD.md](DoD.md) document for definition of done for new features and fixes.
 
 # License
 
