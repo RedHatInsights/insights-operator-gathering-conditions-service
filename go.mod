@@ -11,7 +11,7 @@ require (
 	github.com/klauspost/compress v1.11.12 // indirect
 	github.com/prometheus/client_golang v1.14.0 // indirect
 	github.com/rs/zerolog v1.30.0
-	github.com/spf13/viper v1.8.1
+	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.7.0
 	github.com/tisnik/go-capture v1.0.1
 	github.com/verdverm/frisby v0.0.0-20170604211311-b16556248a9a
