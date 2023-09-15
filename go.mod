@@ -3,7 +3,7 @@ module github.com/RedHatInsights/insights-operator-gathering-conditions-service
 go 1.16
 
 require (
-	github.com/BurntSushi/toml v0.4.1
+	github.com/BurntSushi/toml v1.3.2
 	github.com/RedHatInsights/insights-operator-utils v1.24.11
 	github.com/aws/aws-sdk-go v1.38.68 // indirect
 	github.com/gorilla/handlers v1.5.1
