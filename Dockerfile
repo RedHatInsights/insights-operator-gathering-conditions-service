@@ -32,7 +32,7 @@ RUN ./build.sh && \
 ###################
 # Builder
 ###################
-FROM registry.redhat.io/rhel8/go-toolset:1.18.9-8.1675807488 AS builder
+FROM registry.redhat.io/rhel8/go-toolset:1.18 AS builder
 
 USER 0
 
@@ -44,12 +44,16 @@ RUN make build && \
 ###################
 # Service
 ###################
-FROM registry.redhat.io/ubi8-minimal:8.8-1014
+FROM registry.access.redhat.com/ubi8/ubi-micro:latest
 
 # copy the service
 COPY --from=builder /opt/app-root/src/config.toml /config.toml
 COPY --from=builder /opt/app-root/src/insights-operator-gathering-conditions-service .
 COPY --from=builder /opt/app-root/src/openapi.json .
+
+# copy the certificates
+COPY --from=builder /etc/ssl /etc/ssl
+COPY --from=builder /etc/pki /etc/pki
 
 # copy the conditions
 COPY --from=conditions  /conditions /conditions
