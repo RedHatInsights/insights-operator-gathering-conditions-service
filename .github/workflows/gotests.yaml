@@ -17,20 +17,6 @@ jobs:
           - "1.20"
           - "1.21"
     name: Tests for Go ${{ matrix.go-version}}
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
     steps:
       - uses: actions/checkout@v4
       - name: Setup Go
@@ -45,3 +31,7 @@ jobs:
         run: ./check_coverage.sh
       - name: Display code coverage
         run: make coverage
+      - name: OpenAPI Check
+        run: make openapi_check
+      - name: REST API Tests
+        run: make integration_tests
