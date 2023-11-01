@@ -147,7 +147,6 @@ func TestLoadConfiguration(t *testing.T) {
 			}
 		})
 	}
-
 }
 
 func TestEnvVarsOverride(t *testing.T) {

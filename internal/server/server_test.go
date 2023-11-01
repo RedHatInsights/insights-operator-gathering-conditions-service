@@ -84,7 +84,6 @@ func TestServer(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-
 		t.Run(tc.name, func(t *testing.T) {
 			testServer := server.New(tc.config, tc.authConfig, mux.NewRouter())
 			go func() {

@@ -36,11 +36,11 @@ func (mw mockedWriter) Header() http.Header {
 	return make(http.Header)
 }
 
-func (mw mockedWriter) Write(buf []byte) (int, error) {
-	return 0, errors.New("Write error!")
+func (mw mockedWriter) Write(_ []byte) (int, error) {
+	return 0, errors.New("write error")
 }
 
-func (mw mockedWriter) WriteString(str string) (int, error) {
+func (mw mockedWriter) WriteString(_ string) (int, error) {
 	return 0, nil
 }
 

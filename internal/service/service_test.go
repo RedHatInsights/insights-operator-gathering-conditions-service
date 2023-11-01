@@ -56,7 +56,6 @@ func TestService(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			for _, version := range versions {
-
 				store := mockStorage{
 					mockData: tc.mockData,
 				}
@@ -91,5 +90,4 @@ func TestService(t *testing.T) {
 			}
 		})
 	}
-
 }

@@ -112,7 +112,7 @@ func (server *Server) Authentication(next http.Handler, noAuthURLs []string) htt
 		// if we took JWT token, it has different structure then x-rh-identity
 		if server.AuthConfig.Type == "jwt" {
 			jwtPayload := &JWTPayload{}
-			err = json.Unmarshal([]byte(decoded), jwtPayload)
+			err = json.Unmarshal(decoded, jwtPayload)
 			if err != nil {
 				// malformed token, returns with HTTP code 403 as usual
 				log.Error().Err(err).Msg(malformedTokenMessage)
@@ -127,7 +127,7 @@ func (server *Server) Authentication(next http.Handler, noAuthURLs []string) htt
 				},
 			}
 		} else {
-			err = json.Unmarshal([]byte(decoded), tk)
+			err = json.Unmarshal(decoded, tk)
 
 			if err != nil {
 				// malformed token, returns with HTTP code 403 as usual
