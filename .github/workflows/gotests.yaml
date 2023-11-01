@@ -32,6 +32,6 @@ jobs:
       - name: Display code coverage
         run: make coverage
       - name: OpenAPI Check
-        run: make openapi_check
+        run: make openapi-check
       - name: REST API Tests
         run: make integration_tests
