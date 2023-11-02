@@ -72,7 +72,6 @@ type JWTPayload struct {
 // Authentication middleware for checking auth rights
 func (server *Server) Authentication(next http.Handler, noAuthURLs []string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
 		// for specific URLs it is ok to not use auth. mechanisms at all
 		// this is specific to OpenAPI JSON response and for all OPTION HTTP methods
 		if collections.StringInSlice(r.RequestURI, noAuthURLs) || r.Method == "OPTIONS" {
@@ -112,7 +111,7 @@ func (server *Server) Authentication(next http.Handler, noAuthURLs []string) htt
 		// if we took JWT token, it has different structure then x-rh-identity
 		if server.AuthConfig.Type == "jwt" {
 			jwtPayload := &JWTPayload{}
-			err = json.Unmarshal([]byte(decoded), jwtPayload)
+			err = json.Unmarshal(decoded, jwtPayload)
 			if err != nil {
 				// malformed token, returns with HTTP code 403 as usual
 				log.Error().Err(err).Msg(malformedTokenMessage)
@@ -127,7 +126,7 @@ func (server *Server) Authentication(next http.Handler, noAuthURLs []string) htt
 				},
 			}
 		} else {
-			err = json.Unmarshal([]byte(decoded), tk)
+			err = json.Unmarshal(decoded, tk)
 
 			if err != nil {
 				// malformed token, returns with HTTP code 403 as usual
@@ -179,7 +178,7 @@ func (server *Server) GetAuthToken(request *http.Request) (*Identity, error) {
 	return &identity, nil
 }
 
-func (server *Server) getAuthTokenHeader(w http.ResponseWriter, r *http.Request) (string, error) {
+func (server *Server) getAuthTokenHeader(_ http.ResponseWriter, r *http.Request) (string, error) {
 	var tokenHeader string
 	// In case of testing on local machine we don't take x-rh-identity
 	// header, but instead Authorization with JWT token in it

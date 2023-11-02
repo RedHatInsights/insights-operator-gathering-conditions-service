@@ -179,7 +179,7 @@ var configAuth2 = server.AuthConfig{
 }
 
 // dummy HTTP request handler
-func dummyHandler(w http.ResponseWriter, r *http.Request) {
+func dummyHandler(_ http.ResponseWriter, _ *http.Request) {
 }
 
 // start new HTTP server, perform request, check response, and stop HTTP server
