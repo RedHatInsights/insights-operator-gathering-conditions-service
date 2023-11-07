@@ -6,7 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.3.2
 	github.com/RedHatInsights/insights-operator-utils v1.24.11
 	github.com/aws/aws-sdk-go v1.38.68 // indirect
-	github.com/gorilla/handlers v1.5.1
+	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1
 	github.com/rs/zerolog v1.31.0
 	github.com/spf13/viper v1.16.0
