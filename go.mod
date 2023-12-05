@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/BurntSushi/toml v1.3.2
 	github.com/RedHatInsights/insights-operator-utils v1.24.12
+	github.com/getsentry/sentry-go v0.25.0 // indirect
 	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1
 	github.com/rs/zerolog v1.31.0
