@@ -182,9 +182,9 @@ parameters:
   value: $HOSTNAME
 - name: CREATE_STREAM_IF_NOT_EXISTS
   value: "true"
-- name: CPU_LIMIT
+- name: CPU_REQUEST
   value: '100m'
-- name: MEMORY_LIMIT
+- name: MEMORY_REQUEST
   value: '256Mi'
 - name: CPU_LIMIT
   value: '200m'
