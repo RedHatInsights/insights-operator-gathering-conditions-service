@@ -183,10 +183,10 @@ parameters:
 - name: CREATE_STREAM_IF_NOT_EXISTS
   value: "true"
 - name: CPU_LIMIT
-  value: 100m
+  value: '100m'
 - name: MEMORY_LIMIT
-  value: 256Mi
+  value: '256Mi'
 - name: CPU_LIMIT
-  value: 200m
+  value: '200m'
 - name: MEMORY_LIMIT
-  value: 512Mi
+  value: '512Mi'
