@@ -13,6 +13,7 @@ export IQE_PLUGINS="ccx"
 export IQE_MARKER_EXPRESSION="io_gathering"
 export IQE_FILTER_EXPRESSION=""
 export IQE_CJI_TIMEOUT="60m"
+export IQE_ENV_VARS="DYNACONF_USER_PROVIDER__rbac_enabled=false"
 
 # Workaround to avoid issue with long name of namespace 'requestor'
 # Jenkins job name is overriden.
