@@ -12,5 +12,5 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/tisnik/go-capture v1.0.1
 	github.com/verdverm/frisby v0.0.0-20170604211311-b16556248a9a
-	golang.org/x/sync v0.6.0
+	golang.org/x/sync v0.5.0
 )
