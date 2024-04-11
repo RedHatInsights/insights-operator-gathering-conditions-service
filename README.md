@@ -40,7 +40,7 @@ REST API is described by [OpenAPI specification](openapi.json).
 
 ## Build
 
-To build the service, install Go 1.14 or above and run:
+To build the service, install Go 1.20 or above and run:
 
 ```shell script
 make build
