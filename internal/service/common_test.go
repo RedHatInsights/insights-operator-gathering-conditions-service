@@ -45,9 +45,14 @@ var (
 )
 
 type mockStorage struct {
-	mockData []byte
+	conditionalRules []byte
+	remoteConfig     []byte
 }
 
-func (m *mockStorage) Find(string) []byte {
-	return m.mockData
+func (m *mockStorage) ReadConditionalRules(string) []byte {
+	return m.conditionalRules
+}
+
+func (m *mockStorage) ReadRemoteConfig(string) []byte {
+	return m.remoteConfig
 }

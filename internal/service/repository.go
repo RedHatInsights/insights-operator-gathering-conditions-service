@@ -24,6 +24,7 @@ import (
 // RepositoryInterface defines methods to be implemented by any rules providers
 type RepositoryInterface interface {
 	Rules() (*Rules, error)
+	RemoteConfiguration() (*RemoteConfiguration, error)
 }
 
 // Rule data type definition based on original JSON schema
@@ -36,6 +37,23 @@ type Rule struct {
 type Rules struct {
 	Items   []Rule `json:"rules,omitempty"`
 	Version string `json:"version,omitempty"`
+}
+
+// ContainerLogRequests defines a type for requesting container
+// log data
+type ContainerLogRequest struct {
+	Namespace    string   `json:"namespace"`
+	PodNameRegex string   `json:"pod_name_regex"`
+	Previous     bool     `json:"previous,omitempty"`
+	Messages     []string `json:"messages"`
+}
+
+// RemoteConfiguration represents the new data structure
+// served by the v2 API
+type RemoteConfiguration struct {
+	ConditionalRules      []Rule                `json:"conditional_gathering_rules,omitempty"`
+	ContainerLogsRequests []ContainerLogRequest `json:"container_logs,omitempty"`
+	Version               string                `json:"version,omitempty"`
 }
 
 // Repository is definition of objects that implement the RepositoryInterface
@@ -51,7 +69,7 @@ func NewRepository(s StorageInterface) *Repository {
 // Rules method reads all and unmarshals all rules stored under given path
 func (r *Repository) Rules() (*Rules, error) {
 	filepath := "rules.json" // TODO: Make this configurable
-	data := r.store.Find(filepath)
+	data := r.store.ReadConditionalRules(filepath)
 	if data == nil {
 		return nil, fmt.Errorf("store data not found for '%s'", filepath)
 	}
@@ -63,4 +81,19 @@ func (r *Repository) Rules() (*Rules, error) {
 	}
 
 	return &rules, nil
+}
+
+func (r *Repository) RemoteConfiguration() (*RemoteConfiguration, error) {
+	filepath := "rules.json" // TODO: Make this configurable
+	data := r.store.ReadRemoteConfig(filepath)
+	if data == nil {
+		return nil, fmt.Errorf("store data not found for '%s'", filepath)
+	}
+	var remoteConfig RemoteConfiguration
+	err := json.Unmarshal(data, &remoteConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	return &remoteConfig, nil
 }

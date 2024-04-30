@@ -57,7 +57,7 @@ func TestService(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			for _, version := range versions {
 				store := mockStorage{
-					mockData: tc.mockData,
+					conditionalRules: tc.mockData,
 				}
 				repo := service.NewRepository(&store)
 				svc := service.New(repo)

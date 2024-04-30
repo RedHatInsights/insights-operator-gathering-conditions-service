@@ -27,43 +27,72 @@ import (
 // StorageInterface describe interface to be implemented by resource storage
 // implementations.
 type StorageInterface interface {
-	Find(res string) []byte
+	ReadConditionalRules(res string) []byte
+	ReadRemoteConfig(p string) []byte
 }
 
 // StorageConfig structure contains configuration for resource storage.
 type StorageConfig struct {
-	RulesPath string `mapstructure:"rules_path" toml:"rules_path"`
+	RulesPath               string `mapstructure:"rules_path" toml:"rules_path"`
+	RemoteConfigurationPath string `mapstructure:"remote_configuration" toml:"remote_configuration"`
 }
 
 // Storage type represents container for resources.
 type Storage struct {
-	path  string
-	cache map[string][]byte
+	conditionalRulesPath    string
+	remoteConfigurationPath string
+	cache                   map[string][]byte
 }
 
 // NewStorage constructs new storage object.
 func NewStorage(cfg StorageConfig) *Storage {
 	log.Info().Str("path to rules", cfg.RulesPath).Msg("Constructing storage object")
 	return &Storage{
-		path:  cfg.RulesPath,
-		cache: make(map[string][]byte), // TODO: Make it an own type
+		conditionalRulesPath:    cfg.RulesPath,
+		remoteConfigurationPath: cfg.RemoteConfigurationPath,
+		cache:                   make(map[string][]byte), // TODO: Make it an own type
 	}
 }
 
 // Find method tries to find resource with given name in the storage.
-func (s *Storage) Find(path string) []byte {
+func (s *Storage) ReadConditionalRules(path string) []byte {
 	log.Info().Str("path to resource", path).Msg("Finding resource")
 
+	conditionalRulesPath := fmt.Sprintf("%s/%s", s.conditionalRulesPath, path)
+
 	// use the in-memory data
-	data, ok := s.cache[path]
+	data, ok := s.cache[conditionalRulesPath]
 	if ok {
 		return data
 	}
 
 	// or try to load it from the file
-	data, err := s.readFile(path)
+	data, err := s.readFile(conditionalRulesPath)
 	if err != nil {
-		log.Warn().Msgf("Resource not found: '%s'", path)
+		log.Warn().Msgf("Resource not found: '%s'", conditionalRulesPath)
+		return nil
+	}
+
+	log.Info().Int("bytes", len(data)).Msg("Resource file has been read")
+
+	return data
+}
+
+func (s *Storage) ReadRemoteConfig(path string) []byte {
+	log.Info().Str("path to resource", path).Msg("Finding resource")
+
+	remoteConfigPath := fmt.Sprintf("%s/%s", s.remoteConfigurationPath, path)
+
+	// use the in-memory data
+	data, ok := s.cache[remoteConfigPath]
+	if ok {
+		return data
+	}
+
+	// or try to load it from the file
+	data, err := s.readFile(remoteConfigPath)
+	if err != nil {
+		log.Warn().Msgf("Resource not found: '%s'", remoteConfigPath)
 		return nil
 	}
 
@@ -73,7 +102,7 @@ func (s *Storage) Find(path string) []byte {
 }
 
 func (s *Storage) readFile(path string) ([]byte, error) {
-	f, err := os.Open(fmt.Sprintf("%s/%s", s.path, path))
+	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}

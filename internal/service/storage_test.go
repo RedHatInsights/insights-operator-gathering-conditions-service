@@ -83,7 +83,7 @@ func TestStorage(t *testing.T) {
 
 func runStorageTest(t *testing.T, storage *service.Storage, rulesFile string, expectedRules service.Rules) {
 	var rules service.Rules
-	data := storage.Find(rulesFile)
+	data := storage.ReadConditionalRules(rulesFile)
 	if len(data) == 0 {
 		rules = service.Rules{}
 	} else {

@@ -52,7 +52,7 @@ func TestRepository(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			m := mockStorage{
-				mockData: tc.mockData,
+				conditionalRules: tc.mockData,
 			}
 			r := service.NewRepository(&m)
 			rules, err := r.Rules()

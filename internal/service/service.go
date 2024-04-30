@@ -19,6 +19,7 @@ package service
 // Interface defines methods to be implemented by any rules provider
 type Interface interface {
 	Rules() (*Rules, error)
+	RemoteConfiguration() (*RemoteConfiguration, error)
 }
 
 // Service data type represents the whole service for repository interface.
@@ -41,4 +42,14 @@ func (s *Service) Rules() (*Rules, error) {
 	}
 
 	return rules, nil
+}
+
+// RemoteConfiguration method returns the remote configuration provided by the service.
+func (s *Service) RemoteConfiguration() (*RemoteConfiguration, error) {
+	remoteConfiguration, err := s.repo.RemoteConfiguration()
+	if err != nil {
+		return nil, err
+	}
+
+	return remoteConfiguration, nil
 }
