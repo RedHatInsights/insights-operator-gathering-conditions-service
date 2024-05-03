@@ -28,7 +28,7 @@ const APIPrefix = "/api/gathering"
 const (
 	// V1Prefix is the version prefix used in the console-dot environment
 	V1Prefix = "/v1"
-	// V1Prefix is the version prefix used for the newer API v2
+	// V2Prefix is the version prefix used for the newer API v2
 	V2Prefix = "/v2"
 )
 
@@ -51,7 +51,6 @@ func (s *Handler) Register(r *mux.Router) {
 	r.HandleFunc(APIPrefix+V1Prefix+"/openapi.json", serveOpenAPI)
 	r.Handle(APIPrefix+V1Prefix+"/gathering_rules", gatheringRulesEndpoint(s.svc))
 
-	ocpVersion := "TBD"
-	v2Path := fmt.Sprintf("%s%s/%s/gathering_rules", APIPrefix, V2Prefix, ocpVersion)
+	v2Path := fmt.Sprintf("%s%s/{ocpVersion}/gathering_rules", APIPrefix, V2Prefix)
 	r.Handle(v2Path, remoteConfigurationEndpoint(s.svc))
 }

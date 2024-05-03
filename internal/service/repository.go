@@ -39,7 +39,7 @@ type Rules struct {
 	Version string `json:"version,omitempty"`
 }
 
-// ContainerLogRequests defines a type for requesting container
+// ContainerLogRequest defines a type for requesting container
 // log data
 type ContainerLogRequest struct {
 	Namespace    string   `json:"namespace"`

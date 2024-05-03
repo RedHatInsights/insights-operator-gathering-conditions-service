@@ -39,14 +39,6 @@ type GatheringRulesResponse struct {
 	Rules   interface{} `json:"rules"`
 }
 
-// RemoteConfigurationResponse structure represents HTTP response with
-// remote configuration content
-type RemoteConfigurationResponse struct {
-	Version               string                `json:"version"`
-	ConditionalRules      []Rule                `json:"conditional_gathering_rules"`
-	ContainerLogsRequests []ContainerLogRequest `json:"container_logs"`
-}
-
 // serveOpenAPI function handles requests to get OpenAPI specification file
 func serveOpenAPI(w http.ResponseWriter, r *http.Request) {
 	log.Info().Msg("Serving openapi.json file")
@@ -86,7 +78,7 @@ func remoteConfigurationEndpoint(svc Interface) http.HandlerFunc {
 			renderErrorResponse(w, "internal error", err)
 			return
 		}
-		renderResponse(w, &RemoteConfigurationResponse{
+		renderResponse(w, &RemoteConfiguration{
 			Version:               remoteConfig.Version,
 			ConditionalRules:      remoteConfig.ConditionalRules,
 			ContainerLogsRequests: remoteConfig.ContainerLogsRequests,
