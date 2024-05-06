@@ -44,7 +44,7 @@ type Rules struct {
 type ContainerLogRequest struct {
 	Namespace    string   `json:"namespace"`
 	PodNameRegex string   `json:"pod_name_regex"`
-	Previous     bool     `json:"previous,omitempty"`
+	Previous     string   `json:"previous,omitempty"`
 	Messages     []string `json:"messages"`
 }
 

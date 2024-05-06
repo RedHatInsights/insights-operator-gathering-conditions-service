@@ -23,36 +23,36 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRepository(t *testing.T) {
+func TestRepositoryRules(t *testing.T) {
 	type testCase struct {
-		name            string
-		mockData        []byte
-		expectedAnError bool
-		expectedRules   service.Rules
+		name                 string
+		mockConditionalRules []byte
+		expectedAnError      bool
+		expectedRules        service.Rules
 	}
 
 	testCases := []testCase{
 		{
-			name:            "unparsable rule",
-			mockData:        []byte("not a JSON"),
-			expectedAnError: true,
+			name:                 "unparsable rule",
+			mockConditionalRules: []byte("not a JSON"),
+			expectedAnError:      true,
 		},
 		{
-			name:            "no data returned by storage",
-			mockData:        nil,
-			expectedAnError: true,
+			name:                 "no data returned by storage",
+			mockConditionalRules: nil,
+			expectedAnError:      true,
 		},
 		{
-			name:            "valid rules returned by storage",
-			mockData:        []byte(validRulesJSON),
-			expectedAnError: false,
-			expectedRules:   validRules,
+			name:                 "valid rules returned by storage",
+			mockConditionalRules: []byte(validRulesJSON),
+			expectedAnError:      false,
+			expectedRules:        validRules,
 		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			m := mockStorage{
-				conditionalRules: tc.mockData,
+				conditionalRules: tc.mockConditionalRules,
 			}
 			r := service.NewRepository(&m)
 			rules, err := r.Rules()
@@ -61,6 +61,48 @@ func TestRepository(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				assert.Equal(t, &tc.expectedRules, rules)
+			}
+		})
+	}
+}
+
+func TestRepositoryRemoteConfiguration(t *testing.T) {
+	tests := []struct {
+		name                 string
+		mockRemoteConfig     []byte
+		expectedAnError      bool
+		expectedRemoteConfig service.RemoteConfiguration
+	}{
+		{
+			name:             "unparsable rule",
+			mockRemoteConfig: []byte("not a JSON"),
+			expectedAnError:  true,
+		},
+		{
+			name:             "no data returned by storage",
+			mockRemoteConfig: nil,
+			expectedAnError:  true,
+		},
+		{
+			name:                 "valid remote configuration returned by storage",
+			mockRemoteConfig:     []byte(validRemoteConfigurationJSON),
+			expectedAnError:      false,
+			expectedRemoteConfig: validRemoteConfiguration,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := mockStorage{
+				remoteConfig: tt.mockRemoteConfig,
+			}
+			r := service.NewRepository(&m)
+			remoteConfig, err := r.RemoteConfiguration()
+			if tt.expectedAnError {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, &tt.expectedRemoteConfig, remoteConfig)
 			}
 		})
 	}
