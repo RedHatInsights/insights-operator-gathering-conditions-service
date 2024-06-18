@@ -20,7 +20,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"slices"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -117,9 +116,18 @@ func renderErrorResponse(w http.ResponseWriter, msg string, err error) {
 
 func logHeaders(r *http.Request, skipHeaders []string, logEvent *zerolog.Event) {
 	for name, values := range r.Header {
-		if slices.Contains(skipHeaders, name) {
+		if sliceContains(skipHeaders, name) {
 			continue
 		}
 		logEvent.Strs(name, values)
 	}
+}
+
+func sliceContains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
