@@ -22,6 +22,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
@@ -69,4 +70,56 @@ func TestRenderResponseJSONMarshalError(t *testing.T) {
 
 	// we expect that error should be returned
 	assert.Equal(t, http.StatusInternalServerError, writer.Code)
+}
+
+func TestLogHeaders(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://example.com", nil)
+	assert.NoError(t, err)
+
+	req.Header.Add("Authorization", "Bearer token")
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("User-Agent", "Go-http-client/1.1")
+
+	t.Run("no filter", func(t *testing.T) {
+		logs := &logSink{}
+		logger := zerolog.New(logs)
+		logEvent := logger.Debug()
+
+		service.LogHeaders(req, []string{}, logEvent)
+		logEvent.Msg("test")
+
+		assert.Len(t, logs.logs, 1, "received more than 1 log")
+		got := logs.logs[0]
+		assert.Contains(t, got, `"Authorization":["Bearer token"]`)
+		assert.Contains(t, got, `"User-Agent":["Go-http-client/1.1"]`)
+		assert.Contains(t, got, `"Content-Type":["application/json"]`)
+	})
+
+	t.Run("with filter", func(t *testing.T) {
+		logs := &logSink{}
+		logger := zerolog.New(logs)
+		logEvent := logger.Debug()
+
+		service.LogHeaders(req, []string{"Authorization"}, logEvent)
+		logEvent.Msg("test")
+
+		assert.Len(t, logs.logs, 1, "received more than 1 log")
+		got := logs.logs[0]
+		// Note that "Authorization":["Bearer token"] is no longer expected
+		assert.Contains(t, got, `"User-Agent":["Go-http-client/1.1"]`)
+		assert.Contains(t, got, `"Content-Type":["application/json"]`)
+	})
+}
+
+type logSink struct {
+	logs []string
+}
+
+func (l *logSink) Write(p []byte) (n int, err error) {
+	l.logs = append(l.logs, string(p))
+	return len(p), nil
+}
+
+func (l *logSink) Index(i int) string {
+	return l.logs[i]
 }

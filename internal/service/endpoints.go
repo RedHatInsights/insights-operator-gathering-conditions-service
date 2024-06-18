@@ -21,6 +21,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
 	merrors "github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/errors"
@@ -48,6 +49,12 @@ func serveOpenAPI(w http.ResponseWriter, r *http.Request) {
 
 func gatheringRulesEndpoint(svc Interface) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// This is some debug logging to check if we receive the cluster ID as
+		// part of the request IO is doing
+		logHeadersEvent := log.Debug()
+		logHeaders(r, []string{"Authorization"}, logHeadersEvent)
+		logHeadersEvent.Msg("Request headers")
+
 		rules, err := svc.Rules()
 		if err != nil {
 			renderErrorResponse(w, "internal error", err)
@@ -105,4 +112,22 @@ func renderErrorResponse(w http.ResponseWriter, msg string, err error) {
 	}
 
 	renderResponse(w, resp, code)
+}
+
+func logHeaders(r *http.Request, skipHeaders []string, logEvent *zerolog.Event) {
+	for name, values := range r.Header {
+		if sliceContains(skipHeaders, name) {
+			continue
+		}
+		logEvent.Strs(name, values)
+	}
+}
+
+func sliceContains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
