@@ -52,7 +52,7 @@ func gatheringRulesEndpoint(svc Interface) http.HandlerFunc {
 		// This is some debug logging to check if we receive the cluster ID as
 		// part of the request IO is doing
 		logHeadersEvent := log.Debug()
-		logHeaders(r, []string{"Authorization"}, logHeadersEvent)
+		logHeaders(r, []string{"User-Agent"}, logHeadersEvent)
 		logHeadersEvent.Msg("Request headers")
 
 		rules, err := svc.Rules()
@@ -114,12 +114,11 @@ func renderErrorResponse(w http.ResponseWriter, msg string, err error) {
 	renderResponse(w, resp, code)
 }
 
-func logHeaders(r *http.Request, skipHeaders []string, logEvent *zerolog.Event) {
+func logHeaders(r *http.Request, wantHeaders []string, logEvent *zerolog.Event) {
 	for name, values := range r.Header {
-		if sliceContains(skipHeaders, name) {
-			continue
+		if sliceContains(wantHeaders, name) {
+			logEvent.Strs(name, values)
 		}
-		logEvent.Strs(name, values)
 	}
 }
 

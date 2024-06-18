@@ -90,9 +90,9 @@ func TestLogHeaders(t *testing.T) {
 
 		assert.Len(t, logs.logs, 1, "received more than 1 log")
 		got := logs.logs[0]
-		assert.Contains(t, got, `"Authorization":["Bearer token"]`)
-		assert.Contains(t, got, `"User-Agent":["Go-http-client/1.1"]`)
-		assert.Contains(t, got, `"Content-Type":["application/json"]`)
+		assert.NotContains(t, got, `"Authorization":["Bearer token"]`)
+		assert.NotContains(t, got, `"User-Agent":["Go-http-client/1.1"]`)
+		assert.NotContains(t, got, `"Content-Type":["application/json"]`)
 	})
 
 	t.Run("with filter", func(t *testing.T) {
@@ -100,14 +100,15 @@ func TestLogHeaders(t *testing.T) {
 		logger := zerolog.New(logs)
 		logEvent := logger.Debug()
 
-		service.LogHeaders(req, []string{"Authorization"}, logEvent)
+		service.LogHeaders(req, []string{"User-Agent"}, logEvent)
 		logEvent.Msg("test")
 
 		assert.Len(t, logs.logs, 1, "received more than 1 log")
 		got := logs.logs[0]
-		// Note that "Authorization":["Bearer token"] is no longer expected
+		// Note that just "User-Agent" is expected
 		assert.Contains(t, got, `"User-Agent":["Go-http-client/1.1"]`)
-		assert.Contains(t, got, `"Content-Type":["application/json"]`)
+		assert.NotContains(t, got, `"Authorization"`)
+		assert.NotContains(t, got, `"Content-Type"`)
 	})
 }
 
