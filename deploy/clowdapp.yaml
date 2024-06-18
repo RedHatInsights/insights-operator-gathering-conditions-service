@@ -104,6 +104,8 @@ objects:
                   optional: true
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SENTRY__ENVIRONMENT
               value: ${ENV_NAME}
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__LOGGING__LOG_LEVEL
+              value: ${LOG_LEVEL}
           image: ${IMAGE}:${IMAGE_TAG}
           livenessProbe:
             failureThreshold: 3
@@ -190,3 +192,5 @@ parameters:
   value: '200m'
 - name: MEMORY_LIMIT
   value: '512Mi'
+- name: LOG_LEVEL
+  value: "INFO"
