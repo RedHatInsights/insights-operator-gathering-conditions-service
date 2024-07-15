@@ -17,7 +17,8 @@ sequenceDiagram
     actor C as Cluster
     actor CC as Canary Cluster
 
-    Note left of GCS: Stable version is 1.0.1
+    Note left of GCS: Stable version is 1.0.1<br/>CANARY_VERSION = none<br/>STABLE_VERSION = 1.0.1
+    Note left of Unleash: Canary population is 0%
     GCS -->> C: Get version 1.0.1
     GCS -->> CC: Get version 1.0.1
 
