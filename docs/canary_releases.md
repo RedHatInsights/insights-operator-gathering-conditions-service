@@ -47,6 +47,7 @@ sequenceDiagram
 
     alt canary archives are wrong
         RT ->> AI: Revert the PR
+        PT ->> AI: Review and merge the revert
         AI ->> GCS: Update prod deployment
         GCS -->> C: Get version 1.0.1
         GCS -->> CC: Get version 1.0.1
