@@ -64,6 +64,9 @@ sequenceDiagram
 In case of an emergency release, we would just need to create the app-interface
 Pull Request and ignore the Unleash settings.
 
+In case there are new conditions published during a canary release, you can
+update the `CANARY_VERSION` and start the sequence from the beginning.
+
 Note that the stage environment is not mentioned in the whole diagram. The
 idea is that the service logic is tested both in stage and production, but the
 new conditions are shipped to production directly via environment variables. The
