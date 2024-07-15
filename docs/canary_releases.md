@@ -53,6 +53,7 @@ sequenceDiagram
         GCS -->> CC: Get version 1.0.1
     else canary archives look fine
         RT ->> AI: Remove the canary version and set stable <br/>CANARY_VERSION = none<br/>STABLE_VERSION = 1.0.2
+        PT ->> AI: Review and merge the PR
         AI ->> GCS: Update prod deployment
         GCS -->> C: Get version 1.0.2
         GCS -->> CC: Get version 1.0.2
