@@ -17,7 +17,7 @@ sequenceDiagram
     actor C as Cluster
     actor CC as Canary Cluster
 
-    Note left of GCS: Latest version is 1.0.1
+    Note left of GCS: Stable version is 1.0.1
     GCS -->> C: Get version 1.0.1
     GCS -->> CC: Get version 1.0.1
 
