@@ -4,6 +4,7 @@
 # Options that must be configured by app owner
 # --------------------------------------------
 APP_NAME="ccx-data-pipeline"  # name of app-sre "application" folder this component lives in
+REF_ENV="insights-production"
 COMPONENT_NAME="io-gathering-service"  # name of app-sre "resourceTemplate" in deploy.yaml for this component
 COMPONENTS="io-gathering-service"  # space-separated list of components to laod
 COMPONENTS_W_RESOURCES="io-gathering-service"  # component to keep
@@ -31,3 +32,4 @@ source $CICD_ROOT/build.sh
 source $CICD_ROOT/deploy_ephemeral_env.sh
 
 source $CICD_ROOT/cji_smoke_test.sh
+source $CICD_ROOT/post_test_results.sh  # publish results in Ibutsu
