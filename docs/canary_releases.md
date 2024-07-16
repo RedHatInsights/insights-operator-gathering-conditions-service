@@ -67,6 +67,12 @@ Pull Request and ignore the Unleash settings.
 In case there are new conditions published during a canary release, you can
 update the `CANARY_VERSION` and start the sequence from the beginning.
 
+Also, if you keep the canary population to X% but remove the canary version from
+the code, all the clusters, be it from the canary or live population, will
+consume the stable version. So if we eventually remove the canary version
+without changing the population, everything should be working and there won't
+be any outage.
+
 Note that the stage environment is not mentioned in the whole diagram. The
 idea is that the service logic is tested both in stage and production, but the
 new conditions are shipped to production directly via environment variables. The
