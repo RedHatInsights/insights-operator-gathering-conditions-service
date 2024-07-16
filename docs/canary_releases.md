@@ -13,7 +13,7 @@ sequenceDiagram
     participant AI as App Interface
     participant GCS as Gathering Conditions Service
     participant Unleash
-    participant Storage
+    participant Monitoring
     actor C as Cluster
     actor CC as Canary Cluster
 
@@ -43,7 +43,7 @@ sequenceDiagram
         GCS -->> CC: Get version 1.0.2
     end
     
-    RT ->> Storage: Analyze the canary archives and check they are generated well
+    RT ->> Monitoring: Analyze the canary archives and check they are generated well
 
     alt canary archives are wrong
         RT ->> AI: Revert the PR
