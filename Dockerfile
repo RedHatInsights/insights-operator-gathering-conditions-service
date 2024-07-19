@@ -16,7 +16,7 @@
 # Conditions
 ###################
 
-FROM registry.redhat.io/ubi8/ubi-minimal:latest AS conditions
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest AS conditions
 
 ARG CONDITIONS_VERSION="1.0.1"
 
