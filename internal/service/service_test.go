@@ -27,7 +27,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestService(t *testing.T) {
+func TestServiceV1(t *testing.T) {
 	type testCase struct {
 		name            string
 		mockData        []byte
@@ -87,6 +87,63 @@ func TestService(t *testing.T) {
 						rr.Body.String(),
 						`"version":"0.0.1","rules":[{"conditions":["condition 1","condition 2"],"gathering_functions":"the gathering functions"}]`)
 				}
+			}
+		})
+	}
+}
+
+func TestServiceV2(t *testing.T) {
+	type testCase struct {
+		name            string
+		mockData        []byte
+		expectedAnError bool
+	}
+
+	testCases := []testCase{
+		{
+			name:            "valid remote configuration stored",
+			mockData:        []byte(validRemoteConfigurationJSON),
+			expectedAnError: false,
+		},
+		{
+			name:            "invalid remote configuration stored",
+			mockData:        []byte("not a remote configuration"),
+			expectedAnError: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			store := mockStorage{
+				remoteConfig: tc.mockData,
+			}
+			repo := service.NewRepository(&store)
+			svc := service.New(repo)
+
+			// Create the request:
+			req, err := http.NewRequest("GET", fmt.Sprintf("%s/v2/some_version/gathering_rules", service.APIPrefix), http.NoBody)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			rr := httptest.NewRecorder() // Used to record the response.
+			handler := service.NewHandler(svc)
+
+			router := mux.NewRouter()
+
+			handler.Register(router)
+
+			router.ServeHTTP(rr, req)
+
+			if tc.expectedAnError {
+				assert.Equal(t, http.StatusInternalServerError, rr.Code)
+				assert.Contains(t, rr.Body.String(), "error")
+			} else {
+				assert.Equal(t, http.StatusOK, rr.Code)
+				assert.Contains(
+					t,
+					rr.Body.String(),
+					`{"conditional_gathering_rules":[{"conditions":["condition 1","condition 2"],"gathering_functions":"the gathering functions"}],"container_logs":[{"namespace":"namespace-1","pod_name_regex":"test regex","previous":true,"messages":["first message","second message"]}],"version":"0.0.1"}`)
 			}
 		})
 	}
