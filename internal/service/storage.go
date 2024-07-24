@@ -57,43 +57,28 @@ func NewStorage(cfg StorageConfig) *Storage {
 // ReadConditionalRules tries to find conditional rule with given name in the storage.
 func (s *Storage) ReadConditionalRules(path string) []byte {
 	log.Info().Str("path to resource", path).Msg("Finding resource")
-
 	conditionalRulesPath := fmt.Sprintf("%s/%s", s.conditionalRulesPath, path)
-
-	// use the in-memory data
-	data, ok := s.cache[conditionalRulesPath]
-	if ok {
-		return data
-	}
-
-	// or try to load it from the file
-	data, err := s.readFile(conditionalRulesPath)
-	if err != nil {
-		log.Warn().Msgf("Resource not found: '%s'", conditionalRulesPath)
-		return nil
-	}
-
-	log.Info().Int("bytes", len(data)).Msg("Resource file has been read")
-
-	return data
+	return s.readDataFromPath(conditionalRulesPath)
 }
 
 // ReadRemoteConfig tries to find remote configuration with given name in the storage
 func (s *Storage) ReadRemoteConfig(path string) []byte {
 	log.Info().Str("path to resource", path).Msg("Finding resource")
-
 	remoteConfigPath := fmt.Sprintf("%s/%s", s.remoteConfigurationPath, path)
+	return s.readDataFromPath(remoteConfigPath)
+}
 
+func (s *Storage) readDataFromPath(path string) []byte {
 	// use the in-memory data
-	data, ok := s.cache[remoteConfigPath]
+	data, ok := s.cache[path]
 	if ok {
 		return data
 	}
 
 	// or try to load it from the file
-	data, err := s.readFile(remoteConfigPath)
+	data, err := s.readFile(path)
 	if err != nil {
-		log.Warn().Msgf("Resource not found: '%s'", remoteConfigPath)
+		log.Warn().Msgf("Resource not found: '%s'", path)
 		return nil
 	}
 
