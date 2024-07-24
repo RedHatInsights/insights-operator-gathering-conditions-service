@@ -44,16 +44,16 @@ type Rules struct {
 type ContainerLogRequest struct {
 	Namespace    string   `json:"namespace"`
 	PodNameRegex string   `json:"pod_name_regex"`
-	Previous     string   `json:"previous,omitempty"`
+	Previous     bool     `json:"previous,omitempty"`
 	Messages     []string `json:"messages"`
 }
 
 // RemoteConfiguration represents the new data structure
 // served by the v2 API
 type RemoteConfiguration struct {
-	ConditionalRules      []Rule                `json:"conditional_gathering_rules,omitempty"`
-	ContainerLogsRequests []ContainerLogRequest `json:"container_logs,omitempty"`
-	Version               string                `json:"version,omitempty"`
+	ConditionalRules      []Rule                `json:"conditional_gathering_rules"`
+	ContainerLogsRequests []ContainerLogRequest `json:"container_logs"`
+	Version               string                `json:"version"`
 }
 
 // Repository is definition of objects that implement the RepositoryInterface
@@ -84,7 +84,7 @@ func (r *Repository) Rules() (*Rules, error) {
 }
 
 func (r *Repository) RemoteConfiguration() (*RemoteConfiguration, error) {
-	filepath := "rules.json" // TODO: Make this configurable
+	filepath := "config_default.json" // TODO: Make this depend on OCP version
 	data := r.store.ReadRemoteConfig(filepath)
 	if data == nil {
 		return nil, fmt.Errorf("store data not found for '%s'", filepath)

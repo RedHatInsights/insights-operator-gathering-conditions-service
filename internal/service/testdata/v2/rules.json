@@ -13,7 +13,7 @@
         {
             "namespace": "namespace-1",
             "pod_name_regex": "test regex",
-            "previous": "true",
+            "previous": true,
             "messages": [
                 "first message",
 			    "second message"

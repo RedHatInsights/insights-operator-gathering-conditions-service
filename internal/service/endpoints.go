@@ -72,7 +72,7 @@ func gatheringRulesEndpoint(svc Interface) http.HandlerFunc {
 // remoteConfigurationEndpoint return HTTP handler function providing
 // the RemoteConfigurationResponse
 func remoteConfigurationEndpoint(svc Interface) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, _ *http.Request) {
 		remoteConfig, err := svc.RemoteConfiguration()
 		if err != nil {
 			renderErrorResponse(w, "internal error", err)

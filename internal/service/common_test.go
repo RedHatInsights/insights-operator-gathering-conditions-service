@@ -56,7 +56,7 @@ var (
 		ContainerLogsRequests: []service.ContainerLogRequest{
 			{
 				Namespace:    "namespace-1",
-				Previous:     "true",
+				Previous:     true,
 				PodNameRegex: "test regex",
 				Messages: []string{
 					"first message",
@@ -77,7 +77,7 @@ var (
 		"container_logs": [
 			{
 				"namespace": "namespace-1",
-				"previous": "true",
+				"previous": true,
 				"pod_name_regex": "test regex",
 				"messages": [
 					"first message",

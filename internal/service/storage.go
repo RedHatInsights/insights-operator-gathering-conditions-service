@@ -54,7 +54,7 @@ func NewStorage(cfg StorageConfig) *Storage {
 	}
 }
 
-// Find method tries to find resource with given name in the storage.
+// ReadConditionalRules tries to find conditional rule with given name in the storage.
 func (s *Storage) ReadConditionalRules(path string) []byte {
 	log.Info().Str("path to resource", path).Msg("Finding resource")
 
@@ -78,6 +78,7 @@ func (s *Storage) ReadConditionalRules(path string) []byte {
 	return data
 }
 
+// ReadRemoteConfig tries to find remote configuration with given name in the storage
 func (s *Storage) ReadRemoteConfig(path string) []byte {
 	log.Info().Str("path to resource", path).Msg("Finding resource")
 
