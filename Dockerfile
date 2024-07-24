@@ -18,7 +18,7 @@
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest AS conditions
 
-ARG CONDITIONS_VERSION="1.0.1"
+ARG CONDITIONS_VERSION="1.1.0"
 
 RUN microdnf install --nodocs -y jq git
 
@@ -27,7 +27,8 @@ RUN git clone --depth 1 --branch $CONDITIONS_VERSION https://github.com/RedHatIn
 WORKDIR "/insights-operator-gathering-conditions"
 
 RUN ./build.sh && \
-    cp -r ./build /conditions
+    cp -r ./build/v1 /conditions && \
+    cp -r ./build/v2 /remote-configurations
 
 ###################
 # Builder
@@ -57,6 +58,7 @@ COPY --from=builder /etc/pki /etc/pki
 
 # copy the conditions
 COPY --from=conditions  /conditions /conditions
+COPY --from=conditions  /remote-configurations /remote-configurations
 
 USER 1001
 
