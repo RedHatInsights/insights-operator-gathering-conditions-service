@@ -83,6 +83,7 @@ func (r *Repository) Rules() (*Rules, error) {
 	return &rules, nil
 }
 
+// RemoteConfiguration returns a default remote configuration for v2 endpoint
 func (r *Repository) RemoteConfiguration() (*RemoteConfiguration, error) {
 	filepath := "config_default.json" // TODO: Make this depend on OCP version
 	data := r.store.ReadRemoteConfig(filepath)
