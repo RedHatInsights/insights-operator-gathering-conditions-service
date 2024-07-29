@@ -27,9 +27,10 @@ import (
 const (
 	validRulesFile = "rules.json"
 	rulesFolder    = "testdata"
+	v2Folder       = "testdata/v2"
 )
 
-func TestStorage(t *testing.T) {
+func TestReadConditionalRules(t *testing.T) {
 	type testCase struct {
 		name          string
 		rulesFile     string
@@ -65,7 +66,7 @@ func TestStorage(t *testing.T) {
 				service.StorageConfig{
 					RulesPath: rulesFolder,
 				})
-			runStorageTest(t, storage, tc.rulesFile, tc.expectedRules)
+			checkConditionalRules(t, storage, tc.rulesFile, tc.expectedRules)
 		})
 	}
 
@@ -76,14 +77,14 @@ func TestStorage(t *testing.T) {
 				RulesPath: rulesFolder,
 			})
 		for i := 0; i < 2; i++ {
-			runStorageTest(t, storage, validRulesFile, validRules)
+			checkConditionalRules(t, storage, validRulesFile, validRules)
 		}
 	})
 }
 
-func runStorageTest(t *testing.T, storage *service.Storage, rulesFile string, expectedRules service.Rules) {
+func checkConditionalRules(t *testing.T, storage *service.Storage, rulesFile string, expectedRules service.Rules) {
 	var rules service.Rules
-	data := storage.Find(rulesFile)
+	data := storage.ReadConditionalRules(rulesFile)
 	if len(data) == 0 {
 		rules = service.Rules{}
 	} else {
@@ -91,4 +92,55 @@ func runStorageTest(t *testing.T, storage *service.Storage, rulesFile string, ex
 		assert.NoError(t, err)
 	}
 	assert.Equal(t, expectedRules, rules)
+}
+
+func checkRemoteConfig(t *testing.T, storage *service.Storage, remoteConfigFile string, expectedRemoteConfig service.RemoteConfiguration) {
+	var remoteConfig service.RemoteConfiguration
+	data := storage.ReadRemoteConfig(remoteConfigFile)
+	if len(data) == 0 {
+		remoteConfig = service.RemoteConfiguration{}
+	} else {
+		err := json.Unmarshal(data, &remoteConfig)
+		assert.NoError(t, err)
+	}
+	assert.Equal(t, expectedRemoteConfig, remoteConfig)
+}
+
+func TestReadRemoteConfiguration(t *testing.T) {
+	tests := []struct {
+		name                 string
+		remoteConfigFile     string
+		expectedRemoteConfig service.RemoteConfiguration
+	}{
+		{
+			name:                 "file exists and is empty",
+			remoteConfigFile:     "empty.json",
+			expectedRemoteConfig: service.RemoteConfiguration{},
+		},
+		{
+			name:                 "file doesn't exit",
+			remoteConfigFile:     "not-found.json",
+			expectedRemoteConfig: service.RemoteConfiguration{},
+		},
+		{
+			name:                 "file exists and is valid",
+			remoteConfigFile:     validRulesFile,
+			expectedRemoteConfig: validRemoteConfiguration,
+		},
+		{
+			name:                 "reading from 'directory' instead of file",
+			remoteConfigFile:     "",
+			expectedRemoteConfig: service.RemoteConfiguration{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			storage := service.NewStorage(
+				service.StorageConfig{
+					RemoteConfigurationPath: v2Folder,
+				})
+			checkRemoteConfig(t, storage, tt.remoteConfigFile, tt.expectedRemoteConfig)
+		})
+	}
 }

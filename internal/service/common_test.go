@@ -42,12 +42,62 @@ var (
 		]
 	}
 	`
+	validRemoteConfiguration = service.RemoteConfiguration{
+		Version: "0.0.1",
+		ConditionalRules: []service.Rule{
+			{
+				Conditions: []interface{}{
+					"condition 1",
+					"condition 2",
+				},
+				GatheringFunctions: "the gathering functions",
+			},
+		},
+		ContainerLogsRequests: []service.ContainerLogRequest{
+			{
+				Namespace:    "namespace-1",
+				Previous:     true,
+				PodNameRegex: "test regex",
+				Messages: []string{
+					"first message",
+					"second message",
+				},
+			},
+		},
+	}
+	validRemoteConfigurationJSON = `
+	{
+		"version": "0.0.1",
+		"conditional_gathering_rules": [
+			{
+				"conditions": ["condition 1", "condition 2"],
+				"gathering_functions": "the gathering functions"
+			}
+		],
+		"container_logs": [
+			{
+				"namespace": "namespace-1",
+				"previous": true,
+				"pod_name_regex": "test regex",
+				"messages": [
+					"first message",
+					"second message"
+				]
+			}
+		]
+	}
+	`
 )
 
 type mockStorage struct {
-	mockData []byte
+	conditionalRules []byte
+	remoteConfig     []byte
 }
 
-func (m *mockStorage) Find(string) []byte {
-	return m.mockData
+func (m *mockStorage) ReadConditionalRules(string) []byte {
+	return m.conditionalRules
+}
+
+func (m *mockStorage) ReadRemoteConfig(string) []byte {
+	return m.remoteConfig
 }
