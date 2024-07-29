@@ -69,6 +69,23 @@ func gatheringRulesEndpoint(svc Interface) http.HandlerFunc {
 	}
 }
 
+// remoteConfigurationEndpoint return HTTP handler function providing
+// the RemoteConfigurationResponse
+func remoteConfigurationEndpoint(svc Interface) http.HandlerFunc {
+	return func(w http.ResponseWriter, _ *http.Request) {
+		remoteConfig, err := svc.RemoteConfiguration()
+		if err != nil {
+			renderErrorResponse(w, "internal error", err)
+			return
+		}
+		renderResponse(w, &RemoteConfiguration{
+			Version:               remoteConfig.Version,
+			ConditionalRules:      remoteConfig.ConditionalRules,
+			ContainerLogsRequests: remoteConfig.ContainerLogsRequests,
+		}, http.StatusOK)
+	}
+}
+
 func renderResponse(w http.ResponseWriter, resp interface{}, code int) {
 	w.Header().Set("Content-Type", "application/json")
 
