@@ -46,6 +46,7 @@ objects:
       iqePlugin: ccx
     dependencies:
       - ingress
+      - rbac  # required by iqe-ccx-plugin in Konflux env.
     deployments:
       - name: instance
         minReplicas: ${{MIN_REPLICAS}}
@@ -64,6 +65,8 @@ objects:
               value: ":8000"
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__RULES_PATH
               value: /conditions
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__REMOTE_CONFIGURATION
+              value: /remote-configurations
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__LOGGING__LOGGING_TO_CLOUD_WATCH_ENABLED
               value: ${LOGGING_TO_CLOUD_WATCH_ENABLED}
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CLOUDWATCH__DEBUG
@@ -104,6 +107,8 @@ objects:
                   optional: true
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SENTRY__ENVIRONMENT
               value: ${ENV_NAME}
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__LOGGING__LOG_LEVEL
+              value: ${LOG_LEVEL}
           image: ${IMAGE}:${IMAGE_TAG}
           livenessProbe:
             failureThreshold: 3
@@ -190,3 +195,5 @@ parameters:
   value: '200m'
 - name: MEMORY_LIMIT
   value: '512Mi'
+- name: LOG_LEVEL
+  value: "INFO"

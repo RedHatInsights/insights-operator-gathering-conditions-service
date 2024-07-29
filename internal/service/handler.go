@@ -16,13 +16,21 @@ limitations under the License.
 
 package service
 
-import "github.com/gorilla/mux"
+import (
+	"fmt"
+
+	"github.com/gorilla/mux"
+)
 
 // APIPrefix is the prefix used in the console-dot environment
 const APIPrefix = "/api/gathering"
 
-// V1Prefix is the version prefix used in the console-dot environment
-const V1Prefix = "/v1"
+const (
+	// V1Prefix is the version prefix used in the console-dot environment
+	V1Prefix = "/v1"
+	// V2Prefix is the version prefix used for the newer API v2
+	V2Prefix = "/v2"
+)
 
 // Handler structure represents HTTP request handler.
 type Handler struct {
@@ -42,4 +50,7 @@ func (s *Handler) Register(r *mux.Router) {
 	r.Handle(APIPrefix+"/gathering_rules", gatheringRulesEndpoint(s.svc))
 	r.HandleFunc(APIPrefix+V1Prefix+"/openapi.json", serveOpenAPI)
 	r.Handle(APIPrefix+V1Prefix+"/gathering_rules", gatheringRulesEndpoint(s.svc))
+
+	v2Path := fmt.Sprintf("%s%s/{ocpVersion}/gathering_rules", APIPrefix, V2Prefix)
+	r.Handle(v2Path, remoteConfigurationEndpoint(s.svc))
 }
