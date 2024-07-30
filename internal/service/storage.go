@@ -44,12 +44,12 @@ type Cache struct {
 }
 
 // Get retrieves value from the cache
-func (c *Cache) Get(key string) ([]byte, bool) {
-	data, ok := c.cache.Load(key)
+func (c *Cache) Get(key string) []byte {
+	data, _ := c.cache.Load(key)
 	if data != nil {
-		return data.([]byte), ok
+		return data.([]byte)
 	}
-	return nil, ok
+	return nil
 }
 
 // Set stores value under given key to the cache
@@ -89,8 +89,8 @@ func (s *Storage) ReadRemoteConfig(path string) []byte {
 
 func (s *Storage) readDataFromPath(path string) []byte {
 	// use the in-memory data
-	data, ok := s.cache.Get(path)
-	if ok {
+	data := s.cache.Get(path)
+	if data != nil {
 		return data
 	}
 
