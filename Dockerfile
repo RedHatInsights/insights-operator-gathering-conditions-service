@@ -33,9 +33,11 @@ RUN ./build.sh && \
 ###################
 # Builder
 ###################
-FROM registry.access.redhat.com/ubi8/go-toolset:1.18 AS builder
+FROM registry.access.redhat.com/ubi8/go-toolset:1.21.11-1.1720406008 AS builder
 
 USER 0
+
+ENV GOFLAGS="-buildvcs=false"
 
 COPY . .
 
