@@ -37,6 +37,8 @@ FROM registry.access.redhat.com/ubi8/go-toolset:1.18 AS builder
 
 USER 0
 
+ENV GOFLAGS="-buildvcs=false"
+
 COPY . .
 
 RUN make build && \
