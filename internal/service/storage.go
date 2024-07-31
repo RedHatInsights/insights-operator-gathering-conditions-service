@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sync"
 
 	"github.com/rs/zerolog/log"
 )
@@ -37,11 +38,30 @@ type StorageConfig struct {
 	RemoteConfigurationPath string `mapstructure:"remote_configuration" toml:"remote_configuration"`
 }
 
+// Cache type represents thread safe map for storing loaded configurations
+type Cache struct {
+	cache sync.Map
+}
+
+// Get retrieves value from the cache
+func (c *Cache) Get(key string) []byte {
+	data, _ := c.cache.Load(key)
+	if data != nil {
+		return data.([]byte)
+	}
+	return nil
+}
+
+// Set stores value under given key to the cache
+func (c *Cache) Set(key string, value []byte) {
+	c.cache.Store(key, value)
+}
+
 // Storage type represents container for resources.
 type Storage struct {
 	conditionalRulesPath    string
 	remoteConfigurationPath string
-	cache                   map[string][]byte
+	cache                   Cache
 }
 
 // NewStorage constructs new storage object.
@@ -50,7 +70,6 @@ func NewStorage(cfg StorageConfig) *Storage {
 	return &Storage{
 		conditionalRulesPath:    cfg.RulesPath,
 		remoteConfigurationPath: cfg.RemoteConfigurationPath,
-		cache:                   make(map[string][]byte), // TODO: Make it an own type
 	}
 }
 
@@ -70,8 +89,8 @@ func (s *Storage) ReadRemoteConfig(path string) []byte {
 
 func (s *Storage) readDataFromPath(path string) []byte {
 	// use the in-memory data
-	data, ok := s.cache[path]
-	if ok {
+	data := s.cache.Get(path)
+	if data != nil {
 		return data
 	}
 
@@ -105,7 +124,7 @@ func (s *Storage) readFile(path string) ([]byte, error) {
 	}
 
 	// add the bytes to cache
-	s.cache[path] = data
+	s.cache.Set(path, data)
 
 	return data, nil
 }
