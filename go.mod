@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/BurntSushi/toml v1.4.0
-	github.com/RedHatInsights/insights-operator-utils v1.25.4
+	github.com/RedHatInsights/insights-operator-utils v1.25.5
 	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1
 	github.com/rs/zerolog v1.33.0
@@ -19,8 +19,8 @@ require (
 	github.com/RedHatInsights/cloudwatch v0.0.0-20210111105023-1df2bdfe3291 // indirect
 	github.com/RedHatInsights/kafka-zerolog v1.0.0 // indirect
 	github.com/Shopify/sarama v1.27.1 // indirect
-	github.com/archdx/zerolog-sentry v1.8.2 // indirect
-	github.com/aws/aws-sdk-go v1.50.16 // indirect
+	github.com/archdx/zerolog-sentry v1.8.4 // indirect
+	github.com/aws/aws-sdk-go v1.55.5 // indirect
 	github.com/bitly/go-simplejson v0.5.0 // indirect
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
