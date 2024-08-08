@@ -41,7 +41,7 @@ type GatheringRulesResponse struct {
 
 // serveOpenAPI function handles requests to get OpenAPI specification file
 func serveOpenAPI(w http.ResponseWriter, r *http.Request) {
-	log.Info().Msg("Serving openapi.json file")
+	log.Debug().Msg("Serving openapi.json file")
 	p := "./openapi.json"
 	w.Header().Set("Content-type", "application/json")
 	http.ServeFile(w, r, p)
@@ -61,7 +61,7 @@ func gatheringRulesEndpoint(svc Interface) http.HandlerFunc {
 			return
 		}
 
-		log.Info().Int("rules count", len(rules.Items)).Msg("Serving gathering rules")
+		log.Debug().Int("rules count", len(rules.Items)).Msg("Serving gathering rules")
 		renderResponse(w, &GatheringRulesResponse{
 			Version: rules.Version,
 			Rules:   rules.Items,
@@ -104,7 +104,7 @@ func renderResponse(w http.ResponseWriter, resp interface{}, code int) {
 		return
 	}
 
-	log.Info().Msg("Response has been sent")
+	log.Debug().Msg("Response has been sent")
 }
 
 func renderErrorResponse(w http.ResponseWriter, msg string, err error) {
