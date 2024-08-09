@@ -33,6 +33,7 @@ func TestWrongMethods(t *testing.T) {
 		"/gathering_rules",
 		"/v1/gathering_rules",
 		"/v1/openapi.json",
+		"/v2/openapi.json",
 		"/v2/1.2.3/gathering_rules",
 	}
 
