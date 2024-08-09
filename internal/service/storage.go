@@ -66,7 +66,7 @@ type Storage struct {
 
 // NewStorage constructs new storage object.
 func NewStorage(cfg StorageConfig) *Storage {
-	log.Info().Str("path to rules", cfg.RulesPath).Msg("Constructing storage object")
+	log.Debug().Str("path to rules", cfg.RulesPath).Msg("Constructing storage object")
 	return &Storage{
 		conditionalRulesPath:    cfg.RulesPath,
 		remoteConfigurationPath: cfg.RemoteConfigurationPath,
@@ -75,14 +75,14 @@ func NewStorage(cfg StorageConfig) *Storage {
 
 // ReadConditionalRules tries to find conditional rule with given name in the storage.
 func (s *Storage) ReadConditionalRules(path string) []byte {
-	log.Info().Str("path to resource", path).Msg("Finding resource")
+	log.Debug().Str("path to resource", path).Msg("Finding resource")
 	conditionalRulesPath := fmt.Sprintf("%s/%s", s.conditionalRulesPath, path)
 	return s.readDataFromPath(conditionalRulesPath)
 }
 
 // ReadRemoteConfig tries to find remote configuration with given name in the storage
 func (s *Storage) ReadRemoteConfig(path string) []byte {
-	log.Info().Str("path to resource", path).Msg("Finding resource")
+	log.Debug().Str("path to resource", path).Msg("Finding resource")
 	remoteConfigPath := fmt.Sprintf("%s/%s", s.remoteConfigurationPath, path)
 	return s.readDataFromPath(remoteConfigPath)
 }
@@ -101,7 +101,7 @@ func (s *Storage) readDataFromPath(path string) []byte {
 		return nil
 	}
 
-	log.Info().Int("bytes", len(data)).Msg("Resource file has been read")
+	log.Debug().Int("bytes", len(data)).Msg("Resource file has been read")
 
 	return data
 }

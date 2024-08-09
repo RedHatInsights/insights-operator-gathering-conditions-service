@@ -87,7 +87,7 @@ func (server *Server) Authentication(next http.Handler, noAuthURLs []string) htt
 			return
 		}
 
-		log.Info().Msgf("Authentication token: %s", token)
+		log.Debug().Msgf("Authentication token: %s", token)
 
 		var decoded []byte
 
@@ -183,7 +183,7 @@ func (server *Server) getAuthTokenHeader(_ http.ResponseWriter, r *http.Request)
 	// In case of testing on local machine we don't take x-rh-identity
 	// header, but instead Authorization with JWT token in it
 	if server.AuthConfig.Type == "jwt" {
-		log.Info().Msg("Retrieving jwt token")
+		log.Debug().Msg("Retrieving jwt token")
 
 		// Grab the token from the header
 		tokenHeader = r.Header.Get("Authorization")
@@ -203,12 +203,12 @@ func (server *Server) getAuthTokenHeader(_ http.ResponseWriter, r *http.Request)
 		}
 		tokenHeader = splitted[1]
 	} else {
-		log.Info().Msg("Retrieving x-rh-identity token")
+		log.Debug().Msg("Retrieving x-rh-identity token")
 		// Grab the token from the header
 		tokenHeader = r.Header.Get("x-rh-identity")
 	}
 
-	log.Info().Int("Length", len(tokenHeader)).Msg("Token retrieved")
+	log.Debug().Int("Length", len(tokenHeader)).Msg("Token retrieved")
 
 	if tokenHeader == "" {
 		const message = "Missing auth token"
