@@ -50,6 +50,7 @@ func (s *Handler) Register(r *mux.Router) {
 	r.Handle(APIPrefix+"/gathering_rules", gatheringRulesEndpoint(s.svc)).Methods("GET")
 	r.HandleFunc(APIPrefix+V1Prefix+"/openapi.json", serveOpenAPI).Methods("GET")
 	r.Handle(APIPrefix+V1Prefix+"/gathering_rules", gatheringRulesEndpoint(s.svc)).Methods("GET")
+	r.HandleFunc(APIPrefix+V2Prefix+"/openapi.json", serveOpenAPI).Methods("GET")
 
 	v2Path := fmt.Sprintf("%s%s/{ocpVersion}/gathering_rules", APIPrefix, V2Prefix)
 	r.Handle(v2Path, remoteConfigurationEndpoint(s.svc)).Methods("GET")
