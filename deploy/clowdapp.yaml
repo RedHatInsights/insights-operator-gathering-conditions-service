@@ -164,7 +164,7 @@ objects:
 parameters:
 - description: Image name
   name: IMAGE
-  value: quay.io/redhat-user-workloads/obsint-processing-tenant/io-gathering-service/io-gathering-service@sha256
+  value: quay.io/redhat-services-prod/obsint-processing-tenant/io-gathering-service
 - description: Image tag
   name: IMAGE_TAG
   required: true
