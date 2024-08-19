@@ -36,6 +36,7 @@ type StorageInterface interface {
 type StorageConfig struct {
 	RulesPath               string `mapstructure:"rules_path" toml:"rules_path"`
 	RemoteConfigurationPath string `mapstructure:"remote_configuration" toml:"remote_configuration"`
+	ClusterMappingPath      string `mapstructure:"cluster_mapping" toml:"cluster_mapping"`
 }
 
 // Cache type represents thread safe map for storing loaded configurations
@@ -62,14 +63,16 @@ type Storage struct {
 	conditionalRulesPath    string
 	remoteConfigurationPath string
 	cache                   Cache
+	clusterMappingPath      string
 }
 
 // NewStorage constructs new storage object.
 func NewStorage(cfg StorageConfig) *Storage {
-	log.Debug().Str("path to rules", cfg.RulesPath).Msg("Constructing storage object")
+	log.Debug().Interface("config", cfg).Msg("Constructing storage object")
 	return &Storage{
 		conditionalRulesPath:    cfg.RulesPath,
 		remoteConfigurationPath: cfg.RemoteConfigurationPath,
+		clusterMappingPath:      cfg.ClusterMappingPath, // TODO: Test this
 	}
 }
 
