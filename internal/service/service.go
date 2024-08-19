@@ -19,7 +19,7 @@ package service
 // RulesProvider defines methods to be implemented by any rules provider
 type RulesProvider interface {
 	Rules() (*Rules, error)
-	RemoteConfiguration() (*RemoteConfiguration, error)
+	RemoteConfiguration(ocpVersion string) (*RemoteConfiguration, error)
 }
 
 // Service data type represents the whole service for repository interface.
@@ -45,8 +45,8 @@ func (s *Service) Rules() (*Rules, error) {
 }
 
 // RemoteConfiguration method returns the remote configuration provided by the service.
-func (s *Service) RemoteConfiguration() (*RemoteConfiguration, error) {
-	remoteConfiguration, err := s.repo.RemoteConfiguration()
+func (s *Service) RemoteConfiguration(ocpVersion string) (*RemoteConfiguration, error) {
+	remoteConfiguration, err := s.repo.RemoteConfiguration(ocpVersion)
 	if err != nil {
 		return nil, err
 	}

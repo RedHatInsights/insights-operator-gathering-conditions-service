@@ -72,8 +72,10 @@ func gatheringRulesEndpoint(svc RulesProvider) http.HandlerFunc {
 // remoteConfigurationEndpoint return HTTP handler function providing
 // the RemoteConfigurationResponse
 func remoteConfigurationEndpoint(svc RulesProvider) http.HandlerFunc {
-	return func(w http.ResponseWriter, _ *http.Request) {
-		remoteConfig, err := svc.RemoteConfiguration()
+	return func(w http.ResponseWriter, r *http.Request) {
+		ocpVersion := r.URL.Query().Get("ocpVersion")
+		remoteConfig, err := svc.RemoteConfiguration(ocpVersion)
+
 		if err != nil {
 			renderErrorResponse(w, "internal error", err)
 			return

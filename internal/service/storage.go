@@ -30,6 +30,7 @@ import (
 type StorageInterface interface {
 	ReadConditionalRules(res string) []byte
 	ReadRemoteConfig(p string) []byte
+	GetRemoteConfigurationFilepath(ocpVersion string) string
 }
 
 // StorageConfig structure contains configuration for resource storage.
@@ -88,6 +89,13 @@ func (s *Storage) ReadRemoteConfig(path string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
 	remoteConfigPath := fmt.Sprintf("%s/%s", s.remoteConfigurationPath, path)
 	return s.readDataFromPath(remoteConfigPath)
+}
+
+// GetRemoteConfigurationFilepath returns the filepath to the remote configuration
+// that should be returned for the given OCP version based on the cluster map
+func (s *Storage) GetRemoteConfigurationFilepath(ocpVersion string) string {
+	// TODO: Implement
+	return "config_default.json"
 }
 
 func (s *Storage) readDataFromPath(path string) []byte {
