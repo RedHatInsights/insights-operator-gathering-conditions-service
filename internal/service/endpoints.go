@@ -47,7 +47,7 @@ func serveOpenAPI(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, p)
 }
 
-func gatheringRulesEndpoint(svc Interface) http.HandlerFunc {
+func gatheringRulesEndpoint(svc RulesProvider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// This is some debug logging to check if we receive the cluster ID as
 		// part of the request IO is doing
@@ -71,7 +71,7 @@ func gatheringRulesEndpoint(svc Interface) http.HandlerFunc {
 
 // remoteConfigurationEndpoint return HTTP handler function providing
 // the RemoteConfigurationResponse
-func remoteConfigurationEndpoint(svc Interface) http.HandlerFunc {
+func remoteConfigurationEndpoint(svc RulesProvider) http.HandlerFunc {
 	return func(w http.ResponseWriter, _ *http.Request) {
 		remoteConfig, err := svc.RemoteConfiguration()
 		if err != nil {

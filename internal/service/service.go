@@ -16,8 +16,8 @@ limitations under the License.
 
 package service
 
-// Interface defines methods to be implemented by any rules provider
-type Interface interface {
+// RulesProvider defines methods to be implemented by any rules provider
+type RulesProvider interface {
 	Rules() (*Rules, error)
 	RemoteConfiguration() (*RemoteConfiguration, error)
 }
