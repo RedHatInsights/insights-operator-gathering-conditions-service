@@ -148,3 +148,135 @@ func TestServiceV2(t *testing.T) {
 		})
 	}
 }
+
+func TestServiceV2WithClusterMapping(t *testing.T) {
+	type testCase struct {
+		name                   string
+		clusterMappingFilepath string
+		expectedAnError        bool
+		ocpVersion             string
+		wantConfiguration      string
+	}
+
+	const (
+		validClusterMapping     = "tests/rapid-recommendations/cluster-mapping.json"
+		malformedClusterMapping = "tests/rapid-recommendations/malformed-cluster-mapping.json"
+		notFoundClusterMapping  = "tests/rapid-recommendations/not-found-cluster-mapping.json"
+	)
+
+	testCases := []testCase{
+		{
+			name:                   "invalid cluster mapping",
+			clusterMappingFilepath: malformedClusterMapping,
+			expectedAnError:        true,
+			ocpVersion:             "any version",
+			wantConfiguration:      "",
+		},
+		{
+			name:                   "cluster mapping not found",
+			clusterMappingFilepath: notFoundClusterMapping,
+			expectedAnError:        true,
+			ocpVersion:             "any version",
+			wantConfiguration:      "",
+		},
+		{
+			name:                   "valid cluster mapping and version out of range",
+			clusterMappingFilepath: validClusterMapping,
+			expectedAnError:        false,
+			ocpVersion:             "any version",
+			wantConfiguration:      configDefaultConfiguration,
+		},
+		{
+			name:                   "cluster version prior to 4.0",
+			clusterMappingFilepath: validClusterMapping,
+			expectedAnError:        false,
+			ocpVersion:             "1.2.3",
+			wantConfiguration:      configDefaultConfiguration,
+		},
+		{
+			name:                   "cluster version is 4.0.0",
+			clusterMappingFilepath: validClusterMapping,
+			expectedAnError:        false,
+			ocpVersion:             "4.0.0",
+			wantConfiguration:      emptyConfiguration,
+		},
+		{
+			name:                   "cluster version is between 4.0.0 and 4.17.0-0",
+			clusterMappingFilepath: validClusterMapping,
+			expectedAnError:        false,
+			ocpVersion:             "4.5.6",
+			wantConfiguration:      emptyConfiguration,
+		},
+		{
+			name:                   "cluster version is 4.17.0-0",
+			clusterMappingFilepath: validClusterMapping,
+			expectedAnError:        false,
+			ocpVersion:             "4.17.0-0",
+			wantConfiguration:      experimental1Configuration,
+		},
+		{
+			name:                   "cluster version is between 4.17.0-0 and 4.17.0",
+			clusterMappingFilepath: validClusterMapping,
+			expectedAnError:        false,
+			ocpVersion:             "4.17.0-5",
+			wantConfiguration:      experimental1Configuration,
+		},
+		{
+			name:                   "cluster version is between 4.17.0 and 4.17.5",
+			clusterMappingFilepath: validClusterMapping,
+			expectedAnError:        false,
+			ocpVersion:             "4.17.3",
+			wantConfiguration:      experimental2Configuration,
+		},
+		{
+			name:                   "cluster version is between 4.17.5 and 4.17.6",
+			clusterMappingFilepath: validClusterMapping,
+			expectedAnError:        false,
+			ocpVersion:             "4.17.6-alpha",
+			wantConfiguration:      bugWorkaroundConfiguration,
+		},
+		{
+			name:                   "cluster version greater than 4.17.6",
+			clusterMappingFilepath: validClusterMapping,
+			expectedAnError:        false,
+			ocpVersion:             "5.6.7",
+			wantConfiguration:      experimental2Configuration,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			store := service.NewStorage(service.StorageConfig{
+				RulesPath:               "../../tests/conditions",
+				RemoteConfigurationPath: "../../tests/rapid-recommendations",
+				ClusterMappingPath:      tc.clusterMappingFilepath,
+			})
+
+			repo := service.NewRepository(store)
+			svc := service.New(repo)
+
+			req, err := http.NewRequest("GET", fmt.Sprintf(
+				"%s/v2/%s/gathering_rules",
+				service.APIPrefix,
+				tc.ocpVersion), http.NoBody)
+
+			if tc.expectedAnError {
+				assert.Error(t, err, "this configuration should have made the service crash")
+				return
+			}
+			assert.NoError(t, err)
+
+			rr := httptest.NewRecorder()
+			handler := service.NewHandler(svc)
+
+			router := mux.NewRouter()
+
+			handler.Register(router)
+
+			router.ServeHTTP(rr, req)
+
+			assert.Equal(t, http.StatusOK, rr.Code)
+			assert.JSONEq(t, tc.wantConfiguration, rr.Body.String())
+		})
+	}
+}
