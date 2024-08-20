@@ -25,7 +25,6 @@ import (
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestServiceV1(t *testing.T) {
@@ -157,12 +156,14 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 		expectedAnError        bool
 		ocpVersion             string
 		wantConfiguration      string
+		expect400              bool
 	}
 
 	const (
 		validClusterMapping     = "../../tests/rapid-recommendations/cluster-mapping.json"
 		malformedClusterMapping = "../../tests/rapid-recommendations/malformed-cluster-mapping.json"
 		notFoundClusterMapping  = "../../tests/rapid-recommendations/not-found-cluster-mapping.json"
+		internalServerError     = `{"status":"Internal Server Error"}`
 	)
 
 	testCases := []testCase{
@@ -177,7 +178,7 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 			name:                   "cluster mapping not found",
 			clusterMappingFilepath: notFoundClusterMapping,
 			expectedAnError:        true,
-			ocpVersion:             "any version",
+			ocpVersion:             "",
 			wantConfiguration:      "",
 		},
 		{
@@ -186,13 +187,14 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 			expectedAnError:        false,
 			ocpVersion:             "any version",
 			wantConfiguration:      configDefaultConfiguration,
+			expect400:              true,
 		},
 		{
 			name:                   "cluster version prior to 4.0",
 			clusterMappingFilepath: validClusterMapping,
 			expectedAnError:        false,
 			ocpVersion:             "1.2.3",
-			wantConfiguration:      configDefaultConfiguration,
+			expect400:              true,
 		},
 		{
 			name:                   "cluster version is 4.0.0",
@@ -252,7 +254,10 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 				RemoteConfigurationPath: "../../tests/rapid-recommendations",
 				ClusterMappingPath:      tc.clusterMappingFilepath,
 			})
-			require.NoError(t, err)
+			if tc.expectedAnError {
+				assert.Error(t, err, "this configuration should have made the service crash")
+				return
+			}
 
 			repo := service.NewRepository(store)
 			svc := service.New(repo)
@@ -262,10 +267,6 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 				service.APIPrefix,
 				tc.ocpVersion), http.NoBody)
 
-			if tc.expectedAnError {
-				assert.Error(t, err, "this configuration should have made the service crash")
-				return
-			}
 			assert.NoError(t, err)
 
 			rr := httptest.NewRecorder()
@@ -277,8 +278,12 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 
 			router.ServeHTTP(rr, req)
 
-			assert.Equal(t, http.StatusOK, rr.Code)
-			assert.JSONEq(t, tc.wantConfiguration, rr.Body.String())
+			if tc.expect400 {
+				assert.Equal(t, http.StatusBadRequest, rr.Code)
+			} else {
+				assert.Equal(t, http.StatusOK, rr.Code)
+				assert.JSONEq(t, tc.wantConfiguration, rr.Body.String())
+			}
 		})
 	}
 }

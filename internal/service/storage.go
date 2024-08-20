@@ -133,27 +133,12 @@ func (s *Storage) GetRemoteConfigurationFilepath(ocpVersion string) (string, err
 	ocpVersionParsed, err := semver.Make(ocpVersion)
 	if err != nil {
 		log.Error().Str("ocpVersion", ocpVersion).Err(err).Msg("Invalid semver")
-		return "config_default.json", &merrors.RouterParsingError{
+		return "", &merrors.RouterParsingError{
 			ParamName: "ocpVersion",
 			ErrString: err.Error()}
 	}
 
-	for _, slice := range s.clusterMapping {
-		version := slice[0]
-		filepath := slice[1]
-		versionParsed, err := semver.Make(version)
-		if err != nil {
-			log.Error().Str("version", version).Err(err).Msg("Invalid semver")
-		}
-
-		if ocpVersionParsed.Compare(versionParsed) <= 0 {
-			return filepath, nil
-		}
-
-	}
-
-	log.Debug().Str("ocpVersion", ocpVersion).Msg("Returning default remote configuration")
-	return "config_default.json", nil
+	return s.clusterMapping.GetFilepathForVersion(ocpVersionParsed)
 }
 
 func (s *Storage) readDataFromPath(path string) []byte {
