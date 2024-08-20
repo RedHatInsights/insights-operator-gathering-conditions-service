@@ -24,7 +24,7 @@ import (
 	"os"
 	"sync"
 
-	"golang.org/x/mod/semver"
+	"github.com/blang/semver/v4"
 
 	"github.com/rs/zerolog/log"
 )
@@ -127,8 +127,9 @@ func (s *Storage) ReadRemoteConfig(path string) []byte {
 // GetRemoteConfigurationFilepath returns the filepath to the remote configuration
 // that should be returned for the given OCP version based on the cluster map
 func (s *Storage) GetRemoteConfigurationFilepath(ocpVersion string) string {
-	if !semver.IsValid(ocpVersion) {
-		log.Error().Str("ocpVersion", ocpVersion).Msg("Invalid semver")
+	ocpVersionParsed, err := semver.Make(ocpVersion)
+	if err != nil {
+		log.Error().Str("ocpVersion", ocpVersion).Err(err).Msg("Invalid semver")
 		// TODO: return 404 or 400
 		return "config_default.json"
 	}
@@ -136,9 +137,12 @@ func (s *Storage) GetRemoteConfigurationFilepath(ocpVersion string) string {
 	for _, slice := range s.clusterMapping {
 		version := slice[0]
 		filepath := slice[1]
+		versionParsed, err := semver.Make(version)
+		if err != nil {
+			log.Error().Str("version", version).Err(err).Msg("Invalid semver")
+		}
 
-		log.Debug().Str("ocpVersion", ocpVersion).Str("version", version).Int("comparison", semver.Compare(ocpVersion, version)).Msg("comparing semver")
-		if semver.Compare(ocpVersion, version) <= 0 {
+		if ocpVersionParsed.Compare(versionParsed) <= 0 {
 			return filepath
 		}
 
