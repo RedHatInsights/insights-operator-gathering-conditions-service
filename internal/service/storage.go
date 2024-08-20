@@ -18,10 +18,10 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
-	"reflect"
 	"sync"
 
 	"golang.org/x/mod/semver"
@@ -69,11 +69,11 @@ type Storage struct {
 	remoteConfigurationPath string
 	cache                   Cache
 	clusterMappingPath      string
-	clusterMapping          [][]string // TODO: Make custom type with validation and so on
+	clusterMapping          ClusterMapping
 }
 
 // NewStorage constructs new storage object.
-func NewStorage(cfg StorageConfig) *Storage {
+func NewStorage(cfg StorageConfig) (*Storage, error) {
 	log.Debug().Interface("config", cfg).Msg("Constructing storage object")
 
 	s := Storage{
@@ -82,45 +82,32 @@ func NewStorage(cfg StorageConfig) *Storage {
 		clusterMappingPath:      cfg.ClusterMappingPath, // TODO: Test this
 	}
 
-	// Read the cluster map
-	cm := [][]string{}
-	err := json.Unmarshal(
-		s.readDataFromPath(s.clusterMappingPath),
-		&cm)
+	if s.clusterMappingPath == "" {
+		log.Info().Msg("Cluster mapping filepath is not defined. Skipping its initialization")
+		return &s, nil
+	}
+	// Parse the cluster map
+	cm := ClusterMapping{}
+	rawData := s.readDataFromPath(s.clusterMappingPath)
+	if rawData == nil {
+		return &s, errors.New("cannot find cluster map")
+	}
+	err := json.Unmarshal(rawData, &cm)
 	if err != nil {
-		// TODO: Break here or log an error
 		log.Error().Err(err).Msg("Cannot load cluster map")
-		return &s
+		return &s, err
 	}
 
-	log.Debug().Interface("cluster-mapping", cm).Msg("Cluster mapping loaded")
+	log.Debug().Interface("cluster-map", cm).Msg("Cluster map loaded")
 
-	versions := []string{}
-	for _, slice := range cm {
-		if len(slice) != 2 {
-			log.Error().Int("len", len(slice)).Strs("slice", slice).Msg("Unexpected slice length")
-		}
-		version := slice[0]
-		if !semver.IsValid(version) {
-			log.Error().Str("version", version).Msg("Invalid semver")
-		} else {
-			log.Debug().Str("version", version).Msg("Valid semver")
-		}
-		versions = append(versions, version)
+	if cm.IsValid() {
+		s.clusterMapping = cm
+	} else {
+		log.Error().Msg("Cluster map is invalid")
+		return nil, errors.New("cannot parse cluster map")
 	}
 
-	// TODO: Add support for non v* versions
-
-	// Check if the cluster mapping is sorted
-	sortedVersions := make([]string, len(versions))
-	copy(sortedVersions, versions)
-	semver.Sort(sortedVersions)
-	if !reflect.DeepEqual(sortedVersions, versions) {
-		log.Error().Strs("sortedVersions", sortedVersions).Strs("versions", versions).Msg("Cluster mapping is not sorted")
-	}
-
-	s.clusterMapping = cm
-	return &s
+	return &s, nil
 }
 
 // ReadConditionalRules tries to find conditional rule with given name in the storage.
@@ -149,11 +136,6 @@ func (s *Storage) GetRemoteConfigurationFilepath(ocpVersion string) string {
 	for _, slice := range s.clusterMapping {
 		version := slice[0]
 		filepath := slice[1]
-
-		if !semver.IsValid(version) {
-			log.Error().Str("version", version).Msg("Invalid semver")
-			break
-		}
 
 		log.Debug().Str("ocpVersion", ocpVersion).Str("version", version).Int("comparison", semver.Compare(ocpVersion, version)).Msg("comparing semver")
 		if semver.Compare(ocpVersion, version) <= 0 {

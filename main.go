@@ -47,7 +47,8 @@ func main() {
 		os.Exit(1)
 	}
 	cliFlags := parseFlags()
-	doSelectedOperation(cliFlags)
+	exitCode := doSelectedOperation(cliFlags)
+	os.Exit(exitCode)
 }
 
 func parseFlags() (cliFlags cli.Flags) {
@@ -59,7 +60,7 @@ func parseFlags() (cliFlags cli.Flags) {
 	return
 }
 
-func doSelectedOperation(cliFlags cli.Flags) {
+func doSelectedOperation(cliFlags cli.Flags) int {
 	switch {
 	case cliFlags.ShowConfiguration:
 		cli.PrintConfiguration(&config.Config)
@@ -68,11 +69,15 @@ func doSelectedOperation(cliFlags cli.Flags) {
 	case cliFlags.ShowVersion:
 		cli.PrintVersionInfo()
 	default:
-		runServer()
+		err := runServer()
+		if err != nil {
+			return 1
+		}
 	}
+	return 0
 }
 
-func runServer() {
+func runServer() error {
 	var httpServer *server.Server
 
 	serverConfig := config.ServerConfig()
@@ -83,16 +88,20 @@ func runServer() {
 	err := initLogger()
 	if err != nil {
 		log.Error().Err(err).Msg("Logger could not be initialized")
-		return
+		return err
 	}
 	defer logger.CloseZerolog()
 
 	// Storage
 	if _, err = os.Stat(storageConfig.RulesPath); err != nil {
 		logStorageError(err, storageConfig.RulesPath)
-		return
+		return err
 	}
-	store := service.NewStorage(storageConfig)
+	store, err := service.NewStorage(storageConfig)
+	if err != nil {
+		log.Error().Err(err).Msg("Error initializing the storage")
+		return err
+	}
 
 	// Repository & Service
 	repo := service.NewRepository(store)
@@ -138,6 +147,7 @@ func runServer() {
 	stopHTTPServer(shutdownCtx, g, httpServer)
 
 	log.Info().Msg("Server closed")
+	return nil
 }
 
 // stopHTTPServer function initialize the HTTP server shutdown operations

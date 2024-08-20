@@ -25,6 +25,7 @@ import (
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestServiceV1(t *testing.T) {
@@ -159,9 +160,9 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 	}
 
 	const (
-		validClusterMapping     = "tests/rapid-recommendations/cluster-mapping.json"
-		malformedClusterMapping = "tests/rapid-recommendations/malformed-cluster-mapping.json"
-		notFoundClusterMapping  = "tests/rapid-recommendations/not-found-cluster-mapping.json"
+		validClusterMapping     = "../../tests/rapid-recommendations/cluster-mapping.json"
+		malformedClusterMapping = "../../tests/rapid-recommendations/malformed-cluster-mapping.json"
+		notFoundClusterMapping  = "../../tests/rapid-recommendations/not-found-cluster-mapping.json"
 	)
 
 	testCases := []testCase{
@@ -246,11 +247,12 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			store := service.NewStorage(service.StorageConfig{
+			store, err := service.NewStorage(service.StorageConfig{
 				RulesPath:               "../../tests/conditions",
 				RemoteConfigurationPath: "../../tests/rapid-recommendations",
 				ClusterMappingPath:      tc.clusterMappingFilepath,
 			})
+			require.NoError(t, err)
 
 			repo := service.NewRepository(store)
 			svc := service.New(repo)
