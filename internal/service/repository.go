@@ -85,13 +85,16 @@ func (r *Repository) Rules() (*Rules, error) {
 
 // RemoteConfiguration returns a default remote configuration for v2 endpoint
 func (r *Repository) RemoteConfiguration(ocpVersion string) (*RemoteConfiguration, error) {
-	filepath := r.store.GetRemoteConfigurationFilepath(ocpVersion)
+	filepath, err := r.store.GetRemoteConfigurationFilepath(ocpVersion)
+	if err != nil {
+		return nil, err
+	}
 	data := r.store.ReadRemoteConfig(filepath)
 	if data == nil {
 		return nil, fmt.Errorf("store data not found for '%s'", filepath)
 	}
 	var remoteConfig RemoteConfiguration
-	err := json.Unmarshal(data, &remoteConfig)
+	err = json.Unmarshal(data, &remoteConfig)
 	if err != nil {
 		return nil, err
 	}

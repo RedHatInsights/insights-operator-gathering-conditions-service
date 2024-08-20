@@ -96,9 +96,10 @@ var (
 )
 
 type mockStorage struct {
-	conditionalRules     []byte
-	remoteConfig         []byte
-	remoteConfigFilepath string
+	conditionalRules                        []byte
+	remoteConfig                            []byte
+	remoteConfigFilepath                    string
+	getRemoteConfigurationFilepathMockError error
 }
 
 func (m *mockStorage) ReadConditionalRules(string) []byte {
@@ -109,6 +110,6 @@ func (m *mockStorage) ReadRemoteConfig(string) []byte {
 	return m.remoteConfig
 }
 
-func (m *mockStorage) GetRemoteConfigurationFilepath(string) string {
-	return m.remoteConfigFilepath
+func (m *mockStorage) GetRemoteConfigurationFilepath(string) (string, error) {
+	return m.remoteConfigFilepath, m.getRemoteConfigurationFilepathMockError
 }

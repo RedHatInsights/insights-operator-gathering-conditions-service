@@ -1,6 +1,9 @@
 package service
 
 import (
+	"errors"
+	"fmt"
+	"os"
 	"reflect"
 
 	"github.com/blang/semver/v4"
@@ -9,8 +12,9 @@ import (
 
 type ClusterMapping [][]string
 
-func (cm ClusterMapping) IsValid() bool {
-	// TODO: Check filepath exists
+// IsValid check the list is in order (based on the versions), that the versions
+// can be parsed and that the remote configurations are accessible
+func (cm ClusterMapping) IsValid(remoteConfigurationPath string) bool {
 	// TODO: Add UTs
 
 	versions := []semver.Version{} // used to check if it's sorted
@@ -26,6 +30,14 @@ func (cm ClusterMapping) IsValid() bool {
 			return false
 		}
 		versions = append(versions, versionParsed)
+
+		filepath := slice[1]
+		fullFilepath := fmt.Sprintf("%s/%s", remoteConfigurationPath, filepath)
+		if _, err := os.Stat(fullFilepath); errors.Is(err, os.ErrNotExist) {
+			log.Error().Str("filepath", fullFilepath).
+				Msg("Remote configuration filepath couldn't be accessed")
+			return false
+		}
 	}
 
 	sortedVersions := make([]semver.Version, len(versions))

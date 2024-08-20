@@ -18,7 +18,6 @@ package service
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -26,6 +25,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	merrors "github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/errors"
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/server"
 )
 
 // ErrorResponse structure represents HTTP response with error message.
@@ -58,7 +58,7 @@ func gatheringRulesEndpoint(svc RulesProvider) http.HandlerFunc {
 
 		rules, err := svc.Rules()
 		if err != nil {
-			renderErrorResponse(w, "internal error", err)
+			server.HandleServerError(w, err)
 			return
 		}
 
@@ -76,8 +76,8 @@ func remoteConfigurationEndpoint(svc RulesProvider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ocpVersion := mux.Vars(r)["ocpVersion"]
 		if ocpVersion == "" {
-			renderErrorResponse(
-				w, "missing ocpVersion",
+			server.HandleServerError(
+				w,
 				&merrors.RouterParsingError{
 					ParamName: "ocpVersion",
 					ErrString: "ocpVersion should be specified as part of the URL"})
@@ -85,7 +85,7 @@ func remoteConfigurationEndpoint(svc RulesProvider) http.HandlerFunc {
 		remoteConfig, err := svc.RemoteConfiguration(ocpVersion)
 
 		if err != nil {
-			renderErrorResponse(w, "internal error", err)
+			server.HandleServerError(w, err)
 			return
 		}
 		renderResponse(w, &RemoteConfiguration{
@@ -115,30 +115,6 @@ func renderResponse(w http.ResponseWriter, resp interface{}, code int) {
 	}
 
 	log.Debug().Msg("Response has been sent")
-}
-
-func renderErrorResponse(w http.ResponseWriter, msg string, err error) {
-	resp := ErrorResponse{Error: msg}
-	code := http.StatusInternalServerError
-
-	log.Error().Msgf("%v", err)
-
-	var ierr *merrors.Error
-	if !errors.As(err, &ierr) {
-		resp.Error = "internal error"
-	} else {
-		// TODO: These codes are never used, shall we remove them?
-		switch ierr.Code() {
-		case merrors.ErrorCodeNotFound:
-			code = http.StatusNotFound
-		case merrors.ErrorCodeInvalidArgument:
-			code = http.StatusBadRequest
-		case merrors.ErrorCodeUnknown:
-			code = http.StatusInternalServerError
-		}
-	}
-
-	renderResponse(w, resp, code)
 }
 
 func logHeaders(r *http.Request, wantHeaders []string, logEvent *zerolog.Event) {
