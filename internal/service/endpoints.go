@@ -21,6 +21,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
@@ -73,7 +74,14 @@ func gatheringRulesEndpoint(svc RulesProvider) http.HandlerFunc {
 // the RemoteConfigurationResponse
 func remoteConfigurationEndpoint(svc RulesProvider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		ocpVersion := r.URL.Query().Get("ocpVersion")
+		ocpVersion := mux.Vars(r)["ocpVersion"]
+		if ocpVersion == "" {
+			renderErrorResponse(
+				w, "missing ocpVersion",
+				&merrors.RouterParsingError{
+					ParamName: "ocpVersion",
+					ErrString: "ocpVersion should be specified as part of the URL"})
+		}
 		remoteConfig, err := svc.RemoteConfiguration(ocpVersion)
 
 		if err != nil {

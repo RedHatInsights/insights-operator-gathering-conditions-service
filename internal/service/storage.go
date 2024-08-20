@@ -17,10 +17,14 @@ limitations under the License.
 package service
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
+	"reflect"
 	"sync"
+
+	"golang.org/x/mod/semver"
 
 	"github.com/rs/zerolog/log"
 )
@@ -65,16 +69,58 @@ type Storage struct {
 	remoteConfigurationPath string
 	cache                   Cache
 	clusterMappingPath      string
+	clusterMapping          [][]string // TODO: Make custom type with validation and so on
 }
 
 // NewStorage constructs new storage object.
 func NewStorage(cfg StorageConfig) *Storage {
 	log.Debug().Interface("config", cfg).Msg("Constructing storage object")
-	return &Storage{
+
+	s := Storage{
 		conditionalRulesPath:    cfg.RulesPath,
 		remoteConfigurationPath: cfg.RemoteConfigurationPath,
 		clusterMappingPath:      cfg.ClusterMappingPath, // TODO: Test this
 	}
+
+	// Read the cluster map
+	cm := [][]string{}
+	err := json.Unmarshal(
+		s.readDataFromPath(s.clusterMappingPath),
+		&cm)
+	if err != nil {
+		// TODO: Break here or log an error
+		log.Error().Err(err).Msg("Cannot load cluster map")
+		return &s
+	}
+
+	log.Debug().Interface("cluster-mapping", cm).Msg("Cluster mapping loaded")
+
+	versions := []string{}
+	for _, slice := range cm {
+		if len(slice) != 2 {
+			log.Error().Int("len", len(slice)).Strs("slice", slice).Msg("Unexpected slice length")
+		}
+		version := slice[0]
+		if !semver.IsValid(version) {
+			log.Error().Str("version", version).Msg("Invalid semver")
+		} else {
+			log.Debug().Str("version", version).Msg("Valid semver")
+		}
+		versions = append(versions, version)
+	}
+
+	// TODO: Add support for non v* versions
+
+	// Check if the cluster mapping is sorted
+	sortedVersions := make([]string, len(versions))
+	copy(sortedVersions, versions)
+	semver.Sort(sortedVersions)
+	if !reflect.DeepEqual(sortedVersions, versions) {
+		log.Error().Strs("sortedVersions", sortedVersions).Strs("versions", versions).Msg("Cluster mapping is not sorted")
+	}
+
+	s.clusterMapping = cm
+	return &s
 }
 
 // ReadConditionalRules tries to find conditional rule with given name in the storage.
@@ -94,7 +140,27 @@ func (s *Storage) ReadRemoteConfig(path string) []byte {
 // GetRemoteConfigurationFilepath returns the filepath to the remote configuration
 // that should be returned for the given OCP version based on the cluster map
 func (s *Storage) GetRemoteConfigurationFilepath(ocpVersion string) string {
-	// TODO: Implement
+	if !semver.IsValid(ocpVersion) {
+		log.Error().Str("ocpVersion", ocpVersion).Msg("Invalid semver")
+		// TODO: return 404 or 400
+		return "config_default.json"
+	}
+
+	for _, slice := range s.clusterMapping {
+		version := slice[0]
+		filepath := slice[1]
+
+		if !semver.IsValid(version) {
+			log.Error().Str("version", version).Msg("Invalid semver")
+			break
+		}
+
+		log.Debug().Str("ocpVersion", ocpVersion).Str("version", version).Int("comparison", semver.Compare(ocpVersion, version)).Msg("comparing semver")
+		if semver.Compare(ocpVersion, version) <= 0 {
+			return filepath
+		}
+
+	}
 	return "config_default.json"
 }
 
