@@ -8,8 +8,8 @@ enabled = false
 type = "jwt"
 
 [storage]
-rules_path = "./conditions/build/v1"
-remote_configuration = "./conditions/build/v2"
+rules_path = "./conditions/v1"
+remote_configuration = "./conditions/v2"
 cluster_mapping = "cluster-mapping.json"
 
 [sentry]

@@ -58,12 +58,12 @@ abcgo: ## Run ABC metrics checker
 openapi-check:  ## Validate the OpenAPI specification files
 	./check_openapi.sh
 
-build-conditions:  ## Clone the conditions repo and build it to gather the conditions
-	git -C insights-operator-gathering-conditions pull || git clone https://github.com/RedHatInsights/insights-operator-gathering-conditions
+conditions:  ## Clone the conditions repo and build it to gather the conditions
+	if [ ! -d 'insights-operator-gathering-conditions' ]; then git clone https://github.com/RedHatInsights/insights-operator-gathering-conditions; fi
 	cd insights-operator-gathering-conditions && ./build.sh
 	cp -r insights-operator-gathering-conditions/build conditions
 
-init-service: ${BINARY} build-conditions ## Initialize the service and check all the configuration files are parsable
+init-service: ${BINARY} conditions ## Initialize the service and check all the configuration files are parsable
 	./${BINARY} --init-service
 
 style: fmt vet lint cyclo shellcheck errcheck goconst gosec ineffassign abcgo init ## Run all the formatting related commands (fmt, vet, lint, cyclo) + check shell scripts

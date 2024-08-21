@@ -63,7 +63,7 @@ cd insights-operator-gathering-conditions
 cp -r ./build ../conditions
 ```
 
-or `make build-conditions`.
+or `make conditions`.
 
 It will build the gathering conditions image.
 
@@ -137,6 +137,7 @@ goconst              Run goconst checker
 gosec                Run gosec checker
 abcgo                Run ABC metrics checker
 openapi-check        Validate the OpenAPI specification files
+conditions           Clone the conditions repo and build it to gather the conditions
 init-service         Initialize the service and check all the configuration files are parsable
 style                Run all the formatting related commands (fmt, vet, lint, cyclo) + check shell scripts
 run                  Build the project and executes the binary
