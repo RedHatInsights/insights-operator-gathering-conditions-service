@@ -28,7 +28,7 @@ const (
 	validRulesFile         = "rules.json"
 	rulesFolder            = "testdata"
 	v2Folder               = "testdata/v2"
-	clusterMappingFilepath = "testdata/empty.json"
+	clusterMappingFilepath = "testdata/cluster-mapping.json"
 )
 
 func TestReadConditionalRules(t *testing.T) {
@@ -65,7 +65,9 @@ func TestReadConditionalRules(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			storage, err := service.NewStorage(
 				service.StorageConfig{
-					RulesPath: rulesFolder,
+					RulesPath:               rulesFolder,
+					ClusterMappingPath:      clusterMappingFilepath,
+					RemoteConfigurationPath: v2Folder,
 				})
 			assert.NoError(t, err)
 			checkConditionalRules(t, storage, tc.rulesFile, tc.expectedRules)
@@ -76,7 +78,9 @@ func TestReadConditionalRules(t *testing.T) {
 		// run Find anothertime to test the cache function
 		storage, err := service.NewStorage(
 			service.StorageConfig{
-				RulesPath: rulesFolder,
+				RulesPath:               rulesFolder,
+				ClusterMappingPath:      clusterMappingFilepath,
+				RemoteConfigurationPath: v2Folder,
 			})
 		assert.NoError(t, err)
 		for i := 0; i < 2; i++ {
@@ -142,6 +146,7 @@ func TestReadRemoteConfiguration(t *testing.T) {
 			storage, err := service.NewStorage(
 				service.StorageConfig{
 					RemoteConfigurationPath: v2Folder,
+					ClusterMappingPath:      clusterMappingFilepath,
 				})
 			assert.NoError(t, err)
 			checkRemoteConfig(t, storage, tt.remoteConfigFile, tt.expectedRemoteConfig)

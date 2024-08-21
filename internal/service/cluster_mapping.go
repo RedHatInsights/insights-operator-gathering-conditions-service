@@ -20,6 +20,7 @@ func (cm ClusterMapping) IsValid(remoteConfigurationPath string) bool {
 
 	if len(cm) == 0 {
 		log.Error().Interface("raw", cm).Msg("Cluster map needs to contain at least one pair of version and filepath")
+		return false
 	}
 
 	for _, slice := range cm {

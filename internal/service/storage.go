@@ -81,12 +81,13 @@ func NewStorage(cfg StorageConfig) (*Storage, error) {
 	s := Storage{
 		conditionalRulesPath:    cfg.RulesPath,
 		remoteConfigurationPath: cfg.RemoteConfigurationPath,
-		clusterMappingPath:      cfg.ClusterMappingPath, // TODO: Test this
+		clusterMappingPath:      cfg.ClusterMappingPath,
 	}
 
 	if s.clusterMappingPath == "" {
-		log.Info().Msg("Cluster mapping filepath is not defined. Skipping its initialization")
-		return &s, nil
+		errStr := "cluster mapping filepath is not defined"
+		log.Error().Msg(errStr)
+		return &s, errors.New(errStr)
 	}
 	// Parse the cluster map
 	cm := ClusterMapping{}

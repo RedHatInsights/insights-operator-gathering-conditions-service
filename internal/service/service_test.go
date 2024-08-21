@@ -182,6 +182,13 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 			wantConfiguration:      "",
 		},
 		{
+			name:                   "cluster mapping is undefined",
+			clusterMappingFilepath: "",
+			expectedAnError:        true,
+			ocpVersion:             "",
+			wantConfiguration:      "",
+		},
+		{
 			name:                   "valid cluster mapping and version out of range",
 			clusterMappingFilepath: validClusterMapping,
 			expectedAnError:        false,
