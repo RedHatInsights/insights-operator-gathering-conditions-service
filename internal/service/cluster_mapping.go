@@ -11,6 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// ClusterMapping map OCP versions to remote configurations
 type ClusterMapping [][]string
 
 // IsValid check the list is in order (based on the versions), that the versions
