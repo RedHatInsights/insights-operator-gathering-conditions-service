@@ -121,12 +121,12 @@ func (server *Server) Stop(ctx context.Context) error {
 
 // HandleServerError handles separate server errors and sends appropriate responses
 func HandleServerError(writer http.ResponseWriter, err error) {
-	log.Error().Err(err).Msg("handleServerError()")
+	log.Error().Type("errType", err).Err(err).Msg("handleServerError()")
 
 	var respErr error
 
 	switch err := err.(type) {
-	case *errors.RouterMissingParamError, *errors.RouterParsingError, *json.SyntaxError, *errors.NoBodyError, *errors.ValidationError:
+	case *errors.RouterMissingParamError, *errors.RouterParsingError, *errors.NoBodyError, *errors.ValidationError:
 		respErr = SendBadRequest(writer, err.Error())
 	case *json.UnmarshalTypeError:
 		respErr = SendBadRequest(writer, "bad type in json data")

@@ -110,7 +110,6 @@ func (cm ClusterMapping) GetFilepathForVersion(ocpVersionParsed semver.Version) 
 		}
 
 		previousFilepath = filepath
-
 	}
 
 	log.Debug().Str("ocpVersion", ocpVersionParsed.String()).

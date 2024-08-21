@@ -79,7 +79,7 @@ func TestServiceV1(t *testing.T) {
 
 				if tc.expectedAnError {
 					assert.Equal(t, http.StatusInternalServerError, rr.Code)
-					assert.Contains(t, rr.Body.String(), "error")
+					assert.Contains(t, rr.Body.String(), "Error")
 				} else {
 					assert.Equal(t, http.StatusOK, rr.Code)
 					assert.Contains(
@@ -137,7 +137,7 @@ func TestServiceV2(t *testing.T) {
 
 			if tc.expectedAnError {
 				assert.Equal(t, http.StatusInternalServerError, rr.Code)
-				assert.Contains(t, rr.Body.String(), "error")
+				assert.Contains(t, rr.Body.String(), "Error")
 			} else {
 				assert.Equal(t, http.StatusOK, rr.Code)
 				assert.Contains(
