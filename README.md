@@ -63,6 +63,8 @@ cd insights-operator-gathering-conditions
 cp -r ./build ../conditions
 ```
 
+or `make build-conditions`.
+
 It will build the gathering conditions image.
 
 ## Run
