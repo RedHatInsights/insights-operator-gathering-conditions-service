@@ -118,7 +118,6 @@ order to check this new endpoint.
 There are many options inside the [Makefile](Makefile) that may be useful for debugging/deploying the service:
 
 ```
-❯ make help
 Usage: make <OPTIONS> ... <TARGETS>
 
 Available targets are:
@@ -135,6 +134,8 @@ errcheck             Run errcheck
 goconst              Run goconst checker
 gosec                Run gosec checker
 abcgo                Run ABC metrics checker
+openapi-check        Validate the OpenAPI specification files
+init-service         Initialize the service and check all the configuration files are parsable
 style                Run all the formatting related commands (fmt, vet, lint, cyclo) + check shell scripts
 run                  Build the project and executes the binary
 test                 Run the unit tests

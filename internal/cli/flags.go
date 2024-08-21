@@ -21,4 +21,5 @@ type Flags struct {
 	ShowConfiguration bool
 	ShowAuthors       bool
 	ShowVersion       bool
+	InitService       bool
 }

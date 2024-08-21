@@ -55,6 +55,7 @@ func parseFlags() (cliFlags cli.Flags) {
 	flag.BoolVar(&cliFlags.ShowConfiguration, "show-configuration", false, "show configuration")
 	flag.BoolVar(&cliFlags.ShowAuthors, "show-authors", false, "show authors")
 	flag.BoolVar(&cliFlags.ShowVersion, "show-version", false, "show version")
+	flag.BoolVar(&cliFlags.InitService, "init-service", false, "initialize the service. Useful for checking all the configuration is right")
 
 	flag.Parse()
 	return
@@ -68,6 +69,11 @@ func doSelectedOperation(cliFlags cli.Flags) int {
 		cli.PrintAuthors()
 	case cliFlags.ShowVersion:
 		cli.PrintVersionInfo()
+	case cliFlags.InitService:
+		_, err := initService()
+		if err != nil {
+			return 1
+		}
 	default:
 		err := runServer()
 		if err != nil {
@@ -77,35 +83,42 @@ func doSelectedOperation(cliFlags cli.Flags) int {
 	return 0
 }
 
-func runServer() error {
-	var httpServer *server.Server
-
-	serverConfig := config.ServerConfig()
-	authConfig := config.AuthConfig()
+func initService() (*service.Service, error) {
 	storageConfig := config.StorageConfig()
-
 	// Logger
 	err := initLogger()
 	if err != nil {
 		log.Error().Err(err).Msg("Logger could not be initialized")
-		return err
+		return nil, err
 	}
 	defer logger.CloseZerolog()
 
 	// Storage
 	if _, err = os.Stat(storageConfig.RulesPath); err != nil {
 		logStorageError(err, storageConfig.RulesPath)
-		return err
+		return nil, err
 	}
 	store, err := service.NewStorage(storageConfig)
 	if err != nil {
 		log.Error().Err(err).Msg("Error initializing the storage")
-		return err
+		return nil, err
 	}
 
 	// Repository & Service
 	repo := service.NewRepository(store)
-	svc := service.New(repo)
+	return service.New(repo), nil
+}
+
+func runServer() error {
+	var httpServer *server.Server
+
+	serverConfig := config.ServerConfig()
+	authConfig := config.AuthConfig()
+
+	svc, err := initService()
+	if err != nil {
+		return err
+	}
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)

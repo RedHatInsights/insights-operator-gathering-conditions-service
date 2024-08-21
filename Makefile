@@ -55,10 +55,13 @@ abcgo: ## Run ABC metrics checker
 	@echo "Run ABC metrics checker"
 	./abcgo.sh ${VERBOSE}
 
-openapi-check:
+openapi-check:  ## Validate the OpenAPI specification files
 	./check_openapi.sh
 
-style: fmt vet lint cyclo shellcheck errcheck goconst gosec ineffassign abcgo ## Run all the formatting related commands (fmt, vet, lint, cyclo) + check shell scripts
+init-service: ${BINARY}  ## Initialize the service and check all the configuration files are parsable
+	./$^ --init-service
+
+style: fmt vet lint cyclo shellcheck errcheck goconst gosec ineffassign abcgo init ## Run all the formatting related commands (fmt, vet, lint, cyclo) + check shell scripts
 
 run: ${BINARY} ## Build the project and executes the binary
 	./$^
