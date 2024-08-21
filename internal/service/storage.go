@@ -135,8 +135,9 @@ func (s *Storage) GetRemoteConfigurationFilepath(ocpVersion string) (string, err
 	if err != nil {
 		log.Error().Str("ocpVersion", ocpVersion).Err(err).Msg("Invalid semver")
 		return "", &merrors.RouterParsingError{
-			ParamName: "ocpVersion",
-			ErrString: err.Error()}
+			ParamName:  "ocpVersion",
+			ParamValue: ocpVersion,
+			ErrString:  err.Error()}
 	}
 
 	return s.clusterMapping.GetFilepathForVersion(ocpVersionParsed)
