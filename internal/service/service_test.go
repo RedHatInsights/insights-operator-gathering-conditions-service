@@ -218,6 +218,13 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 			wantConfiguration:      emptyConfiguration,
 		},
 		{
+			name:                   "cluster version is a CI release of 4.17.0-0",
+			clusterMappingFilepath: validClusterMapping,
+			expectedAnError:        false,
+			ocpVersion:             "4.17.0-0.ci-2024-08-19-220527",
+			wantConfiguration:      experimental1Configuration, // TODO: or shall we return the one for versions < 4.17.0-0?
+		},
+		{
 			name:                   "cluster version is 4.17.0-0",
 			clusterMappingFilepath: validClusterMapping,
 			expectedAnError:        false,
@@ -240,6 +247,13 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 		},
 		{
 			name:                   "cluster version is between 4.17.5 and 4.17.6",
+			clusterMappingFilepath: validClusterMapping,
+			expectedAnError:        false,
+			ocpVersion:             "4.17.6-alpha",
+			wantConfiguration:      bugWorkaroundConfiguration,
+		},
+		{
+			name:                   "cluster version is a prerelease of 4.17.6",
 			clusterMappingFilepath: validClusterMapping,
 			expectedAnError:        false,
 			ocpVersion:             "4.17.6-alpha",
