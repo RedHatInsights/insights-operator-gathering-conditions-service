@@ -55,7 +55,7 @@ func parseFlags() (cliFlags cli.Flags) {
 	flag.BoolVar(&cliFlags.ShowConfiguration, "show-configuration", false, "show configuration")
 	flag.BoolVar(&cliFlags.ShowAuthors, "show-authors", false, "show authors")
 	flag.BoolVar(&cliFlags.ShowVersion, "show-version", false, "show version")
-	flag.BoolVar(&cliFlags.InitService, "init-service", false, "initialize the service. Useful for checking all the configuration is right")
+	flag.BoolVar(&cliFlags.CheckConfig, "check-config", false, "initialize the service in order to check all the configuration is right")
 
 	flag.Parse()
 	return
@@ -69,7 +69,7 @@ func doSelectedOperation(cliFlags cli.Flags) int {
 		cli.PrintAuthors()
 	case cliFlags.ShowVersion:
 		cli.PrintVersionInfo()
-	case cliFlags.InitService:
+	case cliFlags.CheckConfig:
 		_, err := initService()
 		if err != nil {
 			return 1

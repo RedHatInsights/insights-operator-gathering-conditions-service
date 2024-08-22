@@ -63,8 +63,8 @@ conditions:  ## Clone the conditions repo and build it to gather the conditions
 	cd insights-operator-gathering-conditions && ./build.sh
 	cp -r insights-operator-gathering-conditions/build conditions
 
-init-service: ${BINARY} conditions ## Initialize the service and check all the configuration files are parsable
-	./${BINARY} --init-service
+check-config: ${BINARY} conditions ## Initialize the service and check all the configuration files are parsable
+	./${BINARY} --check-config
 
 style: fmt vet lint cyclo shellcheck errcheck goconst gosec ineffassign abcgo init ## Run all the formatting related commands (fmt, vet, lint, cyclo) + check shell scripts
 
