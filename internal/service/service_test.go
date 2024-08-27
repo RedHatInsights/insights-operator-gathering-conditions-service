@@ -225,6 +225,13 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 			wantConfiguration:      experimental1Configuration, // TODO: or shall we return the one for versions < 4.17.0-0?
 		},
 		{
+			name:                   "cluster version is a release candidate of 4.17.0",
+			clusterMappingFilepath: validClusterMapping,
+			expectedAnError:        false,
+			ocpVersion:             "4.17.0-rc.0",
+			wantConfiguration:      experimental1Configuration, // TODO: or shall we return the one for versions < 4.17.0-0?
+		},
+		{
 			name:                   "cluster version is 4.17.0-0",
 			clusterMappingFilepath: validClusterMapping,
 			expectedAnError:        false,
