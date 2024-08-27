@@ -112,6 +112,10 @@ meaning clusters with versions between 1.0.0 and 2.0.0 would receive first.json
 , second.json for versions between 2.0.0 and 3.0.0 and third.json for versions
 greater than 3.0.0.
 
+Note that when major, minor, and patch are equal, a pre-release version has
+lower precedence than a normal version. For example,
+`4.17.6-0.ci-2024-08-19-220527` is lower than `4.17.6`.
+
 Use `curl -s http://localhost:8000/api/gathering/v2/4.17.0/gathering_rules` in
 order to check this new endpoint.
 
