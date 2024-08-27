@@ -83,7 +83,8 @@ func (r *Repository) Rules() (*Rules, error) {
 	return &rules, nil
 }
 
-// RemoteConfiguration returns a default remote configuration for v2 endpoint
+// RemoteConfiguration returns a remote configuration for v2 endpoint based on
+// the cluster map defined in the settings and loaded on startup
 func (r *Repository) RemoteConfiguration(ocpVersion string) (*RemoteConfiguration, error) {
 	filepath, err := r.store.GetRemoteConfigurationFilepath(ocpVersion)
 	if err != nil {
