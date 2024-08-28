@@ -55,10 +55,18 @@ abcgo: ## Run ABC metrics checker
 	@echo "Run ABC metrics checker"
 	./abcgo.sh ${VERBOSE}
 
-openapi-check:
+openapi-check:  ## Validate the OpenAPI specification files
 	./check_openapi.sh
 
-style: fmt vet lint cyclo shellcheck errcheck goconst gosec ineffassign abcgo ## Run all the formatting related commands (fmt, vet, lint, cyclo) + check shell scripts
+conditions:  ## Clone the conditions repo and build it to gather the conditions
+	if [ ! -d 'insights-operator-gathering-conditions' ]; then git clone https://github.com/RedHatInsights/insights-operator-gathering-conditions; fi
+	cd insights-operator-gathering-conditions && ./build.sh
+	cp -r insights-operator-gathering-conditions/build conditions
+
+check-config: ${BINARY} conditions ## Check all the configuration files are parsable
+	./${BINARY} --check-config
+
+style: fmt vet lint cyclo shellcheck errcheck goconst gosec ineffassign abcgo check-config ## Run all the formatting related commands (fmt, vet, lint, cyclo) + check shell scripts
 
 run: ${BINARY} ## Build the project and executes the binary
 	./$^

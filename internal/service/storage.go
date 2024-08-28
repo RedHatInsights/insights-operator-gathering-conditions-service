@@ -17,12 +17,18 @@ limitations under the License.
 package service
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"sync"
 
+	"github.com/blang/semver/v4"
+
 	"github.com/rs/zerolog/log"
+
+	merrors "github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/errors"
 )
 
 // StorageInterface describe interface to be implemented by resource storage
@@ -30,12 +36,14 @@ import (
 type StorageInterface interface {
 	ReadConditionalRules(res string) []byte
 	ReadRemoteConfig(p string) []byte
+	GetRemoteConfigurationFilepath(ocpVersion string) (string, error)
 }
 
 // StorageConfig structure contains configuration for resource storage.
 type StorageConfig struct {
 	RulesPath               string `mapstructure:"rules_path" toml:"rules_path"`
 	RemoteConfigurationPath string `mapstructure:"remote_configuration" toml:"remote_configuration"`
+	ClusterMappingPath      string `mapstructure:"cluster_mapping" toml:"cluster_mapping"`
 }
 
 // Cache type represents thread safe map for storing loaded configurations
@@ -62,15 +70,48 @@ type Storage struct {
 	conditionalRulesPath    string
 	remoteConfigurationPath string
 	cache                   Cache
+	clusterMappingPath      string
+	clusterMapping          ClusterMapping
 }
 
 // NewStorage constructs new storage object.
-func NewStorage(cfg StorageConfig) *Storage {
-	log.Debug().Str("path to rules", cfg.RulesPath).Msg("Constructing storage object")
-	return &Storage{
+func NewStorage(cfg StorageConfig) (*Storage, error) {
+	log.Debug().Interface("config", cfg).Msg("Constructing storage object")
+
+	s := Storage{
 		conditionalRulesPath:    cfg.RulesPath,
 		remoteConfigurationPath: cfg.RemoteConfigurationPath,
+		clusterMappingPath:      cfg.ClusterMappingPath,
 	}
+
+	if s.clusterMappingPath == "" {
+		errStr := "cluster mapping filepath is not defined"
+		log.Error().Msg(errStr)
+		return &s, errors.New(errStr)
+	}
+	// Parse the cluster map
+	cm := ClusterMapping{}
+	rawData := s.readDataFromPath(s.clusterMappingPath)
+	if rawData == nil {
+		return &s, errors.New("cannot find cluster map")
+	}
+	err := json.Unmarshal(rawData, &cm)
+	if err != nil {
+		log.Error().Err(err).Msg("Cannot load cluster map")
+		return &s, err
+	}
+
+	log.Debug().Interface("cluster-map", cm).Msg("Cluster map loaded")
+
+	if cm.IsValid(s.remoteConfigurationPath) {
+		log.Info().Msg("The cluster map JSON is valid")
+		s.clusterMapping = cm
+	} else {
+		log.Error().Msg("Cluster map is invalid")
+		return nil, errors.New("cannot parse cluster map")
+	}
+
+	return &s, nil
 }
 
 // ReadConditionalRules tries to find conditional rule with given name in the storage.
@@ -85,6 +126,21 @@ func (s *Storage) ReadRemoteConfig(path string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
 	remoteConfigPath := fmt.Sprintf("%s/%s", s.remoteConfigurationPath, path)
 	return s.readDataFromPath(remoteConfigPath)
+}
+
+// GetRemoteConfigurationFilepath returns the filepath to the remote configuration
+// that should be returned for the given OCP version based on the cluster map
+func (s *Storage) GetRemoteConfigurationFilepath(ocpVersion string) (string, error) {
+	ocpVersionParsed, err := semver.Make(ocpVersion)
+	if err != nil {
+		log.Error().Str("ocpVersion", ocpVersion).Err(err).Msg("Invalid semver")
+		return "", &merrors.RouterParsingError{
+			ParamName:  "ocpVersion",
+			ParamValue: ocpVersion,
+			ErrString:  err.Error()}
+	}
+
+	return s.clusterMapping.GetFilepathForVersion(ocpVersionParsed)
 }
 
 func (s *Storage) readDataFromPath(path string) []byte {

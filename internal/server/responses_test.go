@@ -211,7 +211,7 @@ func TestBuildOkResponseWithData(t *testing.T) {
 func TestHeaders(t *testing.T) {
 	for _, test := range headerTestsWithData {
 		t.Run(test.testName, func(t *testing.T) {
-			testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 				err := test.fName(w, mockPayload) // call the function
 				if err != nil {
 					t.Fatal(err)
@@ -232,7 +232,7 @@ func TestHeaders(t *testing.T) {
 
 	for _, test := range headerTestsWithoutData {
 		t.Run(test.testName, func(t *testing.T) {
-			testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 				err := test.fName(w, "Test Status") // call the function
 				if err != nil {
 					t.Fatal(err)
@@ -252,7 +252,7 @@ func TestHeaders(t *testing.T) {
 
 	for _, test := range sendTests {
 		t.Run(test.testName, func(t *testing.T) {
-			testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 				err := responses.Send(test.statusCode, w, test.data)
 				if err != nil {
 					t.Fatal(err)

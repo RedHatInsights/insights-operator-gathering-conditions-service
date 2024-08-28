@@ -34,11 +34,11 @@ const (
 
 // Handler structure represents HTTP request handler.
 type Handler struct {
-	svc Interface
+	svc RulesProvider
 }
 
 // NewHandler function constructs new HTTP request handler.
-func NewHandler(svc Interface) *Handler {
+func NewHandler(svc RulesProvider) *Handler {
 	return &Handler{
 		svc: svc,
 	}

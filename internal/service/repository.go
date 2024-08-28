@@ -24,7 +24,7 @@ import (
 // RepositoryInterface defines methods to be implemented by any rules providers
 type RepositoryInterface interface {
 	Rules() (*Rules, error)
-	RemoteConfiguration() (*RemoteConfiguration, error)
+	RemoteConfiguration(ocpVersion string) (*RemoteConfiguration, error)
 }
 
 // Rule data type definition based on original JSON schema
@@ -83,15 +83,19 @@ func (r *Repository) Rules() (*Rules, error) {
 	return &rules, nil
 }
 
-// RemoteConfiguration returns a default remote configuration for v2 endpoint
-func (r *Repository) RemoteConfiguration() (*RemoteConfiguration, error) {
-	filepath := "config_default.json" // TODO: Make this depend on OCP version
+// RemoteConfiguration returns a remote configuration for v2 endpoint based on
+// the cluster map defined in the settings and loaded on startup
+func (r *Repository) RemoteConfiguration(ocpVersion string) (*RemoteConfiguration, error) {
+	filepath, err := r.store.GetRemoteConfigurationFilepath(ocpVersion)
+	if err != nil {
+		return nil, err
+	}
 	data := r.store.ReadRemoteConfig(filepath)
 	if data == nil {
 		return nil, fmt.Errorf("store data not found for '%s'", filepath)
 	}
 	var remoteConfig RemoteConfiguration
-	err := json.Unmarshal(data, &remoteConfig)
+	err = json.Unmarshal(data, &remoteConfig)
 	if err != nil {
 		return nil, err
 	}
