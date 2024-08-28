@@ -67,6 +67,8 @@ func TestRepositoryRules(t *testing.T) {
 }
 
 func TestRepositoryRemoteConfiguration(t *testing.T) {
+	const anyVer = "1.2.3"
+
 	tests := []struct {
 		name                 string
 		mockRemoteConfig     []byte
@@ -97,7 +99,7 @@ func TestRepositoryRemoteConfiguration(t *testing.T) {
 				remoteConfig: tt.mockRemoteConfig,
 			}
 			r := service.NewRepository(&m)
-			remoteConfig, err := r.RemoteConfiguration()
+			remoteConfig, err := r.RemoteConfiguration(anyVer)
 			if tt.expectedAnError {
 				assert.Error(t, err)
 			} else {

@@ -1,0 +1,23 @@
+{
+  "conditional_gathering_rules": [
+    {
+      "conditions": [
+        {
+          "type": "alert_is_firing",
+          "alert": {
+            "name": "BugWorkaround"
+          }
+        }
+      ],
+      "gathering_functions": {
+        "containers_logs": {
+          "alert_name": "BugWorkaround",
+          "container": "bug-workaround",
+          "tail_lines": 50
+        }
+      }
+    }
+  ],
+  "container_logs": [],
+  "version": "1.1.0"
+}

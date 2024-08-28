@@ -47,19 +47,21 @@ func main() {
 		os.Exit(1)
 	}
 	cliFlags := parseFlags()
-	doSelectedOperation(cliFlags)
+	exitCode := doSelectedOperation(cliFlags)
+	os.Exit(exitCode)
 }
 
 func parseFlags() (cliFlags cli.Flags) {
 	flag.BoolVar(&cliFlags.ShowConfiguration, "show-configuration", false, "show configuration")
 	flag.BoolVar(&cliFlags.ShowAuthors, "show-authors", false, "show authors")
 	flag.BoolVar(&cliFlags.ShowVersion, "show-version", false, "show version")
+	flag.BoolVar(&cliFlags.CheckConfig, "check-config", false, "initialize the service in order to check all the configuration is right")
 
 	flag.Parse()
 	return
 }
 
-func doSelectedOperation(cliFlags cli.Flags) {
+func doSelectedOperation(cliFlags cli.Flags) int {
 	switch {
 	case cliFlags.ShowConfiguration:
 		cli.PrintConfiguration(&config.Config)
@@ -67,36 +69,56 @@ func doSelectedOperation(cliFlags cli.Flags) {
 		cli.PrintAuthors()
 	case cliFlags.ShowVersion:
 		cli.PrintVersionInfo()
+	case cliFlags.CheckConfig:
+		_, err := initService()
+		if err != nil {
+			return 1
+		}
 	default:
-		runServer()
+		err := runServer()
+		if err != nil {
+			return 1
+		}
 	}
+	return 0
 }
 
-func runServer() {
-	var httpServer *server.Server
-
-	serverConfig := config.ServerConfig()
-	authConfig := config.AuthConfig()
+func initService() (*service.Service, error) {
 	storageConfig := config.StorageConfig()
-
 	// Logger
 	err := initLogger()
 	if err != nil {
 		log.Error().Err(err).Msg("Logger could not be initialized")
-		return
+		return nil, err
 	}
 	defer logger.CloseZerolog()
 
 	// Storage
 	if _, err = os.Stat(storageConfig.RulesPath); err != nil {
 		logStorageError(err, storageConfig.RulesPath)
-		return
+		return nil, err
 	}
-	store := service.NewStorage(storageConfig)
+	store, err := service.NewStorage(storageConfig)
+	if err != nil {
+		log.Error().Err(err).Msg("Error initializing the storage")
+		return nil, err
+	}
 
 	// Repository & Service
 	repo := service.NewRepository(store)
-	svc := service.New(repo)
+	return service.New(repo), nil
+}
+
+func runServer() error {
+	var httpServer *server.Server
+
+	serverConfig := config.ServerConfig()
+	authConfig := config.AuthConfig()
+
+	svc, err := initService()
+	if err != nil {
+		return err
+	}
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
@@ -138,6 +160,7 @@ func runServer() {
 	stopHTTPServer(shutdownCtx, g, httpServer)
 
 	log.Info().Msg("Server closed")
+	return nil
 }
 
 // stopHTTPServer function initialize the HTTP server shutdown operations

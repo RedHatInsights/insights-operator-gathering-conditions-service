@@ -25,9 +25,10 @@ import (
 )
 
 const (
-	validRulesFile = "rules.json"
-	rulesFolder    = "testdata"
-	v2Folder       = "testdata/v2"
+	validRulesFile         = "rules.json"
+	rulesFolder            = "testdata"
+	v2Folder               = "testdata/v2"
+	clusterMappingFilepath = "testdata/cluster-mapping.json"
 )
 
 func TestReadConditionalRules(t *testing.T) {
@@ -62,20 +63,26 @@ func TestReadConditionalRules(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			storage := service.NewStorage(
+			storage, err := service.NewStorage(
 				service.StorageConfig{
-					RulesPath: rulesFolder,
+					RulesPath:               rulesFolder,
+					ClusterMappingPath:      clusterMappingFilepath,
+					RemoteConfigurationPath: v2Folder,
 				})
+			assert.NoError(t, err)
 			checkConditionalRules(t, storage, tc.rulesFile, tc.expectedRules)
 		})
 	}
 
 	t.Run("use cache with a previous read file", func(t *testing.T) {
 		// run Find anothertime to test the cache function
-		storage := service.NewStorage(
+		storage, err := service.NewStorage(
 			service.StorageConfig{
-				RulesPath: rulesFolder,
+				RulesPath:               rulesFolder,
+				ClusterMappingPath:      clusterMappingFilepath,
+				RemoteConfigurationPath: v2Folder,
 			})
+		assert.NoError(t, err)
 		for i := 0; i < 2; i++ {
 			checkConditionalRules(t, storage, validRulesFile, validRules)
 		}
@@ -136,10 +143,12 @@ func TestReadRemoteConfiguration(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			storage := service.NewStorage(
+			storage, err := service.NewStorage(
 				service.StorageConfig{
 					RemoteConfigurationPath: v2Folder,
+					ClusterMappingPath:      clusterMappingFilepath,
 				})
+			assert.NoError(t, err)
 			checkRemoteConfig(t, storage, tt.remoteConfigFile, tt.expectedRemoteConfig)
 		})
 	}

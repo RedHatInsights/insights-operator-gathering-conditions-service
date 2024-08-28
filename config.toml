@@ -8,8 +8,9 @@ enabled = false
 type = "jwt"
 
 [storage]
-rules_path = "./conditions"
-remote_configuration = "./remote-configurations"
+rules_path = "./conditions/v1"
+remote_configuration = "./conditions/v2"
+cluster_mapping = "cluster-mapping.json"
 
 [sentry]
 dsn = "https://daca7436565e4580a85102b9ede9a177@sentry.devshift.net/1020"
@@ -17,7 +18,8 @@ environment = "dev"
 
 [logging]
 debug = true
-log_level="debug"
+log_level = "debug"
+use_stderr = true
 logging_to_cloud_watch_enabled = false
 logging_to_sentry_enabled = true
 logging_to_kafka_enabled = false

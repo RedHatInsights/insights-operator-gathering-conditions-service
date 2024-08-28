@@ -52,6 +52,7 @@ FROM registry.access.redhat.com/ubi8/ubi-micro:latest
 # copy the service
 COPY --from=builder /opt/app-root/src/config.toml /config.toml
 COPY --from=builder /opt/app-root/src/insights-operator-gathering-conditions-service .
+COPY --from=builder /opt/app-root/src/cluster-mapping.json .
 COPY --from=builder /opt/app-root/src/openapi.json .
 
 # copy the certificates

@@ -11,19 +11,21 @@ Gathering Conditions Services to [Insights Operator](https://github.com/openshif
 
 <!-- vim-markdown-toc GFM -->
 
-* [Description](#description)
-    * [REST API](#rest-api)
-* [Usage](#usage)
-    * [Build](#build)
-    * [Configure](#configure)
-    * [Conditions](#conditions)
-    * [Run](#run)
-    * [Makefile](#makefile)
-    * [BDD tests](#bdd-tests)
-* [Container](#container)
-    * [Definition of Done for new features and fixes](#definition-of-done-for-new-features-and-fixes)
-* [License](#license)
-* [Package manifest](#package-manifest)
+- [Insights Operator Gathering Conditions Service](#insights-operator-gathering-conditions-service)
+- [Description](#description)
+  - [REST API](#rest-api)
+- [Usage](#usage)
+  - [Build](#build)
+  - [Configure](#configure)
+  - [Conditions](#conditions)
+  - [Run](#run)
+    - [Rapid recommendations](#rapid-recommendations)
+  - [Makefile](#makefile)
+  - [BDD tests](#bdd-tests)
+- [Container](#container)
+  - [Definition of Done for new features and fixes](#definition-of-done-for-new-features-and-fixes)
+- [License](#license)
+- [Package manifest](#package-manifest)
 
 <!-- vim-markdown-toc -->
 
@@ -61,6 +63,8 @@ cd insights-operator-gathering-conditions
 cp -r ./build ../conditions
 ```
 
+or `make conditions`.
+
 It will build the gathering conditions image.
 
 ## Run
@@ -89,12 +93,37 @@ There are some flags for different purposes:
 - `bin/insights-conditions-service -show-authors`: used to print the authors of the repository.
 - `bin/insights-conditions-service -show-version`: used to print the binary version including commit, branch and build time.
 
+### Rapid recommendations
+
+As part of [CCXDEV-12849](https://issues.redhat.com/browse/CCXDEV-12849) we
+introduced a new feature to map remote configurations to different OCP versions.
+
+In order to use it you need to set the `cluster_mapping` and
+`remote_configuration` fields in [config.toml] or use environment variables.
+The cluster map should look like this:
+```
+[
+	["1.0.0", "first.json"],
+	["2.0.0", "second.json"],
+	["3.0.0", "third.json"]
+]
+```
+meaning clusters with versions between 1.0.0 and 2.0.0 would receive first.json
+, second.json for versions between 2.0.0 and 3.0.0 and third.json for versions
+greater than 3.0.0.
+
+Note that when major, minor, and patch are equal, a pre-release version has
+lower precedence than a normal version. For example,
+`4.17.6-0.ci-2024-08-19-220527` is lower than `4.17.6`.
+
+Use `curl -s http://localhost:8000/api/gathering/v2/4.17.0/gathering_rules` in
+order to check this new endpoint.
+
 ## Makefile
 
 There are many options inside the [Makefile](Makefile) that may be useful for debugging/deploying the service:
 
 ```
-❯ make help
 Usage: make <OPTIONS> ... <TARGETS>
 
 Available targets are:
@@ -111,6 +140,9 @@ errcheck             Run errcheck
 goconst              Run goconst checker
 gosec                Run gosec checker
 abcgo                Run ABC metrics checker
+openapi-check        Validate the OpenAPI specification files
+conditions           Clone the conditions repo and build it to gather the conditions
+check-config         Check all the configuration files are parsable
 style                Run all the formatting related commands (fmt, vet, lint, cyclo) + check shell scripts
 run                  Build the project and executes the binary
 test                 Run the unit tests
