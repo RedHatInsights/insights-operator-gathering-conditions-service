@@ -12,7 +12,3 @@ var (
 		},
 		[]string{"file"})
 )
-
-func InitMetrics() {
-	prometheus.MustRegister(remoteConfigurationsMetric)
-}

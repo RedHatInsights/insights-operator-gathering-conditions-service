@@ -20,6 +20,7 @@ import (
 	"fmt"
 
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -48,7 +49,11 @@ func NewHandler(svc RulesProvider) *Handler {
 // Register function registers new handler for given endpoint URL.
 func (s *Handler) Register(r *mux.Router) {
 	r.HandleFunc(APIPrefix+"/openapi.json", serveOpenAPI).Methods("GET")
-	r.Handle("/metrics", promhttp.Handler()).Methods("GET")
+
+	registry := prometheus.NewRegistry()
+	registry.MustRegister(remoteConfigurationsMetric)
+	r.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{})).Methods("GET")
+
 	r.Handle(APIPrefix+"/gathering_rules", gatheringRulesEndpoint(s.svc)).Methods("GET")
 	r.HandleFunc(APIPrefix+V1Prefix+"/openapi.json", serveOpenAPI).Methods("GET")
 	r.Handle(APIPrefix+V1Prefix+"/gathering_rules", gatheringRulesEndpoint(s.svc)).Methods("GET")
