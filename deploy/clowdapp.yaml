@@ -161,6 +161,27 @@ objects:
       [storage]
       rules_path = "/conditions"
 
+- kind: Service
+  apiVersion: v1
+  metadata:
+    annotations:
+      prometheus.io/path: /metrics
+      prometheus.io/port: "8000"
+      prometheus.io/scheme: http
+      prometheus.io/scrape: "true"
+    name: io-gathering-service-prometheus-exporter
+    labels:
+      app: io-gathering-service
+  spec:
+    ports:
+      - name: web
+        port: 8000
+        protocol: TCP
+        targetPort: 8000
+    selector:
+      app: io-gathering-service
+    type: ClusterIP
+
 parameters:
 - description: Image name
   name: IMAGE
