@@ -85,10 +85,8 @@ func (cm ClusterMapping) GetFilepathForVersion(ocpVersionParsed semver.Version) 
 			Str("version", firstVersion.String()).
 			Str("ocpVersion", ocpVersionParsed.String()).
 			Msg(errMsg)
-		return "", &merrors.RouterParsingError{
-			ParamName:  "ocpVersion",
-			ParamValue: ocpVersionParsed.String(),
-			ErrString:  errMsg}
+		return "", &merrors.NotFoundError{
+			ErrString: errMsg}
 	} else if comparison == 0 {
 		return cm[0][1], nil
 	}

@@ -157,6 +157,7 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 		ocpVersion             string
 		wantConfiguration      string
 		expect400              bool
+		expect404              bool
 	}
 
 	const (
@@ -201,7 +202,7 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 			clusterMappingFilepath: validClusterMapping,
 			expectedAnError:        false,
 			ocpVersion:             "1.2.3",
-			expect400:              true,
+			expect404:              true,
 		},
 		{
 			name:                   "cluster version is 4.0.0",
@@ -308,6 +309,8 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 
 			if tc.expect400 {
 				assert.Equal(t, http.StatusBadRequest, rr.Code)
+			} else if tc.expect404 {
+				assert.Equal(t, http.StatusNotFound, rr.Code)
 			} else {
 				assert.Equal(t, http.StatusOK, rr.Code)
 				assert.JSONEq(t, tc.wantConfiguration, rr.Body.String())
