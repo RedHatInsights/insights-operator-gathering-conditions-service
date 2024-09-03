@@ -109,6 +109,8 @@ func initService() (*service.Service, error) {
 	return service.New(repo), nil
 }
 
+// RunServer starts the server with the loaded configuration. Make sure to call
+// config.LoadConfiguration in order not to start with an empty configuration.
 func RunServer() error {
 	var httpServer *server.Server
 
