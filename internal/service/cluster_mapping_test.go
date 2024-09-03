@@ -10,6 +10,7 @@ import (
 )
 
 const testFilesPath = "../../tests/rapid-recommendations"
+const testStableVersion = "1.0.0"
 
 func TestClusterMappingIsValid(t *testing.T) {
 	t.Run("valid map", func(t *testing.T) {
@@ -18,7 +19,7 @@ func TestClusterMappingIsValid(t *testing.T) {
 			{"2.0.0", "experimental_2.json"},
 			{"3.0.0", "config_default.json"},
 		}
-		assert.True(t, sut.IsValid(testFilesPath))
+		assert.True(t, sut.IsValid(testFilesPath, testStableVersion))
 	})
 
 	t.Run("invalid map: invalid version", func(t *testing.T) {
@@ -27,7 +28,7 @@ func TestClusterMappingIsValid(t *testing.T) {
 			{"not a valid version", "experimental_2.json"},
 			{"3.0.0", "config_default.json"},
 		}
-		assert.False(t, sut.IsValid(testFilesPath))
+		assert.False(t, sut.IsValid(testFilesPath, testStableVersion))
 	})
 
 	t.Run("invalid map: JSON not found", func(t *testing.T) {
@@ -36,7 +37,7 @@ func TestClusterMappingIsValid(t *testing.T) {
 			{"2.0.0", "not-found.json"},
 			{"3.0.0", "config_default.json"},
 		}
-		assert.False(t, sut.IsValid(testFilesPath))
+		assert.False(t, sut.IsValid(testFilesPath, testStableVersion))
 	})
 }
 

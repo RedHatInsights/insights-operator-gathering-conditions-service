@@ -6,6 +6,7 @@ enable_cors = false
 [storage]
 rules_path = "tests/conditions"
 remote_configuration = "./tests/rapid-recommendations"
+stable_version = "1.0.0"
 cluster_mapping = "./tests/rapid-recommendations/cluster-mapping.json"
 
 [sentry]

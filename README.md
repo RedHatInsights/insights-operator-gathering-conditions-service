@@ -75,6 +75,11 @@ Then you can test it:
 curl -s http://localhost:8081/api/gathering/gathering_rules | jq
 ```
 
+The image contains all versions of configurations equal to or greater than 1.1.0 
+(older version lack data for Rapid recommendations feature). The version that should be provided
+by the servise should be specified in the `stable_version` field in `config.toml` or corresponding
+environment variable.
+
 ## Configure
 
 Configuration is done by `toml` config, taking the `config/config.toml` in the working directory if no other configuration is provided. This can be overriden by `INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_CONFIG_FILE` environment variable.
