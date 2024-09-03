@@ -75,7 +75,7 @@ func doSelectedOperation(cliFlags cli.Flags) int {
 			return 1
 		}
 	default:
-		err := runServer()
+		err := RunServer()
 		if err != nil {
 			return 1
 		}
@@ -109,7 +109,7 @@ func initService() (*service.Service, error) {
 	return service.New(repo), nil
 }
 
-func runServer() error {
+func RunServer() error {
 	var httpServer *server.Server
 
 	serverConfig := config.ServerConfig()
