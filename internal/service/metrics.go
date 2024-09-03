@@ -10,5 +10,5 @@ var (
 			Name: "io_gathering_remote_configuration",
 			Help: "The number of times a remote configuration was returned",
 		},
-		[]string{"file"})
+		[]string{"file", "version"})
 )

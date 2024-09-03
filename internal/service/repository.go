@@ -101,7 +101,7 @@ func (r *Repository) RemoteConfiguration(ocpVersion string) (*RemoteConfiguratio
 	}
 
 	// Count the number of times a given remote configuration is returned
-	remoteConfigurationsMetric.WithLabelValues(filepath).Inc()
+	remoteConfigurationsMetric.WithLabelValues(filepath, remoteConfig.Version).Inc()
 
 	return &remoteConfig, nil
 }
