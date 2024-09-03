@@ -46,12 +46,13 @@ func main() {
 		log.Error().Err(err).Msg("Configuration could not be loaded")
 		os.Exit(1)
 	}
-	cliFlags := parseFlags()
+	cliFlags := ParseFlags()
 	exitCode := doSelectedOperation(cliFlags)
 	os.Exit(exitCode)
 }
 
-func parseFlags() (cliFlags cli.Flags) {
+// ParseFlags returns a variable cli.Flags with the input parameters
+func ParseFlags() (cliFlags cli.Flags) {
 	flag.BoolVar(&cliFlags.ShowConfiguration, "show-configuration", false, "show configuration")
 	flag.BoolVar(&cliFlags.ShowAuthors, "show-authors", false, "show authors")
 	flag.BoolVar(&cliFlags.ShowVersion, "show-version", false, "show version")
@@ -70,7 +71,7 @@ func doSelectedOperation(cliFlags cli.Flags) int {
 	case cliFlags.ShowVersion:
 		cli.PrintVersionInfo()
 	case cliFlags.CheckConfig:
-		_, err := initService()
+		_, err := InitService()
 		if err != nil {
 			return 1
 		}
@@ -83,7 +84,9 @@ func doSelectedOperation(cliFlags cli.Flags) int {
 	return 0
 }
 
-func initService() (*service.Service, error) {
+// InitService creates a new *service.Service after parsing all the storage
+// configuration. It's a good way of checking all the inputs are right
+func InitService() (*service.Service, error) {
 	storageConfig := config.StorageConfig()
 	// Logger
 	err := initLogger()
@@ -117,7 +120,7 @@ func RunServer() error {
 	serverConfig := config.ServerConfig()
 	authConfig := config.AuthConfig()
 
-	svc, err := initService()
+	svc, err := InitService()
 	if err != nil {
 		return err
 	}
