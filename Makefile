@@ -59,18 +59,7 @@ openapi-check:  ## Validate the OpenAPI specification files
 	./check_openapi.sh
 
 conditions:  ## Clone the conditions repo and build it to gather the conditions
-	if [ ! -d 'insights-operator-gathering-conditions' ]; then git clone https://github.com/RedHatInsights/insights-operator-gathering-conditions; fi
-	mkdir -p conditions
-	mkdir -p remote-configurations
-	cd insights-operator-gathering-conditions ; \
-	for tag in `git tag --contains eb53ea55da02f87dc6e77a75c8c8ecee9cf41d8b` ; \
-	do \
-		git checkout $$tag && \
-		./build.sh && \
-		cp -r build/v1 ../conditions/$$tag && \
-		cp -r build/v2 ../remote-configurations/$$tag && \
-		rm -r build ; \
-	done
+	./get_conditions.sh
 
 check-config: ${BINARY} conditions ## Check all the configuration files are parsable
 	./${BINARY} --check-config

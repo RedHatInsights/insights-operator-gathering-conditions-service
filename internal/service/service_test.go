@@ -281,6 +281,7 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 			store, err := service.NewStorage(service.StorageConfig{
 				RulesPath:               "../../tests/conditions",
 				RemoteConfigurationPath: "../../tests/rapid-recommendations",
+				StableVersion:           "1.0.0",
 				ClusterMappingPath:      tc.clusterMappingFilepath,
 			})
 			if tc.expectedAnError {

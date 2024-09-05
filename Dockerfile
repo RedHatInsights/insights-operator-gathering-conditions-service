@@ -20,21 +20,9 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal:latest AS conditions
 
 RUN microdnf install --nodocs -y jq git
 
-RUN git clone --depth 1 https://github.com/RedHatInsights/insights-operator-gathering-conditions
+COPY get_conditions.sh .
 
-WORKDIR "/insights-operator-gathering-conditions"
-
-# Retrieve all versions of conditions equal or greater than 1.1.0 (older versions lack rapid recommendations data)
-RUN for tag in $(git tag --contains eb53ea55da02f87dc6e77a75c8c8ecee9cf41d8b); \
-    do \
-	git checkout $tag && \
-	./build.sh && \
-	mkdir -p /conditions && \
-	mkdir -p /remote-configurations && \
-    	cp -r ./build/v1 /conditions/${tag} && \
-    	cp -r ./build/v2 /remote-configurations/${tag} && \
-	rm -r ./build ; \
-    done
+RUN ./get_conditions.sh 
 
 ###################
 # Builder

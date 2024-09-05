@@ -9,6 +9,8 @@ type = ""
 
 [storage]
 rules_path = "rules_path"
+remote_configuration = "remote_configurations"
+stable_version = "1.0.0"
 
 [sentry]
 dsn = "dsn"

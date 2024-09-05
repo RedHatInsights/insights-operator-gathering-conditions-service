@@ -45,9 +45,9 @@ var (
 			Type:    "",
 		},
 		StorageConfig: service.StorageConfig{
-			RulesPath:      "rules_path",
-			ConditionsPath: "conditions_path",
-			StableVersion:  "1.0.0",
+			RulesPath:               "rules_path",
+			RemoteConfigurationPath: "remote_configurations",
+			StableVersion:           "1.0.0",
 		},
 		SentryLoggingConfig: logger.SentryLoggingConfiguration{
 			SentryDSN: "dsn",
