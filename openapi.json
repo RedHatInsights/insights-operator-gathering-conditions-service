@@ -3,7 +3,7 @@
   "info": {
     "title": "Insights Operator Gathering Conditions Service",
     "description": "Gathering Conditions Services to Insights Operator.",
-    "version": "0.2",
+    "version": "1.0",
     "contact": {}
   },
   "paths": {
@@ -51,9 +51,9 @@
       }
     },
     "/gathering_rules": {
-      "summary": "Return the list of gathering rules",
-      "description": "This endpoint returns an array of the available rules stored. This array contains the conditions and gathering functions for the Insights Operator. These rules are used in https://github.com/openshift/insights-operator/blob/master/pkg/gatherers/conditional/conditional_gatherer.go.",
       "get": {
+        "summary": "Return the list of gathering rules",
+        "description": "This endpoint returns an array of the available rules stored. This array contains the conditions and gathering functions for the Insights Operator. These rules are used in https://github.com/openshift/insights-operator/blob/master/pkg/gatherers/conditional/conditional_gatherer.go.",
         "responses": {
           "200": {
             "content": {
@@ -188,9 +188,9 @@
       }
     },
     "/v1/gathering_rules": {
-      "summary": "Return the list of gathering rules",
-      "description": "This endpoint returns an array of the available rules stored. This array contains the conditions and gathering functions for the Insights Operator. These rules are used in https://github.com/openshift/insights-operator/blob/master/pkg/gatherers/conditional/conditional_gatherer.go.",
       "get": {
+        "summary": "Return the list of gathering rules",
+        "description": "This endpoint returns an array of the available rules stored. This array contains the conditions and gathering functions for the Insights Operator. These rules are used in https://github.com/openshift/insights-operator/blob/master/pkg/gatherers/conditional/conditional_gatherer.go.",
         "responses": {
           "200": {
             "content": {
@@ -282,13 +282,13 @@
       }
     },
     "/v2/{ocpVersion}/gathering_rules": {
-      "summary": "Return remote configuration base on OCP version",
-      "description": "This endpoint returns the specific configuration used by Insights Operator based on version of the cluster where the operator runs.",
       "get": {
+        "summary": "Return remote configuration based on OCP version",
+        "description": "This endpoint returns the specific configuration used by Insights Operator based on version of the cluster where the operator runs. This configuration is configured via a **map that correlates OpenShift versions with remote configurations**. For more information please check the [corresponding README section](https://github.com/RedHatInsights/insights-operator-gathering-conditions-service/blob/main/README.md#rapid-recommendations).",
         "parameters": [
           {
             "name": "ocpVersion",
-            "description": "Version of the OCP cluster",
+            "description": "Version of the OCP cluster using semver format (https://semver.org/)",
             "schema": {
               "type": "string"
             },
@@ -299,9 +299,183 @@
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "the version is valid and there is a remote configuration for it",
             "content": {
               "application/json": {
+                "examples": {
+                  "default_config": {
+                    "summary": "a default remote configuration",
+                    "value": {
+                      "conditional_gathering_rules": [
+                        {
+                          "conditions": [
+                            {
+                              "type": "alert_is_firing",
+                              "alert": {
+                                "name": "AlertmanagerFailedReload"
+                              }
+                            }
+                          ],
+                          "gathering_functions": {
+                            "containers_logs": {
+                              "alert_name": "AlertmanagerFailedReload",
+                              "container": "alertmanager",
+                              "tail_lines": 50
+                            }
+                          }
+                        },
+                        {
+                          "conditions": [
+                            {
+                              "type": "alert_is_firing",
+                              "alert": {
+                                "name": "AlertmanagerFailedToSendAlerts"
+                              }
+                            }
+                          ],
+                          "gathering_functions": {
+                            "containers_logs": {
+                              "alert_name": "AlertmanagerFailedToSendAlerts",
+                              "tail_lines": 50,
+                              "container": "alertmanager"
+                            }
+                          }
+                        },
+                        {
+                          "conditions": [
+                            {
+                              "type": "alert_is_firing",
+                              "alert": {
+                                "name": "APIRemovedInNextEUSReleaseInUse"
+                              }
+                            }
+                          ],
+                          "gathering_functions": {
+                            "api_request_counts_of_resource_from_alert": {
+                              "alert_name": "APIRemovedInNextEUSReleaseInUse"
+                            }
+                          }
+                        },
+                        {
+                          "conditions": [
+                            {
+                              "type": "alert_is_firing",
+                              "alert": {
+                                "name": "KubePodCrashLooping"
+                              }
+                            }
+                          ],
+                          "gathering_functions": {
+                            "containers_logs": {
+                              "alert_name": "KubePodCrashLooping",
+                              "tail_lines": 20,
+                              "previous": true
+                            }
+                          }
+                        },
+                        {
+                          "conditions": [
+                            {
+                              "type": "alert_is_firing",
+                              "alert": {
+                                "name": "KubePodNotReady"
+                              }
+                            }
+                          ],
+                          "gathering_functions": {
+                            "containers_logs": {
+                              "alert_name": "KubePodNotReady",
+                              "tail_lines": 100
+                            },
+                            "pod_definition": {
+                              "alert_name": "KubePodNotReady"
+                            }
+                          }
+                        },
+                        {
+                          "conditions": [
+                            {
+                              "type": "alert_is_firing",
+                              "alert": {
+                                "name": "PrometheusOperatorSyncFailed"
+                              }
+                            }
+                          ],
+                          "gathering_functions": {
+                            "containers_logs": {
+                              "alert_name": "PrometheusOperatorSyncFailed",
+                              "tail_lines": 50,
+                              "container": "prometheus-operator"
+                            }
+                          }
+                        },
+                        {
+                          "conditions": [
+                            {
+                              "type": "alert_is_firing",
+                              "alert": {
+                                "name": "PrometheusTargetSyncFailure"
+                              }
+                            }
+                          ],
+                          "gathering_functions": {
+                            "containers_logs": {
+                              "alert_name": "PrometheusTargetSyncFailure",
+                              "container": "prometheus",
+                              "tail_lines": 50
+                            }
+                          }
+                        },
+                        {
+                          "conditions": [
+                            {
+                              "type": "alert_is_firing",
+                              "alert": {
+                                "name": "SamplesImagestreamImportFailing"
+                              }
+                            }
+                          ],
+                          "gathering_functions": {
+                            "logs_of_namespace": {
+                              "namespace": "openshift-cluster-samples-operator",
+                              "tail_lines": 100
+                            },
+                            "image_streams_of_namespace": {
+                              "namespace": "openshift-cluster-samples-operator"
+                            }
+                          }
+                        },
+                        {
+                          "conditions": [
+                            {
+                              "type": "alert_is_firing",
+                              "alert": {
+                                "name": "ThanosRuleQueueIsDroppingAlerts"
+                              }
+                            }
+                          ],
+                          "gathering_functions": {
+                            "containers_logs": {
+                              "alert_name": "ThanosRuleQueueIsDroppingAlerts",
+                              "container": "thanos-ruler",
+                              "tail_lines": 50
+                            }
+                          }
+                        }
+                      ],
+                      "container_logs": [],
+                      "version": "1.1.0"
+                    }
+                  },
+                  "empty_config": {
+                    "summary": "empty configuration",
+                    "value": {
+                      "conditional_gathering_rules": [],
+                      "container_logs": [],
+                      "version": "1.1.0"
+                    }
+                  }
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -356,7 +530,7 @@
                         "properties": {
                           "namespace": {
                             "type": "string"
-                          }, 
+                          },
                           "pod_name_regex": {
                             "type": "string"
                           },
@@ -375,7 +549,39 @@
                           "pod_name_regex",
                           "messages"
                         ]
-                      } 
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "the version couldn't be parsed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Error during parsing param 'ocpVersion' with value 'vfake'. Error: 'No Major.Minor.Patch elements found'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "the version is lower than the minimum remote configuration available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "the given OCP version is lower than the first one in the cluster map"
                     }
                   }
                 }
