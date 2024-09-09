@@ -10,7 +10,6 @@ type = "jwt"
 [storage]
 rules_path = "./conditions"
 remote_configuration = "./remote-configurations"
-stable_version = "1.1.0"
 cluster_mapping = "cluster-mapping.json"
 
 [sentry]

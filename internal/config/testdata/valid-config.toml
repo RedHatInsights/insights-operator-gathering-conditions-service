@@ -10,7 +10,7 @@ type = ""
 [storage]
 rules_path = "rules_path"
 remote_configuration = "remote_configurations"
-stable_version = "1.0.0"
+cluster_mapping = "./tests/rapid-recommendations/cluster-mapping.json"
 
 [sentry]
 dsn = "dsn"

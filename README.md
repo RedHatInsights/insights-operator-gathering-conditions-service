@@ -75,10 +75,9 @@ Then you can test it:
 curl -s http://localhost:8081/api/gathering/gathering_rules | jq
 ```
 
-The image contains all versions of configurations equal to or greater than 1.1.0 
-(older version lack data for Rapid recommendations feature). The version that should be provided
-by the servise should be specified in the `stable_version` field in `config.toml` or corresponding
-environment variable.
+The image contains stable and canary versions of configurations. Exact values of these versions are specified
+in `get_conditions.sh` script and should be changed each time we want release a new conditions version.
+Unfortunatelly it is not possible to change these values in the app-interface, because the change requires image rebuild.
 
 ## Configure
 

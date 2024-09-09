@@ -47,7 +47,7 @@ var (
 		StorageConfig: service.StorageConfig{
 			RulesPath:               "rules_path",
 			RemoteConfigurationPath: "remote_configurations",
-			StableVersion:           "1.0.0",
+			ClusterMappingPath:      "./tests/rapid-recommendations/cluster-mapping.json",
 		},
 		SentryLoggingConfig: logger.SentryLoggingConfiguration{
 			SentryDSN: "dsn",
