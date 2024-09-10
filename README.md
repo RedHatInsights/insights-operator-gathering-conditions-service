@@ -75,6 +75,10 @@ Then you can test it:
 curl -s http://localhost:8081/api/gathering/gathering_rules | jq
 ```
 
+The image contains stable and canary versions of configurations. Exact values of these versions are specified
+in `get_conditions.sh` script and should be changed each time we want release a new conditions version.
+Unfortunatelly it is not possible to change these values in the app-interface, because the change requires image rebuild.
+
 ## Configure
 
 Configuration is done by `toml` config, taking the `config/config.toml` in the working directory if no other configuration is provided. This can be overriden by `INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_CONFIG_FILE` environment variable.

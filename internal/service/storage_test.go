@@ -26,7 +26,7 @@ import (
 
 const (
 	validRulesFile         = "rules.json"
-	rulesFolder            = "testdata"
+	rulesFolder            = "testdata/v1"
 	v2Folder               = "testdata/v2"
 	clusterMappingFilepath = "testdata/cluster-mapping.json"
 )

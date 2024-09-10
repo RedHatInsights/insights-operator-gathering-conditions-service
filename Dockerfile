@@ -18,17 +18,11 @@
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest AS conditions
 
-ARG CONDITIONS_VERSION="1.1.0"
-
 RUN microdnf install --nodocs -y jq git
 
-RUN git clone --depth 1 --branch $CONDITIONS_VERSION https://github.com/RedHatInsights/insights-operator-gathering-conditions
+COPY get_conditions.sh .
 
-WORKDIR "/insights-operator-gathering-conditions"
-
-RUN ./build.sh && \
-    cp -r ./build/v1 /conditions && \
-    cp -r ./build/v2 /remote-configurations
+RUN ./get_conditions.sh 
 
 ###################
 # Builder

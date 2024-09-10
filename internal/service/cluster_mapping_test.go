@@ -18,7 +18,7 @@ func TestClusterMappingIsValid(t *testing.T) {
 			{"2.0.0", "experimental_2.json"},
 			{"3.0.0", "config_default.json"},
 		}
-		assert.True(t, sut.IsValid(testFilesPath))
+		assert.True(t, sut.IsValid(testFilesPath, service.StableVersion))
 	})
 
 	t.Run("invalid map: invalid version", func(t *testing.T) {
@@ -27,7 +27,7 @@ func TestClusterMappingIsValid(t *testing.T) {
 			{"not a valid version", "experimental_2.json"},
 			{"3.0.0", "config_default.json"},
 		}
-		assert.False(t, sut.IsValid(testFilesPath))
+		assert.False(t, sut.IsValid(testFilesPath, service.StableVersion))
 	})
 
 	t.Run("invalid map: JSON not found", func(t *testing.T) {
@@ -36,7 +36,7 @@ func TestClusterMappingIsValid(t *testing.T) {
 			{"2.0.0", "not-found.json"},
 			{"3.0.0", "config_default.json"},
 		}
-		assert.False(t, sut.IsValid(testFilesPath))
+		assert.False(t, sut.IsValid(testFilesPath, service.StableVersion))
 	})
 }
 

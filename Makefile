@@ -59,9 +59,7 @@ openapi-check:  ## Validate the OpenAPI specification files
 	./check_openapi.sh
 
 conditions:  ## Clone the conditions repo and build it to gather the conditions
-	if [ ! -d 'insights-operator-gathering-conditions' ]; then git clone https://github.com/RedHatInsights/insights-operator-gathering-conditions; fi
-	cd insights-operator-gathering-conditions && ./build.sh
-	cp -r insights-operator-gathering-conditions/build conditions
+	./get_conditions.sh
 
 check-config: ${BINARY} conditions ## Check all the configuration files are parsable
 	./${BINARY} --check-config
