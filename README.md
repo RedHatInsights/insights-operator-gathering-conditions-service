@@ -16,16 +16,17 @@ Gathering Conditions Services to [Insights Operator](https://github.com/openshif
   - [REST API](#rest-api)
 - [Usage](#usage)
   - [Build](#build)
+    - [As a container](#as-a-container)
   - [Configure](#configure)
   - [Conditions](#conditions)
   - [Run](#run)
+    - [Flags](#flags)
     - [Rapid recommendations](#rapid-recommendations)
+  - [Monitoring](#monitoring)
   - [Makefile](#makefile)
   - [BDD tests](#bdd-tests)
-- [Container](#container)
   - [Definition of Done for new features and fixes](#definition-of-done-for-new-features-and-fixes)
 - [License](#license)
-- [Package manifest](#package-manifest)
 
 <!-- vim-markdown-toc -->
 
@@ -42,19 +43,71 @@ REST API is described by [OpenAPI specification](openapi.json).
 
 ## Build
 
-To build the service, install Go 1.20 or above and run:
+To build the service locally, install Go 1.20 or above and run:
 
 ```shell script
 make build
 ```
 
+### As a container
+
+To build the container you need to set up two environment variables:
+
+1. `CONTAINER_RUNTIME` usually `docker` or `podman`
+2. `CONTAINER_IMAGE_NAME` the image name
+
+
+then use the command:
+
+```shell script
+make container-build
+```
+
+Once build you can run it using:
+
+```shell script
+make container-run
+```
+
+Then you can test it:
+
+```shell script
+curl -s http://localhost:8081/api/gathering/gathering_rules | jq
+```
+
+The image contains stable and canary versions of configurations. Exact values of these versions are specified
+in `get_conditions.sh` script and should be changed each time we want release a new conditions version.
+Unfortunatelly it is not possible to change these values in the app-interface, because the change requires image rebuild.
+
 ## Configure
 
-Configuration is done by `toml` config, taking the `config/config.toml` in the working directory if no configuration is provided. This can be overriden by `INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_CONFIG_FILE` environment variable.
+Configuration is done by `toml` config, taking the `config/config.toml` in the working directory if no other configuration is provided. This can be overriden by `INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_CONFIG_FILE` environment variable.
+
+You can also override specific configuration options by setting specific
+environment variables in this form:
+`INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__{table}__{key}`,
+being the `table` and `key ` concepts defined in the [TOML specification](https://toml.io/en/v1.0.0#table).
+
+For example, for a configuration like this
+
+```
+[storage]
+remote_configuration = "./conditions/v2"
+cluster_mapping = "cluster-mapping.json"
+```
+
+you would override these values as follows:
+
+```
+export INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__REMOTE_CONFIGURATION=tests/rapid-recommendations
+export INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__CLUSTER_MAPPING=tests/rapid-recommendations/cluster-mapping.json
+```
 
 ## Conditions
 
-First you need to clone the conditions repository and build it
+This service exposes the conditions from the
+[insights-operator-gathering-conditions](https://github.com/RedHatInsights/insights-operator-gathering-conditions)
+repository as a REST API. First you need to clone that repository and build it using
 
 ```shell script
 git clone https://github.com/RedHatInsights/insights-operator-gathering-conditions
@@ -63,35 +116,31 @@ cd insights-operator-gathering-conditions
 cp -r ./build ../conditions
 ```
 
-or `make conditions`.
-
-It will build the gathering conditions image.
+or `make conditions`. This will create a set of folders under `conditions` with
+the v1 remote configurations and the v2 rapid recommendations (also called
+remote-configurations).
 
 ## Run
 
-To execute the service, run:
+To execute the service, you have 3 alternatives:
 
-```shell script
-./insights-operator-gathering-conditions-service
-```
+- `./insights-operator-gathering-conditions-service`
+- `make run`
+- `make container-run` (as explained above)
 
-or:
-
-```shell script
-make run
-```
-
-Then you can test it:
+Then you can test it using `curl`, for example:
 
 ```shell script
 curl -s http://localhost:8000/api/gathering/v1/gathering_rules | jq
 ```
 
+### Flags
+
 There are some flags for different purposes:
 
-- `bin/insights-conditions-service -show-configuration`: used to print the configuration in `stdout`.
-- `bin/insights-conditions-service -show-authors`: used to print the authors of the repository.
-- `bin/insights-conditions-service -show-version`: used to print the binary version including commit, branch and build time.
+- `./insights-conditions-service -show-configuration`: used to print the configuration in `stdout`.
+- `./insights-conditions-service -show-authors`: used to print the authors of the repository.
+- `./insights-conditions-service -show-version`: used to print the binary version including commit, branch and build time.
 
 ### Rapid recommendations
 
@@ -118,6 +167,14 @@ lower precedence than a normal version. For example,
 
 Use `curl -s http://localhost:8000/api/gathering/v2/4.17.0/gathering_rules` in
 order to check this new endpoint.
+
+## Monitoring
+
+The service exposes some metrics in the `/metrics` endpoint. Apart from the
+default metrics, it also exposes the ones defined in
+[metrics.go](internal/service/metrics.go).
+
+All these metrics are then used in [Grafana](https://grafana.app-sre.devshift.net/d/gathering/ccx-gathering-service)
 
 ## Makefile
 
@@ -167,33 +224,6 @@ In order to run these tests, the following steps need to be made:
 List of all test scenarios prepared for this service is available at
 <https://redhatinsights.github.io/insights-behavioral-spec/feature_list.html#insights-operator-gathering-conditions-service>
 
-
-# Container
-
-To build the container you need to set up two environment variables:
-
-1. `CONTAINER_RUNTIME` usually `docker` or `podman`
-2. `CONTAINER_IMAGE_NAME` the image name
-
-
-then use the command:
-
-```shell script
-make container-build
-```
-
-Once build you can run it using:
-
-```shell script
-make container-run
-```
-
-Then you can test it:
-
-```shell script
-curl -s http://localhost:8081/api/gathering/gathering_rules | jq
-```
-
 ## Definition of Done for new features and fixes
 
 Please look at [DoD.md](DoD.md) document for definition of done for new features and fixes.
@@ -201,7 +231,3 @@ Please look at [DoD.md](DoD.md) document for definition of done for new features
 # License
 
 This project is licensed by the Apache License 2.0. For more information check the LICENSE file.
-
-# Package manifest
-
-Package manifest is available at [docs/manifest.txt](docs/manifest.txt).

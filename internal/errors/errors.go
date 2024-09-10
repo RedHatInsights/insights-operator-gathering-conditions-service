@@ -143,6 +143,15 @@ func (*NoBodyError) Error() string {
 	return "client didn't provide request body"
 }
 
+// NotFoundError meaning that the requested resource wasn't found
+type NotFoundError struct {
+	ErrString string
+}
+
+func (e *NotFoundError) Error() string {
+	return e.ErrString
+}
+
 // ValidationError validation error, for example when string is longer then expected
 type ValidationError struct {
 	ParamName  string

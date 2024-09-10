@@ -31,6 +31,9 @@ import (
 	merrors "github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/errors"
 )
 
+// StableVersion describes subdirectory with stable version of conditions and remote configurations
+const StableVersion = "stable"
+
 // StorageInterface describe interface to be implemented by resource storage
 // implementations.
 type StorageInterface interface {
@@ -103,7 +106,7 @@ func NewStorage(cfg StorageConfig) (*Storage, error) {
 
 	log.Debug().Interface("cluster-map", cm).Msg("Cluster map loaded")
 
-	if cm.IsValid(s.remoteConfigurationPath) {
+	if cm.IsValid(s.remoteConfigurationPath, StableVersion) {
 		log.Info().Msg("The cluster map JSON is valid")
 		s.clusterMapping = cm
 	} else {
@@ -117,14 +120,14 @@ func NewStorage(cfg StorageConfig) (*Storage, error) {
 // ReadConditionalRules tries to find conditional rule with given name in the storage.
 func (s *Storage) ReadConditionalRules(path string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
-	conditionalRulesPath := fmt.Sprintf("%s/%s", s.conditionalRulesPath, path)
+	conditionalRulesPath := fmt.Sprintf("%s/%s/%s", s.conditionalRulesPath, StableVersion, path)
 	return s.readDataFromPath(conditionalRulesPath)
 }
 
 // ReadRemoteConfig tries to find remote configuration with given name in the storage
 func (s *Storage) ReadRemoteConfig(path string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
-	remoteConfigPath := fmt.Sprintf("%s/%s", s.remoteConfigurationPath, path)
+	remoteConfigPath := fmt.Sprintf("%s/%s/%s", s.remoteConfigurationPath, StableVersion, path)
 	return s.readDataFromPath(remoteConfigPath)
 }
 

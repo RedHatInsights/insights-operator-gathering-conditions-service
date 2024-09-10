@@ -128,6 +128,8 @@ func HandleServerError(writer http.ResponseWriter, err error) {
 	switch err := err.(type) {
 	case *errors.RouterMissingParamError, *errors.RouterParsingError, *errors.NoBodyError, *errors.ValidationError:
 		respErr = SendBadRequest(writer, err.Error())
+	case *errors.NotFoundError:
+		respErr = SendNotFound(writer, err.Error())
 	case *json.UnmarshalTypeError:
 		respErr = SendBadRequest(writer, "bad type in json data")
 	case *errors.UnauthorizedError:

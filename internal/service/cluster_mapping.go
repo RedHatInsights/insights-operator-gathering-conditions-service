@@ -16,7 +16,7 @@ type ClusterMapping [][]string
 
 // IsValid check the list is in order (based on the versions), that the versions
 // can be parsed and that the remote configurations are accessible
-func (cm ClusterMapping) IsValid(remoteConfigurationPath string) bool {
+func (cm ClusterMapping) IsValid(remoteConfigurationPath string, conditionsVersion string) bool {
 	versions := []semver.Version{} // used to check if it's sorted
 
 	if len(cm) == 0 {
@@ -38,7 +38,7 @@ func (cm ClusterMapping) IsValid(remoteConfigurationPath string) bool {
 		versions = append(versions, versionParsed)
 
 		filepath := slice[1]
-		fullFilepath := fmt.Sprintf("%s/%s", remoteConfigurationPath, filepath)
+		fullFilepath := fmt.Sprintf("%s/%s/%s", remoteConfigurationPath, conditionsVersion, filepath)
 		if _, err := os.Stat(fullFilepath); errors.Is(err, os.ErrNotExist) {
 			log.Error().Str("filepath", fullFilepath).
 				Msg("Remote configuration filepath couldn't be accessed")
@@ -85,10 +85,8 @@ func (cm ClusterMapping) GetFilepathForVersion(ocpVersionParsed semver.Version) 
 			Str("version", firstVersion.String()).
 			Str("ocpVersion", ocpVersionParsed.String()).
 			Msg(errMsg)
-		return "", &merrors.RouterParsingError{
-			ParamName:  "ocpVersion",
-			ParamValue: ocpVersionParsed.String(),
-			ErrString:  errMsg}
+		return "", &merrors.NotFoundError{
+			ErrString: errMsg}
 	} else if comparison == 0 {
 		return cm[0][1], nil
 	}
