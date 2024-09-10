@@ -27,7 +27,7 @@ RUN ./get_conditions.sh
 ###################
 # Builder
 ###################
-FROM registry.access.redhat.com/ubi8/go-toolset:1.21.11-8.1724181402 AS builder
+FROM registry.access.redhat.com/ubi8/go-toolset:1.21.11-8.1724662611 AS builder
 
 USER 0
 
