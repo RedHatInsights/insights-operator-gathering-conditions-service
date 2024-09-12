@@ -47,6 +47,7 @@ type StorageConfig struct {
 	RulesPath               string `mapstructure:"rules_path" toml:"rules_path"`
 	RemoteConfigurationPath string `mapstructure:"remote_configuration" toml:"remote_configuration"`
 	ClusterMappingPath      string `mapstructure:"cluster_mapping" toml:"cluster_mapping"`
+	UnleashToken            string `mapstructure:"unleash_token"   toml:"unleash_token"`
 }
 
 // Cache type represents thread safe map for storing loaded configurations

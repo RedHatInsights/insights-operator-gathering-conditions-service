@@ -23,6 +23,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	clowder "github.com/redhatinsights/app-common-go/pkg/api/v1"
+
 	"github.com/BurntSushi/toml"
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/server"
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
@@ -38,6 +40,8 @@ const (
 	// envPrefix is prefix for all environment variables that contains
 	// various configuration options
 	envPrefix = "INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE_"
+
+	noFeatureFlags = "warning: no featureFlags section in Clowder config"
 )
 
 // Configuration is a structure holding the whole service configuration
@@ -105,6 +109,8 @@ func LoadConfiguration(defaultConfigFile string) error {
 		return fmt.Errorf("fatal error config file: %s", err)
 	}
 
+	updateConfigFromClowder(&Config)
+
 	// everything's should be ok
 	return nil
 }
@@ -142,4 +148,21 @@ func SentryLoggingConfig() logger.SentryLoggingConfiguration {
 // KafkaZerologConfig function returns the configuration of ZeroLog for Kafka.
 func KafkaZerologConfig() logger.KafkaZerologConfiguration {
 	return Config.KafkaZerologConfig
+}
+
+// updateConfigFromClowder updates the current config with the values defined in clowder
+func updateConfigFromClowder(configuration *Configuration) {
+	// check if Clowder is enabled. If not, simply skip the logic.
+	if !clowder.IsClowderEnabled() || clowder.LoadedConfig == nil {
+		fmt.Println("Clowder is disabled")
+		return
+	}
+
+	fmt.Println("Clowder is enabled")
+
+	if clowder.LoadedConfig.FeatureFlags != nil {
+		configuration.StorageConfig.UnleashToken = *clowder.LoadedConfig.FeatureFlags.ClientAccessToken
+	} else {
+		fmt.Println(noFeatureFlags)
+	}
 }

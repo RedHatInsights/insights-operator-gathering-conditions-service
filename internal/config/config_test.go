@@ -20,6 +20,8 @@ import (
 	"os"
 	"testing"
 
+	clowder "github.com/redhatinsights/app-common-go/pkg/api/v1"
+
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/config"
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/server"
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
@@ -198,4 +200,29 @@ func TestGetConfigFunctions(t *testing.T) {
 	t.Run("KafkaZerologConfig", func(t *testing.T) {
 		assert.Equal(t, config.Config.KafkaZerologConfig, config.KafkaZerologConfig())
 	})
+}
+
+// TestLoadConfigurationFromClowder tests that when applying the config,
+// if the Clowder config is enabled, the token for Unleash is loaded correctly
+func TestLoadConfigurationKafkaTopicUpdatedFromClowder(t *testing.T) {
+	os.Clearenv()
+	unleashToken := "secret-token"
+	clowder.LoadedConfig = &clowder.AppConfig{
+		FeatureFlags: &clowder.FeatureFlagsConfig{
+			ClientAccessToken: &unleashToken,
+		},
+	}
+
+	// set environment variable that points to Clowder configuration file
+	err := os.Setenv("ACG_CONFIG", "test_config.toml")
+	assert.NoError(t, err)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = config.LoadConfiguration("testdata/valid_config.toml")
+	assert.NoError(t, err, "Failed loading configuration file")
+
+	storageCfg := config.StorageConfig()
+	assert.Equal(t, unleashToken, storageCfg.UnleashToken)
 }
