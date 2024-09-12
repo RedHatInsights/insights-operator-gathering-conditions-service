@@ -38,6 +38,29 @@ func TestClusterMappingIsValid(t *testing.T) {
 		}
 		assert.False(t, sut.IsValid(testFilesPath, service.StableVersion))
 	})
+
+	t.Run("invalid map: versions unsorted", func(t *testing.T) {
+		var sut service.ClusterMapping = [][]string{
+			{"1.0.0", "experimental_1.json"},
+			{"3.0.0", "experimental_2.json"},
+			{"2.0.0", "config_default.json"},
+		}
+		assert.False(t, sut.IsValid(testFilesPath, service.StableVersion))
+	})
+
+	t.Run("invalid map: map contains a tripple instead of key-values pairs", func(t *testing.T) {
+		var sut service.ClusterMapping = [][]string{
+			{"1.0.0", "experimental_1.json", "some-element"},
+			{"2.0.0", "experimental_2.json"},
+			{"3.0.0", "config_default.json"},
+		}
+		assert.False(t, sut.IsValid(testFilesPath, service.StableVersion))
+	})
+
+	t.Run("invalid map: map is empty", func(t *testing.T) {
+		var sut service.ClusterMapping = [][]string{}
+		assert.False(t, sut.IsValid(testFilesPath, service.StableVersion))
+	})
 }
 
 func TestClusterMappingGetFilepathForVersion(t *testing.T) {

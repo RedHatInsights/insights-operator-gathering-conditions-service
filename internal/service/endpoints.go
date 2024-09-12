@@ -1,5 +1,5 @@
 /*
-Copyright © 2021, 2022 Red Hat, Inc.
+Copyright © 2021, 2022, 2024 Red Hat, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,7 +18,9 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
@@ -56,7 +58,13 @@ func gatheringRulesEndpoint(svc RulesProvider) http.HandlerFunc {
 		logHeaders(r, []string{"User-Agent"}, logHeadersEvent)
 		logHeadersEvent.Msg("Request headers")
 
-		rules, err := svc.Rules()
+		clusterID, err := getClusterID(r)
+		if err != nil {
+			server.HandleServerError(w, err)
+			return
+		}
+
+		rules, err := svc.Rules(clusterID)
 		if err != nil {
 			server.HandleServerError(w, err)
 			return
@@ -82,7 +90,14 @@ func remoteConfigurationEndpoint(svc RulesProvider) http.HandlerFunc {
 					ParamName: "ocpVersion",
 					ErrString: "ocpVersion should be specified as part of the URL"})
 		}
-		remoteConfig, err := svc.RemoteConfiguration(ocpVersion)
+
+		clusterID, err := getClusterID(r)
+		if err != nil {
+			server.HandleServerError(w, err)
+			return
+		}
+
+		remoteConfig, err := svc.RemoteConfiguration(ocpVersion, clusterID)
 
 		if err != nil {
 			server.HandleServerError(w, err)
@@ -132,4 +147,15 @@ func sliceContains(s []string, e string) bool {
 		}
 	}
 	return false
+}
+
+func getClusterID(r *http.Request) (string, error) {
+	userAgent := r.UserAgent()
+	if !strings.Contains(userAgent, "cluster/") {
+		err := errors.New("UserAgent does not contain cluster ID")
+		log.Error().Str("UserAgent", userAgent).Err(err).Msg("Failed to retrieve cluster ID")
+		return "", err
+	}
+	_, clusterID, _ := strings.Cut(userAgent, "cluster/")
+	return clusterID, nil
 }

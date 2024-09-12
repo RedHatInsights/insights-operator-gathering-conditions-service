@@ -1,5 +1,5 @@
 /*
-Copyright © 2021, 2022 Red Hat, Inc.
+Copyright © 2021, 2022, 2024 Red Hat, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,8 +21,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"sync"
+
+	"github.com/Unleash/unleash-client-go/v4"
+	"github.com/Unleash/unleash-client-go/v4/context"
 
 	"github.com/blang/semver/v4"
 
@@ -34,11 +38,19 @@ import (
 // StableVersion describes subdirectory with stable version of conditions and remote configurations
 const StableVersion = "stable"
 
+// CanaryVersion describes subdirectory with canary version of conditions and remote configurations
+const CanaryVersion = "canary"
+
+// UnleashClientInterface describes interface for using Unleash in canary rollouts
+type UnleashClientInterface interface {
+	IsCanary(clusterID string) bool
+}
+
 // StorageInterface describe interface to be implemented by resource storage
 // implementations.
 type StorageInterface interface {
-	ReadConditionalRules(res string) []byte
-	ReadRemoteConfig(p string) []byte
+	ReadConditionalRules(res string, clusterID string) []byte
+	ReadRemoteConfig(p string, clusterID string) []byte
 	GetRemoteConfigurationFilepath(ocpVersion string) (string, error)
 }
 
@@ -47,7 +59,11 @@ type StorageConfig struct {
 	RulesPath               string `mapstructure:"rules_path" toml:"rules_path"`
 	RemoteConfigurationPath string `mapstructure:"remote_configuration" toml:"remote_configuration"`
 	ClusterMappingPath      string `mapstructure:"cluster_mapping" toml:"cluster_mapping"`
-	UnleashToken            string `mapstructure:"unleash_token"   toml:"unleash_token"`
+	UnleashURL              string `mapstructure:"unleash_url" toml:"unleash_url"`
+	UnleashToken            string `mapstructure:"unleash_token" toml:"unleash_token"`
+	UnleashApp              string `mapstructure:"unleash_app" toml:"unleash_app"`
+	UnleashToggle           string `mapstructure:"unleash_toggle" toml:"unleash_toggle"`
+	UnleashEnabled          bool   `mapstructure:"unleash_enabled" toml:"unleash_enabled"`
 }
 
 // Cache type represents thread safe map for storing loaded configurations
@@ -69,6 +85,33 @@ func (c *Cache) Set(key string, value []byte) {
 	c.cache.Store(key, value)
 }
 
+// UnleashClient initializes Unleash on its creation and provides interface to query it
+type UnleashClient struct {
+	unleashToggle string
+}
+
+// NewUnleashClient constructs new Unleash client along with Unleash initialization
+func NewUnleashClient(cfg StorageConfig) (*UnleashClient, error) {
+	c := UnleashClient{unleashToggle: cfg.UnleashToggle}
+	log.Info().Msg("Initializing Unleash")
+	err := unleash.Initialize(
+		unleash.WithAppName(cfg.UnleashApp),
+		unleash.WithUrl(cfg.UnleashURL),
+		unleash.WithCustomHeaders(http.Header{"Authorization": {cfg.UnleashToken}}),
+	)
+	if err != nil {
+		return nil, err
+	}
+	unleash.WaitForReady()
+	log.Info().Msg("Unleash initialized")
+	return &c, nil
+}
+
+// IsCanary queries Unleash to determine whether to serve stable or canary version of data
+func (c *UnleashClient) IsCanary(clusterID string) bool {
+	return unleash.IsEnabled(c.unleashToggle, unleash.WithContext(context.Context{UserId: clusterID}))
+}
+
 // Storage type represents container for resources.
 type Storage struct {
 	conditionalRulesPath    string
@@ -76,16 +119,19 @@ type Storage struct {
 	cache                   Cache
 	clusterMappingPath      string
 	clusterMapping          ClusterMapping
+	unleashClient           UnleashClientInterface
+	unleashEnabled          bool
 }
 
 // NewStorage constructs new storage object.
-func NewStorage(cfg StorageConfig) (*Storage, error) {
+func NewStorage(cfg StorageConfig, unleashClient UnleashClientInterface) (*Storage, error) {
 	log.Debug().Interface("config", cfg).Msg("Constructing storage object")
-
 	s := Storage{
 		conditionalRulesPath:    cfg.RulesPath,
 		remoteConfigurationPath: cfg.RemoteConfigurationPath,
 		clusterMappingPath:      cfg.ClusterMappingPath,
+		unleashEnabled:          cfg.UnleashEnabled,
+		unleashClient:           unleashClient,
 	}
 
 	if s.clusterMappingPath == "" {
@@ -108,10 +154,17 @@ func NewStorage(cfg StorageConfig) (*Storage, error) {
 	log.Debug().Interface("cluster-map", cm).Msg("Cluster map loaded")
 
 	if cm.IsValid(s.remoteConfigurationPath, StableVersion) {
-		log.Info().Msg("The cluster map JSON is valid")
+		log.Info().Msg("The stable version of cluster map JSON is valid")
 		s.clusterMapping = cm
 	} else {
-		log.Error().Msg("Cluster map is invalid")
+		log.Error().Msg("Stable version of cluster map is invalid")
+		return nil, errors.New("cannot parse cluster map")
+	}
+
+	if cm.IsValid(s.remoteConfigurationPath, CanaryVersion) {
+		log.Info().Msg("The canary version of cluster map JSON is valid")
+	} else {
+		log.Error().Msg("Canary version of cluster map is invalid")
 		return nil, errors.New("cannot parse cluster map")
 	}
 
@@ -119,16 +172,34 @@ func NewStorage(cfg StorageConfig) (*Storage, error) {
 }
 
 // ReadConditionalRules tries to find conditional rule with given name in the storage.
-func (s *Storage) ReadConditionalRules(path string) []byte {
+func (s *Storage) ReadConditionalRules(path string, clusterID string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
-	conditionalRulesPath := fmt.Sprintf("%s/%s/%s", s.conditionalRulesPath, StableVersion, path)
+	version := StableVersion
+	if s.unleashEnabled {
+		if s.unleashClient.IsCanary(clusterID) {
+			log.Info().Str("cluster", clusterID).Msg("Served canary version of rules")
+			version = CanaryVersion
+		} else {
+			log.Info().Str("cluster", clusterID).Msg("Served stable version of rules")
+		}
+	}
+	conditionalRulesPath := fmt.Sprintf("%s/%s/%s", s.conditionalRulesPath, version, path)
 	return s.readDataFromPath(conditionalRulesPath)
 }
 
 // ReadRemoteConfig tries to find remote configuration with given name in the storage
-func (s *Storage) ReadRemoteConfig(path string) []byte {
+func (s *Storage) ReadRemoteConfig(path string, clusterID string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
-	remoteConfigPath := fmt.Sprintf("%s/%s/%s", s.remoteConfigurationPath, StableVersion, path)
+	version := StableVersion
+	if s.unleashEnabled {
+		if s.unleashClient.IsCanary(clusterID) {
+			log.Info().Str("cluster", clusterID).Msg("Served canary version of remote configurations")
+			version = CanaryVersion
+		} else {
+			log.Info().Str("cluster", clusterID).Msg("Served stable version of remote configurations")
+		}
+	}
+	remoteConfigPath := fmt.Sprintf("%s/%s/%s", s.remoteConfigurationPath, version, path)
 	return s.readDataFromPath(remoteConfigPath)
 }
 

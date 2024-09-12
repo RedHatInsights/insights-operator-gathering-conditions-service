@@ -22,6 +22,8 @@ import (
 	"github.com/verdverm/frisby"
 )
 
+const userAgentWithClusterID = "insights-operator/4.14.27-$Format:%H$ cluster/9abc1e7a-d834-4c6d-99b1-826399958d1c"
+
 // Rule data type definition based on original JSON schema
 type Rule struct {
 	Conditions         []interface{} `json:"conditions,omitempty"`
@@ -71,7 +73,7 @@ func checkResponse(f *frisby.Frisby, response Payload) {
 
 // checkRulesEndpoint tests if rules endpoint is reachable and that it returns expected data
 func checkRulesEndpoint() {
-	f := frisby.Create("Check the /gathering-rules endpoint").Get(apiURL + "api/gathering/gathering_rules")
+	f := frisby.Create("Check the /gathering-rules endpoint").Get(apiURL+"api/gathering/gathering_rules").SetHeader("User-Agent", userAgentWithClusterID)
 	f.Send()
 	f.ExpectStatus(200)
 	f.ExpectHeader(contentTypeHeader, "application/json")

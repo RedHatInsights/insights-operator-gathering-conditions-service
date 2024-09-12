@@ -124,3 +124,16 @@ func (l *logSink) Write(p []byte) (n int, err error) {
 func (l *logSink) Index(i int) string {
 	return l.logs[i]
 }
+
+func TestGetClusterIDHeaderWithoutClusterID(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://example.com", nil)
+	assert.NoError(t, err)
+
+	req.Header.Add("Authorization", "Bearer token")
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("User-Agent", "Go-http-client/1.1")
+
+	clusterID, err := service.GetClusterID(req)
+	assert.Equal(t, clusterID, "")
+	assert.NotNil(t, err)
+}

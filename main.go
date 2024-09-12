@@ -1,5 +1,5 @@
 /*
-Copyright © 2021, 2022, 2023 Red Hat, Inc.
+Copyright © 2021, 2022, 2023, 2024 Red Hat, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -101,7 +101,15 @@ func InitService() (*service.Service, error) {
 		logStorageError(err, storageConfig.RulesPath)
 		return nil, err
 	}
-	store, err := service.NewStorage(storageConfig)
+	var unleashClient *service.UnleashClient
+	if storageConfig.UnleashEnabled {
+		unleashClient, err = service.NewUnleashClient(storageConfig)
+		if err != nil {
+			log.Error().Err(err).Msg("Unleash could not be initialized")
+			return nil, err
+		}
+	}
+	store, err := service.NewStorage(storageConfig, unleashClient)
 	if err != nil {
 		log.Error().Err(err).Msg("Error initializing the storage")
 		return nil, err
@@ -122,6 +130,7 @@ func RunServer() error {
 
 	svc, err := InitService()
 	if err != nil {
+		log.Error().Err(err).Msg("Error occurred during service initialization")
 		return err
 	}
 

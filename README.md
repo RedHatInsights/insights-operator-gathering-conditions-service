@@ -79,6 +79,10 @@ The image contains stable and canary versions of configurations. Exact values of
 in `get_conditions.sh` script and should be changed each time we want release a new conditions version.
 Unfortunatelly it is not possible to change these values in the app-interface, because the change requires image rebuild.
 
+## Canary rollout
+
+Service provides option of canary rollout for new version of configurations. The image contains two different versions of configurations (`stable` and `canary`) and serves one of them depending on cluster ID retrieved from request header. The ratio of cluster IDs being served `stable` version opposed to `canary` is defined in the Unleash instance - `insights.unleash.devshift.net` for production environment and `insights-stage.unleash.devshift.net` for stage environment. We do not have Unleash instance that could be used in ephemeral.
+
 ## Configure
 
 Configuration is done by `toml` config, taking the `config/config.toml` in the working directory if no other configuration is provided. This can be overriden by `INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_CONFIG_FILE` environment variable.
