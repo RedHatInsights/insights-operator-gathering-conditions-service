@@ -109,6 +109,8 @@ objects:
               value: ${ENV_NAME}
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__LOGGING__LOG_LEVEL
               value: ${LOG_LEVEL}
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__UNLEASH_TOKEN
+              value: ${UNLEASH_TOKEN}
           image: ${IMAGE}:${IMAGE_TAG}
           livenessProbe:
             failureThreshold: 3
@@ -186,6 +188,9 @@ parameters:
 - description: Image name
   name: IMAGE
   value: ""
+- description: Determines Clowder deployment
+  name: CLOWDER_ENABLED
+  value: "true"
 - description: Image tag
   name: IMAGE_TAG
   required: true
@@ -218,3 +223,5 @@ parameters:
   value: '512Mi'
 - name: LOG_LEVEL
   value: "INFO"
+- name: UNLEASH_TOKEN
+  value: ""
