@@ -16,10 +16,12 @@ limitations under the License.
 
 package service
 
+import "net/http"
+
 // RulesProvider defines methods to be implemented by any rules provider
 type RulesProvider interface {
-	Rules(clusterID string) (*Rules, error)
-	RemoteConfiguration(ocpVersion string, clusterID string) (*RemoteConfiguration, error)
+	Rules(r *http.Request) (*Rules, error)
+	RemoteConfiguration(r *http.Request, ocpVersion string) (*RemoteConfiguration, error)
 }
 
 // Service data type represents the whole service for repository interface.
@@ -35,8 +37,8 @@ func New(repo RepositoryInterface) *Service {
 }
 
 // Rules method returns all rules provided by the service.
-func (s *Service) Rules(clusterID string) (*Rules, error) {
-	rules, err := s.repo.Rules(clusterID)
+func (s *Service) Rules(r *http.Request) (*Rules, error) {
+	rules, err := s.repo.Rules(r)
 	if err != nil {
 		return nil, err
 	}
@@ -45,8 +47,8 @@ func (s *Service) Rules(clusterID string) (*Rules, error) {
 }
 
 // RemoteConfiguration method returns the remote configuration provided by the service.
-func (s *Service) RemoteConfiguration(ocpVersion string, clusterID string) (*RemoteConfiguration, error) {
-	remoteConfiguration, err := s.repo.RemoteConfiguration(ocpVersion, clusterID)
+func (s *Service) RemoteConfiguration(r *http.Request, ocpVersion string) (*RemoteConfiguration, error) {
+	remoteConfiguration, err := s.repo.RemoteConfiguration(r, ocpVersion)
 	if err != nil {
 		return nil, err
 	}

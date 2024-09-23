@@ -68,7 +68,7 @@ func TestServiceV1(t *testing.T) {
 					t.Fatal(err)
 				}
 
-				req.Header.Set("User-Agent", userAgentWithClusterID)
+				req.Header.Set("User-Agent", stableUserAgent)
 
 				rr := httptest.NewRecorder() // Used to record the response.
 				handler := service.NewHandler(svc)
@@ -128,7 +128,7 @@ func TestServiceV2(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			req.Header.Set("User-Agent", userAgentWithClusterID)
+			req.Header.Set("User-Agent", stableUserAgent)
 
 			rr := httptest.NewRecorder() // Used to record the response.
 			handler := service.NewHandler(svc)
@@ -302,7 +302,7 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 
 			assert.NoError(t, err)
 
-			req.Header.Set("User-Agent", userAgentWithClusterID)
+			req.Header.Set("User-Agent", stableUserAgent)
 
 			rr := httptest.NewRecorder()
 			handler := service.NewHandler(svc)

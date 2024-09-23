@@ -18,9 +18,7 @@ package service
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
-	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
@@ -58,13 +56,7 @@ func gatheringRulesEndpoint(svc RulesProvider) http.HandlerFunc {
 		logHeaders(r, []string{"User-Agent"}, logHeadersEvent)
 		logHeadersEvent.Msg("Request headers")
 
-		clusterID, err := getClusterID(r)
-		if err != nil {
-			server.HandleServerError(w, err)
-			return
-		}
-
-		rules, err := svc.Rules(clusterID)
+		rules, err := svc.Rules(r)
 		if err != nil {
 			server.HandleServerError(w, err)
 			return
@@ -91,13 +83,7 @@ func remoteConfigurationEndpoint(svc RulesProvider) http.HandlerFunc {
 					ErrString: "ocpVersion should be specified as part of the URL"})
 		}
 
-		clusterID, err := getClusterID(r)
-		if err != nil {
-			server.HandleServerError(w, err)
-			return
-		}
-
-		remoteConfig, err := svc.RemoteConfiguration(ocpVersion, clusterID)
+		remoteConfig, err := svc.RemoteConfiguration(r, ocpVersion)
 
 		if err != nil {
 			server.HandleServerError(w, err)
@@ -147,15 +133,4 @@ func sliceContains(s []string, e string) bool {
 		}
 	}
 	return false
-}
-
-func getClusterID(r *http.Request) (string, error) {
-	userAgent := r.UserAgent()
-	if !strings.Contains(userAgent, "cluster/") {
-		err := errors.New("UserAgent does not contain cluster ID")
-		log.Error().Str("UserAgent", userAgent).Err(err).Msg("Failed to retrieve cluster ID")
-		return "", err
-	}
-	_, clusterID, _ := strings.Cut(userAgent, "cluster/")
-	return clusterID, nil
 }

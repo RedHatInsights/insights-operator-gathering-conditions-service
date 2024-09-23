@@ -28,5 +28,4 @@ package service
 var (
 	RenderResponse = renderResponse
 	LogHeaders     = logHeaders
-	GetClusterID   = getClusterID
 )

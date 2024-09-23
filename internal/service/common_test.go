@@ -16,7 +16,11 @@ limitations under the License.
 
 package service_test
 
-import "github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
+import (
+	"net/http"
+
+	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
+)
 
 var (
 	validStableRules = service.Rules{
@@ -129,8 +133,8 @@ var (
 	bugWorkaroundConfiguration = `{"conditional_gathering_rules":[{"conditions":[{"type":"alert_is_firing","alert":{"name":"BugWorkaround"}}],"gathering_functions":{"containers_logs":{"alert_name":"BugWorkaround","container":"bug-workaround","tail_lines":50}}}],"container_logs":[],"version":"1.1.0"}`
 	experimental2Configuration = `{"conditional_gathering_rules":[{"conditions":[{"type":"alert_is_firing","alert":{"name":"Experimental2"}}],"gathering_functions":{"containers_logs":{"alert_name":"Experimental2","container":"experimental2","tail_lines":50}}}],"container_logs":[],"version":"1.1.0"}`
 
-	clusterID              = "9abc1e7a-d834-4c6d-99b1-826399958d1c"
-	userAgentWithClusterID = "insights-operator/4.14.27-$Format:%H$ cluster/9abc1e7a-d834-4c6d-99b1-826399958d1c"
+	stableUserAgent = "insights-operator/4.14.27-$Format:%H$ cluster/9abc1e7a-d834-4c6d-99b1-826399958d1c"
+	canaryUserAgent = "insights-operator/4.14.27-$Format:%H$ cluster/f9fbc65a-52e6-4781-979d-1d5c6b124f9b"
 )
 
 type mockStorage struct {
@@ -140,11 +144,11 @@ type mockStorage struct {
 	getRemoteConfigurationFilepathMockError error
 }
 
-func (m *mockStorage) ReadConditionalRules(string, string) []byte {
+func (m *mockStorage) ReadConditionalRules(*http.Request, string) []byte {
 	return m.conditionalRules
 }
 
-func (m *mockStorage) ReadRemoteConfig(string, string) []byte {
+func (m *mockStorage) ReadRemoteConfig(*http.Request, string) []byte {
 	return m.remoteConfig
 }
 

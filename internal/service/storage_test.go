@@ -18,6 +18,7 @@ package service_test
 
 import (
 	"encoding/json"
+	"net/http"
 	"testing"
 
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
@@ -29,14 +30,12 @@ const (
 	rulesFolder            = "testdata/v1"
 	v2Folder               = "testdata/v2"
 	clusterMappingFilepath = "testdata/cluster-mapping.json"
-	stableClusterID        = "27badff1-9f61-4168-a309-6878a66075b3"
-	canaryClusterID        = "f9fbc65a-52e6-4781-979d-1d5c6b124f9b"
 )
 
 type MockUnleashClient struct{}
 
-func (c *MockUnleashClient) IsCanary(clusterID string) bool {
-	return clusterID == canaryClusterID
+func (c *MockUnleashClient) IsCanary(canaryArgument string) bool {
+	return canaryArgument == canaryUserAgent
 }
 
 func TestNewStorage(t *testing.T) {
@@ -127,7 +126,7 @@ func TestReadConditionalRules(t *testing.T) {
 					RemoteConfigurationPath: v2Folder,
 				}, false, nil)
 			assert.NoError(t, err)
-			checkConditionalRules(t, storage, tc.rulesFile, tc.expectedRules, stableClusterID)
+			checkConditionalRules(t, storage, tc.rulesFile, tc.expectedRules, &http.Request{})
 		})
 	}
 
@@ -141,7 +140,7 @@ func TestReadConditionalRules(t *testing.T) {
 			}, false, nil)
 		assert.NoError(t, err)
 		for i := 0; i < 2; i++ {
-			checkConditionalRules(t, storage, validRulesFile, validStableRules, stableClusterID)
+			checkConditionalRules(t, storage, validRulesFile, validStableRules, &http.Request{})
 		}
 	})
 }
@@ -149,19 +148,19 @@ func TestReadConditionalRules(t *testing.T) {
 func TestReadRulesCanaryRollout(t *testing.T) {
 	tests := []struct {
 		name             string
-		clusterID        string
+		canaryArgument   string
 		remoteConfigFile string
 		expectedRules    service.Rules
 	}{
 		{
 			name:             "cluster is served with stable version of rules",
-			clusterID:        stableClusterID,
+			canaryArgument:   stableUserAgent,
 			remoteConfigFile: validRulesFile,
 			expectedRules:    validStableRules,
 		},
 		{
 			name:             "cluster is served with canary version of rules",
-			clusterID:        canaryClusterID,
+			canaryArgument:   canaryUserAgent,
 			remoteConfigFile: validRulesFile,
 			expectedRules:    validCanaryRules,
 		},
@@ -175,14 +174,17 @@ func TestReadRulesCanaryRollout(t *testing.T) {
 					RemoteConfigurationPath: v2Folder,
 				}, true, &MockUnleashClient{})
 			assert.NoError(t, err)
-			checkConditionalRules(t, storage, tt.remoteConfigFile, tt.expectedRules, tt.clusterID)
+			req, err := http.NewRequest("GET", "http://example.com", nil)
+			assert.NoError(t, err)
+			req.Header.Add("User-Agent", tt.canaryArgument)
+			checkConditionalRules(t, storage, tt.remoteConfigFile, tt.expectedRules, req)
 		})
 	}
 }
 
-func checkConditionalRules(t *testing.T, storage *service.Storage, rulesFile string, expectedRules service.Rules, clusterID string) {
+func checkConditionalRules(t *testing.T, storage *service.Storage, rulesFile string, expectedRules service.Rules, r *http.Request) {
 	var rules service.Rules
-	data := storage.ReadConditionalRules(rulesFile, clusterID)
+	data := storage.ReadConditionalRules(r, rulesFile)
 	if len(data) == 0 {
 		rules = service.Rules{}
 	} else {
@@ -192,9 +194,9 @@ func checkConditionalRules(t *testing.T, storage *service.Storage, rulesFile str
 	assert.Equal(t, expectedRules, rules)
 }
 
-func checkRemoteConfig(t *testing.T, storage *service.Storage, remoteConfigFile string, expectedRemoteConfig service.RemoteConfiguration, clusterID string) {
+func checkRemoteConfig(t *testing.T, storage *service.Storage, remoteConfigFile string, expectedRemoteConfig service.RemoteConfiguration, r *http.Request) {
 	var remoteConfig service.RemoteConfiguration
-	data := storage.ReadRemoteConfig(remoteConfigFile, clusterID)
+	data := storage.ReadRemoteConfig(r, remoteConfigFile)
 	if len(data) == 0 {
 		remoteConfig = service.RemoteConfiguration{}
 	} else {
@@ -240,7 +242,7 @@ func TestReadRemoteConfiguration(t *testing.T) {
 					ClusterMappingPath:      clusterMappingFilepath,
 				}, false, nil)
 			assert.NoError(t, err)
-			checkRemoteConfig(t, storage, tt.remoteConfigFile, tt.expectedRemoteConfig, stableClusterID)
+			checkRemoteConfig(t, storage, tt.remoteConfigFile, tt.expectedRemoteConfig, &http.Request{})
 		})
 	}
 }
@@ -248,19 +250,19 @@ func TestReadRemoteConfiguration(t *testing.T) {
 func TestReadRemoteConfigurationCanaryRollout(t *testing.T) {
 	tests := []struct {
 		name                 string
-		clusterID            string
+		canaryArgument       string
 		remoteConfigFile     string
 		expectedRemoteConfig service.RemoteConfiguration
 	}{
 		{
 			name:                 "cluster is served with stable version of remote config",
-			clusterID:            stableClusterID,
+			canaryArgument:       stableUserAgent,
 			remoteConfigFile:     validRulesFile,
 			expectedRemoteConfig: validStableRemoteConfiguration,
 		},
 		{
 			name:                 "cluster is served with canary version of remote config",
-			clusterID:            canaryClusterID,
+			canaryArgument:       canaryUserAgent,
 			remoteConfigFile:     validRulesFile,
 			expectedRemoteConfig: validCanaryRemoteConfiguration,
 		},
@@ -273,7 +275,10 @@ func TestReadRemoteConfigurationCanaryRollout(t *testing.T) {
 					ClusterMappingPath:      clusterMappingFilepath,
 				}, true, &MockUnleashClient{})
 			assert.NoError(t, err)
-			checkRemoteConfig(t, storage, tt.remoteConfigFile, tt.expectedRemoteConfig, tt.clusterID)
+			req, err := http.NewRequest("GET", "http://example.com", nil)
+			assert.NoError(t, err)
+			req.Header.Add("User-Agent", tt.canaryArgument)
+			checkRemoteConfig(t, storage, tt.remoteConfigFile, tt.expectedRemoteConfig, req)
 		})
 	}
 }

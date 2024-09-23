@@ -7,6 +7,8 @@ enable_cors = false
 rules_path = "tests/conditions"
 remote_configuration = "./tests/rapid-recommendations"
 cluster_mapping = "./tests/rapid-recommendations/cluster-mapping.json"
+
+[canary]
 unleash_enabled = false
 unleash_url = "http://fake-unleash-url/api"
 unleash_token = ""

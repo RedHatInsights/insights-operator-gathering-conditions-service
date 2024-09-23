@@ -43,14 +43,14 @@ const CanaryVersion = "canary"
 
 // UnleashClientInterface describes interface for using Unleash in canary rollouts
 type UnleashClientInterface interface {
-	IsCanary(clusterID string) bool
+	IsCanary(canaryArgument string) bool
 }
 
 // StorageInterface describe interface to be implemented by resource storage
 // implementations.
 type StorageInterface interface {
-	ReadConditionalRules(res string, clusterID string) []byte
-	ReadRemoteConfig(p string, clusterID string) []byte
+	ReadConditionalRules(request *http.Request, res string) []byte
+	ReadRemoteConfig(request *http.Request, p string) []byte
 	GetRemoteConfigurationFilepath(ocpVersion string) (string, error)
 }
 
@@ -112,8 +112,8 @@ func NewUnleashClient(cfg CanaryConfig) (*UnleashClient, error) {
 }
 
 // IsCanary queries Unleash to determine whether to serve stable or canary version of data
-func (c *UnleashClient) IsCanary(clusterID string) bool {
-	return unleash.IsEnabled(c.unleashToggle, unleash.WithContext(context.Context{UserId: clusterID}))
+func (c *UnleashClient) IsCanary(canaryArgument string) bool {
+	return unleash.IsEnabled(c.unleashToggle, unleash.WithContext(context.Context{UserId: canaryArgument}))
 }
 
 // Storage type represents container for resources.
@@ -176,15 +176,16 @@ func NewStorage(storageConfig StorageConfig, unleashEnabled bool, unleashClient 
 }
 
 // ReadConditionalRules tries to find conditional rule with given name in the storage.
-func (s *Storage) ReadConditionalRules(path string, clusterID string) []byte {
+func (s *Storage) ReadConditionalRules(r *http.Request, path string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
 	version := StableVersion
 	if s.unleashEnabled {
-		if s.unleashClient.IsCanary(clusterID) {
-			log.Debug().Str("cluster", clusterID).Msg("Served canary version of rules")
+		// We use User-Agent header to decide between stable and canary version (header contains cluster ID)
+		if s.unleashClient.IsCanary(r.UserAgent()) {
+			log.Debug().Str("canary argument", r.UserAgent()).Msg("Served canary version of rules")
 			version = CanaryVersion
 		} else {
-			log.Debug().Str("cluster", clusterID).Msg("Served stable version of rules")
+			log.Debug().Str("canary argument", r.UserAgent()).Msg("Served stable version of rules")
 		}
 	}
 	conditionalRulesPath := fmt.Sprintf("%s/%s/%s", s.conditionalRulesPath, version, path)
@@ -192,15 +193,16 @@ func (s *Storage) ReadConditionalRules(path string, clusterID string) []byte {
 }
 
 // ReadRemoteConfig tries to find remote configuration with given name in the storage
-func (s *Storage) ReadRemoteConfig(path string, clusterID string) []byte {
+func (s *Storage) ReadRemoteConfig(r *http.Request, path string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
 	version := StableVersion
 	if s.unleashEnabled {
-		if s.unleashClient.IsCanary(clusterID) {
-			log.Debug().Str("cluster", clusterID).Msg("Served canary version of remote configurations")
+		// We use User-Agent header to decide between stable and canary version (header contains cluster ID)
+		if s.unleashClient.IsCanary(r.UserAgent()) {
+			log.Debug().Str("canary argument", r.UserAgent()).Msg("Served canary version of remote configurations")
 			version = CanaryVersion
 		} else {
-			log.Debug().Str("cluster", clusterID).Msg("Served stable version of remote configurations")
+			log.Debug().Str("canary argument", r.UserAgent()).Msg("Served stable version of remote configurations")
 		}
 	}
 	remoteConfigPath := fmt.Sprintf("%s/%s/%s", s.remoteConfigurationPath, version, path)

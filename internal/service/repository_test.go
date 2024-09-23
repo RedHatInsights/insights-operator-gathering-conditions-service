@@ -17,6 +17,7 @@ limitations under the License.
 package service_test
 
 import (
+	"net/http"
 	"testing"
 
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
@@ -55,7 +56,7 @@ func TestRepositoryRules(t *testing.T) {
 				conditionalRules: tc.mockConditionalRules,
 			}
 			r := service.NewRepository(&m)
-			rules, err := r.Rules(clusterID)
+			rules, err := r.Rules(&http.Request{})
 			if tc.expectedAnError {
 				assert.Error(t, err)
 			} else {
@@ -99,7 +100,7 @@ func TestRepositoryRemoteConfiguration(t *testing.T) {
 				remoteConfig: tt.mockRemoteConfig,
 			}
 			r := service.NewRepository(&m)
-			remoteConfig, err := r.RemoteConfiguration(anyVer, clusterID)
+			remoteConfig, err := r.RemoteConfiguration(&http.Request{}, anyVer)
 			if tt.expectedAnError {
 				assert.Error(t, err)
 			} else {

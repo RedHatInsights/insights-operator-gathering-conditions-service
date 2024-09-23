@@ -19,12 +19,13 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
 // RepositoryInterface defines methods to be implemented by any rules providers
 type RepositoryInterface interface {
-	Rules(clusterID string) (*Rules, error)
-	RemoteConfiguration(ocpVersion string, clusterID string) (*RemoteConfiguration, error)
+	Rules(r *http.Request) (*Rules, error)
+	RemoteConfiguration(r *http.Request, ocpVersion string) (*RemoteConfiguration, error)
 }
 
 // Rule data type definition based on original JSON schema
@@ -67,9 +68,9 @@ func NewRepository(s StorageInterface) *Repository {
 }
 
 // Rules method reads all and unmarshals all rules stored under given path
-func (r *Repository) Rules(clusterID string) (*Rules, error) {
+func (r *Repository) Rules(request *http.Request) (*Rules, error) {
 	filepath := "rules.json" // TODO: Make this configurable
-	data := r.store.ReadConditionalRules(filepath, clusterID)
+	data := r.store.ReadConditionalRules(request, filepath)
 	if data == nil {
 		return nil, fmt.Errorf("store data not found for '%s'", filepath)
 	}
@@ -85,12 +86,12 @@ func (r *Repository) Rules(clusterID string) (*Rules, error) {
 
 // RemoteConfiguration returns a remote configuration for v2 endpoint based on
 // the cluster map defined in the settings and loaded on startup
-func (r *Repository) RemoteConfiguration(ocpVersion string, clusterID string) (*RemoteConfiguration, error) {
+func (r *Repository) RemoteConfiguration(request *http.Request, ocpVersion string) (*RemoteConfiguration, error) {
 	filepath, err := r.store.GetRemoteConfigurationFilepath(ocpVersion)
 	if err != nil {
 		return nil, err
 	}
-	data := r.store.ReadRemoteConfig(filepath, clusterID)
+	data := r.store.ReadRemoteConfig(request, filepath)
 	if data == nil {
 		return nil, fmt.Errorf("store data not found for '%s'", filepath)
 	}
