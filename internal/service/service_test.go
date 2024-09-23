@@ -286,7 +286,7 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 				RulesPath:               "../../tests/conditions",
 				RemoteConfigurationPath: "../../tests/rapid-recommendations",
 				ClusterMappingPath:      tc.clusterMappingFilepath,
-			}, &MockUnleashClient{})
+			}, true, &MockUnleashClient{})
 			if tc.expectedAnError {
 				assert.Error(t, err, "this configuration should have made the service crash")
 				return

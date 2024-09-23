@@ -59,11 +59,15 @@ type StorageConfig struct {
 	RulesPath               string `mapstructure:"rules_path" toml:"rules_path"`
 	RemoteConfigurationPath string `mapstructure:"remote_configuration" toml:"remote_configuration"`
 	ClusterMappingPath      string `mapstructure:"cluster_mapping" toml:"cluster_mapping"`
-	UnleashURL              string `mapstructure:"unleash_url" toml:"unleash_url"`
-	UnleashToken            string `mapstructure:"unleash_token" toml:"unleash_token"`
-	UnleashApp              string `mapstructure:"unleash_app" toml:"unleash_app"`
-	UnleashToggle           string `mapstructure:"unleash_toggle" toml:"unleash_toggle"`
-	UnleashEnabled          bool   `mapstructure:"unleash_enabled" toml:"unleash_enabled"`
+}
+
+// CanaryConfig structure contains configuration for canary rollout
+type CanaryConfig struct {
+	UnleashURL     string `mapstructure:"unleash_url" toml:"unleash_url"`
+	UnleashToken   string `mapstructure:"unleash_token" toml:"unleash_token"`
+	UnleashApp     string `mapstructure:"unleash_app" toml:"unleash_app"`
+	UnleashToggle  string `mapstructure:"unleash_toggle" toml:"unleash_toggle"`
+	UnleashEnabled bool   `mapstructure:"unleash_enabled" toml:"unleash_enabled"`
 }
 
 // Cache type represents thread safe map for storing loaded configurations
@@ -91,7 +95,7 @@ type UnleashClient struct {
 }
 
 // NewUnleashClient constructs new Unleash client along with Unleash initialization
-func NewUnleashClient(cfg StorageConfig) (*UnleashClient, error) {
+func NewUnleashClient(cfg CanaryConfig) (*UnleashClient, error) {
 	c := UnleashClient{unleashToggle: cfg.UnleashToggle}
 	log.Info().Msg("Initializing Unleash")
 	err := unleash.Initialize(
@@ -124,13 +128,13 @@ type Storage struct {
 }
 
 // NewStorage constructs new storage object.
-func NewStorage(cfg StorageConfig, unleashClient UnleashClientInterface) (*Storage, error) {
-	log.Debug().Interface("config", cfg).Msg("Constructing storage object")
+func NewStorage(storageConfig StorageConfig, unleashEnabled bool, unleashClient UnleashClientInterface) (*Storage, error) {
+	log.Debug().Interface("config", storageConfig).Msg("Constructing storage object")
 	s := Storage{
-		conditionalRulesPath:    cfg.RulesPath,
-		remoteConfigurationPath: cfg.RemoteConfigurationPath,
-		clusterMappingPath:      cfg.ClusterMappingPath,
-		unleashEnabled:          cfg.UnleashEnabled,
+		conditionalRulesPath:    storageConfig.RulesPath,
+		remoteConfigurationPath: storageConfig.RemoteConfigurationPath,
+		clusterMappingPath:      storageConfig.ClusterMappingPath,
+		unleashEnabled:          unleashEnabled,
 		unleashClient:           unleashClient,
 	}
 

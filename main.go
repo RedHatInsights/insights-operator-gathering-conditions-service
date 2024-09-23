@@ -102,14 +102,15 @@ func InitService() (*service.Service, error) {
 		return nil, err
 	}
 	var unleashClient *service.UnleashClient
-	if storageConfig.UnleashEnabled {
-		unleashClient, err = service.NewUnleashClient(storageConfig)
+	canaryConfig := config.CanaryConfig()
+	if canaryConfig.UnleashEnabled {
+		unleashClient, err = service.NewUnleashClient(canaryConfig)
 		if err != nil {
 			log.Error().Err(err).Msg("Unleash could not be initialized")
 			return nil, err
 		}
 	}
-	store, err := service.NewStorage(storageConfig, unleashClient)
+	store, err := service.NewStorage(storageConfig, canaryConfig.UnleashEnabled, unleashClient)
 	if err != nil {
 		log.Error().Err(err).Msg("Error initializing the storage")
 		return nil, err

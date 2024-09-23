@@ -51,6 +51,13 @@ var (
 			RemoteConfigurationPath: "remote_configurations",
 			ClusterMappingPath:      "./tests/rapid-recommendations/cluster-mapping.json",
 		},
+		CanaryConfig: service.CanaryConfig{
+			UnleashEnabled: false,
+			UnleashURL:     "https://unleash-url/api",
+			UnleashToken:   "",
+			UnleashApp:     "default",
+			UnleashToggle:  "insights-operator-gathering-conditions-service",
+		},
 		SentryLoggingConfig: logger.SentryLoggingConfiguration{
 			SentryDSN: "dsn",
 		},
@@ -188,6 +195,9 @@ func TestGetConfigFunctions(t *testing.T) {
 	t.Run("StorageConfig", func(t *testing.T) {
 		assert.Equal(t, config.Config.StorageConfig, config.StorageConfig())
 	})
+	t.Run("CanaryConfig", func(t *testing.T) {
+		assert.Equal(t, config.Config.CanaryConfig, config.CanaryConfig())
+	})
 	t.Run("LoggingConfig", func(t *testing.T) {
 		assert.Equal(t, config.Config.LoggingConfig, config.LoggingConfig())
 	})
@@ -223,6 +233,6 @@ func TestLoadConfigurationKafkaTopicUpdatedFromClowder(t *testing.T) {
 	err = config.LoadConfiguration("testdata/valid_config.toml")
 	assert.NoError(t, err, "Failed loading configuration file")
 
-	storageCfg := config.StorageConfig()
-	assert.Equal(t, unleashToken, storageCfg.UnleashToken)
+	canaryCfg := config.CanaryConfig()
+	assert.Equal(t, unleashToken, canaryCfg.UnleashToken)
 }

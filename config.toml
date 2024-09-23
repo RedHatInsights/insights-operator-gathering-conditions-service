@@ -11,6 +11,8 @@ type = "jwt"
 rules_path = "./conditions"
 remote_configuration = "./remote-configurations"
 cluster_mapping = "cluster-mapping.json"
+
+[canary]
 unleash_enabled = false
 unleash_url = "https://insights.unleash.devshift.net/api"
 unleash_token = ""
