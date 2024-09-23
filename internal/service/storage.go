@@ -177,10 +177,10 @@ func (s *Storage) ReadConditionalRules(path string, clusterID string) []byte {
 	version := StableVersion
 	if s.unleashEnabled {
 		if s.unleashClient.IsCanary(clusterID) {
-			log.Info().Str("cluster", clusterID).Msg("Served canary version of rules")
+			log.Debug().Str("cluster", clusterID).Msg("Served canary version of rules")
 			version = CanaryVersion
 		} else {
-			log.Info().Str("cluster", clusterID).Msg("Served stable version of rules")
+			log.Debug().Str("cluster", clusterID).Msg("Served stable version of rules")
 		}
 	}
 	conditionalRulesPath := fmt.Sprintf("%s/%s/%s", s.conditionalRulesPath, version, path)
@@ -193,10 +193,10 @@ func (s *Storage) ReadRemoteConfig(path string, clusterID string) []byte {
 	version := StableVersion
 	if s.unleashEnabled {
 		if s.unleashClient.IsCanary(clusterID) {
-			log.Info().Str("cluster", clusterID).Msg("Served canary version of remote configurations")
+			log.Debug().Str("cluster", clusterID).Msg("Served canary version of remote configurations")
 			version = CanaryVersion
 		} else {
-			log.Info().Str("cluster", clusterID).Msg("Served stable version of remote configurations")
+			log.Debug().Str("cluster", clusterID).Msg("Served stable version of remote configurations")
 		}
 	}
 	remoteConfigPath := fmt.Sprintf("%s/%s/%s", s.remoteConfigurationPath, version, path)
