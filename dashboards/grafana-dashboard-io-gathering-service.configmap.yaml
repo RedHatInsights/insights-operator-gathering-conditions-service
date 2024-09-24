@@ -219,7 +219,7 @@ data:
                 "uid": "PC1EAC84DCBBF0697"
               },
               "editorMode": "code",
-              "expr": "sum(increase(gathering_conditions_remote_configuration_version_total[1m])) by (version)",
+              "expr": "sum(increase(gathering_conditions_remote_configuration_version_total{service=\"ccx-data-pipeline-prometheus-exporter\"}[1m])) by (version)",
               "format": "heatmap",
               "instant": false,
               "legendFormat": "{{version}}",
@@ -315,7 +315,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "sum(increase(io_gathering_remote_configuration[15m])) by(version) / sum(increase(gathering_conditions_remote_configuration_version_total[15m])) by(version)",
+              "expr": "sum(increase(io_gathering_remote_configuration[15m])) by(version) / sum(increase(gathering_conditions_remote_configuration_version_total{service=\"ccx-data-pipeline-prometheus-exporter\"}[15m])) by(version)",
               "instant": false,
               "legendFormat": "__auto",
               "range": true,
