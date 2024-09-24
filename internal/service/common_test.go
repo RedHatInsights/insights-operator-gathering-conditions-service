@@ -135,6 +135,7 @@ var (
 
 	stableUserAgent = "insights-operator/4.14.27-$Format:%H$ cluster/9abc1e7a-d834-4c6d-99b1-826399958d1c"
 	canaryUserAgent = "insights-operator/4.14.27-$Format:%H$ cluster/f9fbc65a-52e6-4781-979d-1d5c6b124f9b"
+	canaryClusterID = "f9fbc65a-52e6-4781-979d-1d5c6b124f9b"
 )
 
 type mockStorage struct {

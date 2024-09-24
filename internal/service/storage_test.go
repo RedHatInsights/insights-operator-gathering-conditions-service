@@ -35,7 +35,7 @@ const (
 type MockUnleashClient struct{}
 
 func (c *MockUnleashClient) IsCanary(canaryArgument string) bool {
-	return canaryArgument == canaryUserAgent
+	return canaryArgument == canaryClusterID
 }
 
 func TestNewStorage(t *testing.T) {
@@ -281,4 +281,26 @@ func TestReadRemoteConfigurationCanaryRollout(t *testing.T) {
 			checkRemoteConfig(t, storage, tt.remoteConfigFile, tt.expectedRemoteConfig, req)
 		})
 	}
+}
+
+func TestGetClusterID(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://example.com", nil)
+	assert.NoError(t, err)
+
+	req.Header.Add("Authorization", "Bearer token")
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("User-Agent", stableUserAgent)
+
+	clusterID := service.GetClusterID(req)
+	assert.Equal(t, clusterID, "9abc1e7a-d834-4c6d-99b1-826399958d1c")
+}
+
+func TestGetClusterIDHeaderWithoutClusterID(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://example.com", nil)
+	assert.NoError(t, err)
+	req.Header.Add("Authorization", "Bearer token")
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("User-Agent", "Go-http-client/1.1")
+	clusterID := service.GetClusterID(req)
+	assert.Equal(t, clusterID, "")
 }
