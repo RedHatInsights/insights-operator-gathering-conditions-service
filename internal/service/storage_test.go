@@ -284,23 +284,40 @@ func TestReadRemoteConfigurationCanaryRollout(t *testing.T) {
 }
 
 func TestGetClusterID(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://example.com", nil)
-	assert.NoError(t, err)
+	tests := []struct {
+		name           string
+		userAgent      string
+		expectedResult string
+	}{
+		{
+			name:           "header with cluster ID",
+			userAgent:      canaryUserAgent,
+			expectedResult: canaryClusterID,
+		},
+		{
+			name:           "header without cluster ID",
+			userAgent:      "Go-http-client/1.1",
+			expectedResult: "",
+		},
+		{
+			name:           "header with cluster ID and extra suffix separated by comma",
+			userAgent:      canaryUserAgent + ", extra data",
+			expectedResult: canaryClusterID,
+		},
+		{
+			name:           "header with cluster ID and extra suffix separated by space",
+			userAgent:      canaryUserAgent + " extra data",
+			expectedResult: canaryClusterID,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req, err := http.NewRequest("GET", "http://example.com", nil)
+			assert.NoError(t, err)
+			req.Header.Add("User-Agent", tt.userAgent)
 
-	req.Header.Add("Authorization", "Bearer token")
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("User-Agent", stableUserAgent)
-
-	clusterID := service.GetClusterID(req)
-	assert.Equal(t, clusterID, "9abc1e7a-d834-4c6d-99b1-826399958d1c")
-}
-
-func TestGetClusterIDHeaderWithoutClusterID(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://example.com", nil)
-	assert.NoError(t, err)
-	req.Header.Add("Authorization", "Bearer token")
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("User-Agent", "Go-http-client/1.1")
-	clusterID := service.GetClusterID(req)
-	assert.Equal(t, clusterID, "")
+			clusterID := service.GetClusterID(req)
+			assert.Equal(t, clusterID, tt.expectedResult)
+		})
+	}
 }

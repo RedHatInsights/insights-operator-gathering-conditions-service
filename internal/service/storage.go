@@ -277,5 +277,9 @@ func GetClusterID(r *http.Request) string {
 		return ""
 	}
 	_, clusterID, _ := strings.Cut(userAgent, "cluster/")
+
+	// Get rid of any text that would follow after cluster ID
+	clusterID = strings.Split(clusterID, " ")[0]
+	clusterID = strings.Split(clusterID, ",")[0]
 	return clusterID
 }
