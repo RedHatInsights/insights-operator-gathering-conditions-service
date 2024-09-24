@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 Red Hat, Inc.
+Copyright © 2022, 2024 Red Hat, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ func TestServiceV1(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:            "valid rule stored",
-			mockData:        []byte(validRulesJSON),
+			mockData:        []byte(validStableRulesJSON),
 			expectedAnError: false,
 		},
 		{
@@ -67,6 +67,8 @@ func TestServiceV1(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
+
+				req.Header.Set("User-Agent", stableUserAgent)
 
 				rr := httptest.NewRecorder() // Used to record the response.
 				handler := service.NewHandler(svc)
@@ -102,7 +104,7 @@ func TestServiceV2(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:            "valid remote configuration stored",
-			mockData:        []byte(validRemoteConfigurationJSON),
+			mockData:        []byte(validStableRemoteConfigurationJSON),
 			expectedAnError: false,
 		},
 		{
@@ -125,6 +127,8 @@ func TestServiceV2(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+
+			req.Header.Set("User-Agent", stableUserAgent)
 
 			rr := httptest.NewRecorder() // Used to record the response.
 			handler := service.NewHandler(svc)
@@ -282,7 +286,7 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 				RulesPath:               "../../tests/conditions",
 				RemoteConfigurationPath: "../../tests/rapid-recommendations",
 				ClusterMappingPath:      tc.clusterMappingFilepath,
-			})
+			}, true, &MockUnleashClient{})
 			if tc.expectedAnError {
 				assert.Error(t, err, "this configuration should have made the service crash")
 				return
@@ -297,6 +301,8 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 				tc.ocpVersion), http.NoBody)
 
 			assert.NoError(t, err)
+
+			req.Header.Set("User-Agent", stableUserAgent)
 
 			rr := httptest.NewRecorder()
 			handler := service.NewHandler(svc)

@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 Red Hat, Inc.
+Copyright © 2022, 2024 Red Hat, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ func TestWrongMethods(t *testing.T) {
 	methods := []string{"POST", "PUT", "DELETE"}
 
 	store := mockStorage{
-		conditionalRules: []byte(validRemoteConfigurationJSON),
+		conditionalRules: []byte(validStableRemoteConfigurationJSON),
 	}
 	repo := service.NewRepository(&store)
 	svc := service.New(repo)

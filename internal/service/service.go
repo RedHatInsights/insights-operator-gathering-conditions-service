@@ -1,5 +1,5 @@
 /*
-Copyright © 2021, 2022 Red Hat, Inc.
+Copyright © 2021, 2022, 2024 Red Hat, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,10 +16,12 @@ limitations under the License.
 
 package service
 
+import "net/http"
+
 // RulesProvider defines methods to be implemented by any rules provider
 type RulesProvider interface {
-	Rules() (*Rules, error)
-	RemoteConfiguration(ocpVersion string) (*RemoteConfiguration, error)
+	Rules(r *http.Request) (*Rules, error)
+	RemoteConfiguration(r *http.Request, ocpVersion string) (*RemoteConfiguration, error)
 }
 
 // Service data type represents the whole service for repository interface.
@@ -35,8 +37,8 @@ func New(repo RepositoryInterface) *Service {
 }
 
 // Rules method returns all rules provided by the service.
-func (s *Service) Rules() (*Rules, error) {
-	rules, err := s.repo.Rules()
+func (s *Service) Rules(r *http.Request) (*Rules, error) {
+	rules, err := s.repo.Rules(r)
 	if err != nil {
 		return nil, err
 	}
@@ -45,8 +47,8 @@ func (s *Service) Rules() (*Rules, error) {
 }
 
 // RemoteConfiguration method returns the remote configuration provided by the service.
-func (s *Service) RemoteConfiguration(ocpVersion string) (*RemoteConfiguration, error) {
-	remoteConfiguration, err := s.repo.RemoteConfiguration(ocpVersion)
+func (s *Service) RemoteConfiguration(r *http.Request, ocpVersion string) (*RemoteConfiguration, error) {
+	remoteConfiguration, err := s.repo.RemoteConfiguration(r, ocpVersion)
 	if err != nil {
 		return nil, err
 	}

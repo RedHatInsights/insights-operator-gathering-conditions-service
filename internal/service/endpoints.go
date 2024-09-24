@@ -1,5 +1,5 @@
 /*
-Copyright © 2021, 2022 Red Hat, Inc.
+Copyright © 2021, 2022, 2024 Red Hat, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ func gatheringRulesEndpoint(svc RulesProvider) http.HandlerFunc {
 		logHeaders(r, []string{"User-Agent"}, logHeadersEvent)
 		logHeadersEvent.Msg("Request headers")
 
-		rules, err := svc.Rules()
+		rules, err := svc.Rules(r)
 		if err != nil {
 			server.HandleServerError(w, err)
 			return
@@ -82,7 +82,8 @@ func remoteConfigurationEndpoint(svc RulesProvider) http.HandlerFunc {
 					ParamName: "ocpVersion",
 					ErrString: "ocpVersion should be specified as part of the URL"})
 		}
-		remoteConfig, err := svc.RemoteConfiguration(ocpVersion)
+
+		remoteConfig, err := svc.RemoteConfiguration(r, ocpVersion)
 
 		if err != nil {
 			server.HandleServerError(w, err)

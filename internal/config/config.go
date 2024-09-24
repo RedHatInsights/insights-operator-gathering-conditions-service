@@ -49,6 +49,7 @@ type Configuration struct {
 	ServerConfig        server.Config                     `mapstructure:"server" toml:"server"`
 	AuthConfig          server.AuthConfig                 `mapstructure:"auth" toml:"auth"`
 	StorageConfig       service.StorageConfig             `mapstructure:"storage" toml:"storage"`
+	CanaryConfig        service.CanaryConfig              `mapstructure:"canary" toml:"canary"`
 	LoggingConfig       logger.LoggingConfiguration       `mapstructure:"logging" toml:"logging"`
 	CloudWatchConfig    logger.CloudWatchConfiguration    `mapstructure:"cloudwatch" toml:"cloudwatch"`
 	SentryLoggingConfig logger.SentryLoggingConfiguration `mapstructure:"sentry" toml:"sentry"`
@@ -130,6 +131,11 @@ func StorageConfig() service.StorageConfig {
 	return Config.StorageConfig
 }
 
+// CanaryConfig function returns actual canary configuration.
+func CanaryConfig() service.CanaryConfig {
+	return Config.CanaryConfig
+}
+
 // LoggingConfig function returns actual logger configuration.
 func LoggingConfig() logger.LoggingConfiguration {
 	return Config.LoggingConfig
@@ -161,7 +167,7 @@ func updateConfigFromClowder(configuration *Configuration) {
 	fmt.Println("Clowder is enabled")
 
 	if clowder.LoadedConfig.FeatureFlags != nil {
-		configuration.StorageConfig.UnleashToken = *clowder.LoadedConfig.FeatureFlags.ClientAccessToken
+		configuration.CanaryConfig.UnleashToken = *clowder.LoadedConfig.FeatureFlags.ClientAccessToken
 	} else {
 		fmt.Println(noFeatureFlags)
 	}

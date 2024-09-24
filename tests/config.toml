@@ -8,6 +8,13 @@ rules_path = "tests/conditions"
 remote_configuration = "./tests/rapid-recommendations"
 cluster_mapping = "./tests/rapid-recommendations/cluster-mapping.json"
 
+[canary]
+unleash_enabled = false
+unleash_url = "http://fake-unleash-url/api"
+unleash_token = ""
+unleash_toggle = "insights-operator-gathering-conditions-service"
+unleash_app = "default"
+
 [sentry]
 dsn = "https://daca7436565e4580a85102b9ede9a177@sentry.devshift.net/1020"
 environment = "dev"

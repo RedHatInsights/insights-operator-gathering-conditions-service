@@ -12,6 +12,13 @@ rules_path = "rules_path"
 remote_configuration = "remote_configurations"
 cluster_mapping = "./tests/rapid-recommendations/cluster-mapping.json"
 
+[canary]
+unleash_enabled = false
+unleash_url = "https://unleash-url/api"
+unleash_token = ""
+unleash_app = "default"
+unleash_toggle = "insights-operator-gathering-conditions-service"
+
 [sentry]
 dsn = "dsn"
 

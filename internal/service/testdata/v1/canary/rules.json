@@ -1,0 +1,12 @@
+{
+    "version":"0.0.2",
+    "rules": [
+        {
+            "conditions": [
+                "condition 2",
+                "condition 3"
+            ],
+            "gathering_functions": "the gathering functions"
+        }
+    ]
+}

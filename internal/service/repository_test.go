@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 Red Hat, Inc.
+Copyright © 2022, 2024 Red Hat, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ limitations under the License.
 package service_test
 
 import (
+	"net/http"
 	"testing"
 
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
@@ -44,9 +45,9 @@ func TestRepositoryRules(t *testing.T) {
 		},
 		{
 			name:                 "valid rules returned by storage",
-			mockConditionalRules: []byte(validRulesJSON),
+			mockConditionalRules: []byte(validStableRulesJSON),
 			expectedAnError:      false,
-			expectedRules:        validRules,
+			expectedRules:        validStableRules,
 		},
 	}
 	for _, tc := range testCases {
@@ -55,7 +56,7 @@ func TestRepositoryRules(t *testing.T) {
 				conditionalRules: tc.mockConditionalRules,
 			}
 			r := service.NewRepository(&m)
-			rules, err := r.Rules()
+			rules, err := r.Rules(&http.Request{})
 			if tc.expectedAnError {
 				assert.Error(t, err)
 			} else {
@@ -87,9 +88,9 @@ func TestRepositoryRemoteConfiguration(t *testing.T) {
 		},
 		{
 			name:                 "valid remote configuration returned by storage",
-			mockRemoteConfig:     []byte(validRemoteConfigurationJSON),
+			mockRemoteConfig:     []byte(validStableRemoteConfigurationJSON),
 			expectedAnError:      false,
-			expectedRemoteConfig: validRemoteConfiguration,
+			expectedRemoteConfig: validStableRemoteConfiguration,
 		},
 	}
 
@@ -99,7 +100,7 @@ func TestRepositoryRemoteConfiguration(t *testing.T) {
 				remoteConfig: tt.mockRemoteConfig,
 			}
 			r := service.NewRepository(&m)
-			remoteConfig, err := r.RemoteConfiguration(anyVer)
+			remoteConfig, err := r.RemoteConfiguration(&http.Request{}, anyVer)
 			if tt.expectedAnError {
 				assert.Error(t, err)
 			} else {
