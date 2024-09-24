@@ -23,6 +23,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/Unleash/unleash-client-go/v4"
@@ -179,13 +180,14 @@ func NewStorage(storageConfig StorageConfig, unleashEnabled bool, unleashClient 
 func (s *Storage) ReadConditionalRules(r *http.Request, path string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
 	version := StableVersion
+	clusterID := GetClusterID(r)
 	if s.unleashEnabled {
 		// We use User-Agent header to decide between stable and canary version (header contains cluster ID)
-		if s.unleashClient.IsCanary(r.UserAgent()) {
-			log.Debug().Str("canary argument", r.UserAgent()).Msg("Served canary version of rules")
+		if s.unleashClient.IsCanary(clusterID) {
+			log.Debug().Str("canary argument", clusterID).Msg("Served canary version of rules")
 			version = CanaryVersion
 		} else {
-			log.Debug().Str("canary argument", r.UserAgent()).Msg("Served stable version of rules")
+			log.Debug().Str("canary argument", clusterID).Msg("Served stable version of rules")
 		}
 	}
 	conditionalRulesPath := fmt.Sprintf("%s/%s/%s", s.conditionalRulesPath, version, path)
@@ -196,13 +198,14 @@ func (s *Storage) ReadConditionalRules(r *http.Request, path string) []byte {
 func (s *Storage) ReadRemoteConfig(r *http.Request, path string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
 	version := StableVersion
+	clusterID := GetClusterID(r)
 	if s.unleashEnabled {
 		// We use User-Agent header to decide between stable and canary version (header contains cluster ID)
-		if s.unleashClient.IsCanary(r.UserAgent()) {
-			log.Debug().Str("canary argument", r.UserAgent()).Msg("Served canary version of remote configurations")
+		if s.unleashClient.IsCanary(clusterID) {
+			log.Debug().Str("canary argument", clusterID).Msg("Served canary version of remote configurations")
 			version = CanaryVersion
 		} else {
-			log.Debug().Str("canary argument", r.UserAgent()).Msg("Served stable version of remote configurations")
+			log.Debug().Str("canary argument", clusterID).Msg("Served stable version of remote configurations")
 		}
 	}
 	remoteConfigPath := fmt.Sprintf("%s/%s/%s", s.remoteConfigurationPath, version, path)
@@ -264,4 +267,19 @@ func (s *Storage) readFile(path string) ([]byte, error) {
 	s.cache.Set(path, data)
 
 	return data, nil
+}
+
+func GetClusterID(r *http.Request) string {
+	userAgent := r.UserAgent()
+	if !strings.Contains(userAgent, "cluster/") {
+		err := errors.New("UserAgent does not contain cluster ID")
+		log.Error().Str("UserAgent", userAgent).Err(err).Msg("Failed to retrieve cluster ID")
+		return ""
+	}
+	_, clusterID, _ := strings.Cut(userAgent, "cluster/")
+
+	// Get rid of any text that would follow after cluster ID
+	clusterID = strings.Split(clusterID, " ")[0]
+	clusterID = strings.Split(clusterID, ",")[0]
+	return clusterID
 }

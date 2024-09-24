@@ -35,7 +35,7 @@ const (
 type MockUnleashClient struct{}
 
 func (c *MockUnleashClient) IsCanary(canaryArgument string) bool {
-	return canaryArgument == canaryUserAgent
+	return canaryArgument == canaryClusterID
 }
 
 func TestNewStorage(t *testing.T) {
@@ -279,6 +279,45 @@ func TestReadRemoteConfigurationCanaryRollout(t *testing.T) {
 			assert.NoError(t, err)
 			req.Header.Add("User-Agent", tt.canaryArgument)
 			checkRemoteConfig(t, storage, tt.remoteConfigFile, tt.expectedRemoteConfig, req)
+		})
+	}
+}
+
+func TestGetClusterID(t *testing.T) {
+	tests := []struct {
+		name           string
+		userAgent      string
+		expectedResult string
+	}{
+		{
+			name:           "header with cluster ID",
+			userAgent:      canaryUserAgent,
+			expectedResult: canaryClusterID,
+		},
+		{
+			name:           "header without cluster ID",
+			userAgent:      "Go-http-client/1.1",
+			expectedResult: "",
+		},
+		{
+			name:           "header with cluster ID and extra suffix separated by comma",
+			userAgent:      canaryUserAgent + ", extra data",
+			expectedResult: canaryClusterID,
+		},
+		{
+			name:           "header with cluster ID and extra suffix separated by space",
+			userAgent:      canaryUserAgent + " extra data",
+			expectedResult: canaryClusterID,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req, err := http.NewRequest("GET", "http://example.com", nil)
+			assert.NoError(t, err)
+			req.Header.Add("User-Agent", tt.userAgent)
+
+			clusterID := service.GetClusterID(req)
+			assert.Equal(t, clusterID, tt.expectedResult)
 		})
 	}
 }
