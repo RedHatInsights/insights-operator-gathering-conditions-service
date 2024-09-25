@@ -67,6 +67,10 @@ objects:
               value: /conditions
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__REMOTE_CONFIGURATION
               value: /remote-configurations
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CANARY__UNLEASH_ENABLED
+              value: ${UNLEASH_ENABLED}
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CANARY__UNLEASH_URL
+              value: ${UNLEASH_URL}
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__LOGGING__LOGGING_TO_CLOUD_WATCH_ENABLED
               value: ${LOGGING_TO_CLOUD_WATCH_ENABLED}
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CLOUDWATCH__DEBUG
@@ -224,4 +228,8 @@ parameters:
 - name: LOG_LEVEL
   value: "INFO"
 - name: UNLEASH_TOKEN
+  value: ""
+- name: UNLEASH_ENABLED
+  value: "false"
+- name: UNLEASH_URL
   value: ""
