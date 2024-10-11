@@ -4,8 +4,8 @@ github.com/Masterminds/semver/v3 v3.1.1 h1:hLg3sBzpNErnxhQtUy/mmLR2I9foDujNK030I
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=
 github.com/RedHatInsights/cloudwatch v0.0.0-20210111105023-1df2bdfe3291 h1:f2RIq2LvG0Nz7TrPYr8clzUPXIEf+Q3oDoCfAHym4/I=
 github.com/RedHatInsights/cloudwatch v0.0.0-20210111105023-1df2bdfe3291/go.mod h1:8l+HqU8iWM6hA9kSAHgY3ItSlpEsPr8fb2R0GBp9S0U=
-github.com/RedHatInsights/insights-operator-utils v1.25.11 h1:BcD9ISCkzDFnhor3d4So6nmjVjILQATS8GJhoRVqOak=
-github.com/RedHatInsights/insights-operator-utils v1.25.11/go.mod h1:zC4Wok6rNTMSQU8ey8ulPby2IB1wcujgFteB866vo1A=
+github.com/RedHatInsights/insights-operator-utils v1.25.12 h1:2hxQUdHCG7wLbHEikEtIi5R/dbiXvuAddD/HJtgVXDw=
+github.com/RedHatInsights/insights-operator-utils v1.25.12/go.mod h1:zC4Wok6rNTMSQU8ey8ulPby2IB1wcujgFteB866vo1A=
 github.com/RedHatInsights/insights-results-types v1.23.4 h1:BWFxaaDRaNozhXmf1W25WnGI4qsulVACLD5PoUdWUE8=
 github.com/RedHatInsights/kafka-zerolog v1.0.0 h1:4zPrLcwnfFl07qv9/ximlm1E/rWs93TkYnHrgNiU73A=
 github.com/RedHatInsights/kafka-zerolog v1.0.0/go.mod h1:HJul5oCsCRNiRlh/ayJDGdW3PzGlid/5aaQwJBn7was=
