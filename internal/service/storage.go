@@ -273,7 +273,7 @@ func GetClusterID(r *http.Request) string {
 	userAgent := r.UserAgent()
 	if !strings.Contains(userAgent, "cluster/") {
 		err := errors.New("UserAgent does not contain cluster ID")
-		log.Error().Str("UserAgent", userAgent).Err(err).Msg("Failed to retrieve cluster ID")
+		log.Warn().Str("UserAgent", userAgent).Err(err).Msg("Failed to retrieve cluster ID")
 		return ""
 	}
 	_, clusterID, _ := strings.Cut(userAgent, "cluster/")
