@@ -191,7 +191,7 @@ objects:
 parameters:
 - description: Image name
   name: IMAGE
-  value: ""
+  value: "quay.io/redhat-services-prod/obsint-processing-tenant/io-gathering-service/io-gathering-service"
 - description: Determines Clowder deployment
   name: CLOWDER_ENABLED
   value: "true"
