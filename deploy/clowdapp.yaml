@@ -46,7 +46,6 @@ objects:
       iqePlugin: ccx
     dependencies:
       - ingress
-      - rbac  # required by iqe-ccx-plugin in Konflux env.
     deployments:
       - name: instance
         minReplicas: ${{MIN_REPLICAS}}
