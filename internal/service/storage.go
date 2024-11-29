@@ -50,9 +50,10 @@ type UnleashClientInterface interface {
 // StorageInterface describe interface to be implemented by resource storage
 // implementations.
 type StorageInterface interface {
-	ReadConditionalRules(request *http.Request, res string) []byte
-	ReadRemoteConfig(request *http.Request, p string) []byte
-	GetRemoteConfigurationFilepath(ocpVersion string) (string, error)
+	IsCanary(request *http.Request) bool
+	ReadConditionalRules(isCanary bool, res string) []byte
+	ReadRemoteConfig(isCanary bool, p string) []byte
+	GetRemoteConfigurationFilepath(isCanary bool, ocpVersion string) (string, error)
 }
 
 // StorageConfig structure contains configuration for resource storage.
@@ -60,6 +61,7 @@ type StorageConfig struct {
 	RulesPath               string `mapstructure:"rules_path" toml:"rules_path"`
 	RemoteConfigurationPath string `mapstructure:"remote_configuration" toml:"remote_configuration"`
 	ClusterMappingPath      string `mapstructure:"cluster_mapping" toml:"cluster_mapping"`
+	ClusterMappingFile      string `mapstructure:"cluster_mapping_file" toml:"cluster_mapping_file"`
 }
 
 // CanaryConfig structure contains configuration for canary rollout
@@ -123,7 +125,9 @@ type Storage struct {
 	remoteConfigurationPath string
 	cache                   Cache
 	clusterMappingPath      string
-	clusterMapping          ClusterMapping
+	clusterMappingFile      string
+	stableClusterMapping    *ClusterMapping
+	canaryClusterMapping    *ClusterMapping
 	unleashClient           UnleashClientInterface
 	unleashEnabled          bool
 }
@@ -135,78 +139,103 @@ func NewStorage(storageConfig StorageConfig, unleashEnabled bool, unleashClient 
 		conditionalRulesPath:    storageConfig.RulesPath,
 		remoteConfigurationPath: storageConfig.RemoteConfigurationPath,
 		clusterMappingPath:      storageConfig.ClusterMappingPath,
+		clusterMappingFile:      storageConfig.ClusterMappingFile,
 		unleashEnabled:          unleashEnabled,
 		unleashClient:           unleashClient,
 	}
 
-	if s.clusterMappingPath == "" {
-		errStr := "cluster mapping filepath is not defined"
-		log.Error().Msg(errStr)
-		return &s, errors.New(errStr)
-	}
-	// Parse the cluster map
-	cm := ClusterMapping{}
-	rawData := s.readDataFromPath(s.clusterMappingPath)
-	if rawData == nil {
-		return &s, errors.New("cannot find cluster map")
-	}
-	err := json.Unmarshal(rawData, &cm)
+	cm, err := s.loadClusterMapping(StableVersion)
 	if err != nil {
-		log.Error().Err(err).Msg("Cannot load cluster map")
+		log.Error().Err(err).Msg("Could not load stable version of cluster mapping")
 		return &s, err
 	}
+	s.stableClusterMapping = cm
 
-	log.Debug().Interface("cluster-map", cm).Msg("Cluster map loaded")
-
-	if cm.IsValid(s.remoteConfigurationPath, StableVersion) {
-		log.Info().Msg("The stable version of cluster map JSON is valid")
-		s.clusterMapping = cm
-	} else {
-		log.Error().Msg("Stable version of cluster map is invalid")
-		return nil, errors.New("cannot parse cluster map")
+	cm, err = s.loadClusterMapping(CanaryVersion)
+	if err != nil {
+		log.Error().Err(err).Msg("Could not load canary version of cluster mapping")
+		return &s, err
 	}
-
-	if cm.IsValid(s.remoteConfigurationPath, CanaryVersion) {
-		log.Info().Msg("The canary version of cluster map JSON is valid")
-	} else {
-		log.Error().Msg("Canary version of cluster map is invalid")
-		return nil, errors.New("cannot parse cluster map")
-	}
+	s.canaryClusterMapping = cm
 
 	return &s, nil
 }
 
+func (s *Storage) loadClusterMapping(version string) (*ClusterMapping, error) {
+	if s.clusterMappingPath == "" {
+		errStr := "cluster mapping directory path is not defined"
+		log.Error().Msg(errStr)
+		return nil, errors.New(errStr)
+	}
+
+	if s.clusterMappingFile == "" {
+		errStr := "cluster mapping file name is not defined"
+		log.Error().Msg(errStr)
+		return nil, errors.New(errStr)
+	}
+
+	// Parse the cluster map
+	cm := ClusterMapping{
+		version: version,
+		mapping: [][]string{},
+	}
+	fullFilepath := fmt.Sprintf("%s/%s/%s", s.clusterMappingPath, version, s.clusterMappingFile)
+	log.Info().Msg(fullFilepath)
+	rawData := s.readDataFromPath(fullFilepath)
+	if rawData == nil {
+		return nil, errors.New("cannot find cluster map")
+	}
+	err := json.Unmarshal(rawData, &cm.mapping)
+	if err != nil {
+		log.Error().Str("version", version).Err(err).Msg("Cannot load cluster map")
+		return nil, err
+	}
+
+	log.Debug().Interface("cluster-map", cm.mapping).Msg("Cluster map loaded")
+
+	if cm.IsValid(s.remoteConfigurationPath) {
+		log.Info().Str("version", version).Msg("The cluster map JSON is valid")
+	} else {
+		log.Error().Str("version", version).Msg("The cluster map is invalid")
+		return nil, errors.New("cannot parse cluster map")
+	}
+
+	return &cm, nil
+}
+
+// IsCanary queries UnleashClient to determine which version of configurations to serve
+func (s *Storage) IsCanary(r *http.Request) bool {
+	if !s.unleashEnabled {
+		return false
+	}
+	// We use User-Agent header to decide between stable and canary version (header contains cluster ID)
+	clusterID := GetClusterID(r)
+	isCanary := s.unleashClient.IsCanary(clusterID)
+	if isCanary {
+		log.Debug().Str("canary argument", clusterID).Msg("Serving canary version of configurations")
+	} else {
+		log.Debug().Str("canary argument", clusterID).Msg("Serving stable version of configurations")
+	}
+	return isCanary
+}
+
 // ReadConditionalRules tries to find conditional rule with given name in the storage.
-func (s *Storage) ReadConditionalRules(r *http.Request, path string) []byte {
+func (s *Storage) ReadConditionalRules(isCanary bool, path string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
 	version := StableVersion
-	clusterID := GetClusterID(r)
-	if s.unleashEnabled {
-		// We use User-Agent header to decide between stable and canary version (header contains cluster ID)
-		if s.unleashClient.IsCanary(clusterID) {
-			log.Debug().Str("canary argument", clusterID).Msg("Served canary version of rules")
-			version = CanaryVersion
-		} else {
-			log.Debug().Str("canary argument", clusterID).Msg("Served stable version of rules")
-		}
+	if isCanary {
+		version = CanaryVersion
 	}
 	conditionalRulesPath := fmt.Sprintf("%s/%s/%s", s.conditionalRulesPath, version, path)
 	return s.readDataFromPath(conditionalRulesPath)
 }
 
 // ReadRemoteConfig tries to find remote configuration with given name in the storage
-func (s *Storage) ReadRemoteConfig(r *http.Request, path string) []byte {
+func (s *Storage) ReadRemoteConfig(isCanary bool, path string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
 	version := StableVersion
-	clusterID := GetClusterID(r)
-	if s.unleashEnabled {
-		// We use User-Agent header to decide between stable and canary version (header contains cluster ID)
-		if s.unleashClient.IsCanary(clusterID) {
-			log.Debug().Str("canary argument", clusterID).Msg("Served canary version of remote configurations")
-			version = CanaryVersion
-		} else {
-			log.Debug().Str("canary argument", clusterID).Msg("Served stable version of remote configurations")
-		}
+	if isCanary {
+		version = CanaryVersion
 	}
 	remoteConfigPath := fmt.Sprintf("%s/%s/%s", s.remoteConfigurationPath, version, path)
 	return s.readDataFromPath(remoteConfigPath)
@@ -214,7 +243,7 @@ func (s *Storage) ReadRemoteConfig(r *http.Request, path string) []byte {
 
 // GetRemoteConfigurationFilepath returns the filepath to the remote configuration
 // that should be returned for the given OCP version based on the cluster map
-func (s *Storage) GetRemoteConfigurationFilepath(ocpVersion string) (string, error) {
+func (s *Storage) GetRemoteConfigurationFilepath(isCanary bool, ocpVersion string) (string, error) {
 	ocpVersionParsed, err := semver.Make(ocpVersion)
 	if err != nil {
 		log.Error().Str("ocpVersion", ocpVersion).Err(err).Msg("Invalid semver")
@@ -224,7 +253,10 @@ func (s *Storage) GetRemoteConfigurationFilepath(ocpVersion string) (string, err
 			ErrString:  err.Error()}
 	}
 
-	return s.clusterMapping.GetFilepathForVersion(ocpVersionParsed)
+	if isCanary {
+		return s.canaryClusterMapping.GetFilepathForVersion(ocpVersionParsed)
+	}
+	return s.stableClusterMapping.GetFilepathForVersion(ocpVersionParsed)
 }
 
 func (s *Storage) readDataFromPath(path string) []byte {

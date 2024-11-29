@@ -70,7 +70,7 @@ func NewRepository(s StorageInterface) *Repository {
 // Rules method reads all and unmarshals all rules stored under given path
 func (r *Repository) Rules(request *http.Request) (*Rules, error) {
 	filepath := "rules.json" // TODO: Make this configurable
-	data := r.store.ReadConditionalRules(request, filepath)
+	data := r.store.ReadConditionalRules(r.store.IsCanary(request), filepath)
 	if data == nil {
 		return nil, fmt.Errorf("store data not found for '%s'", filepath)
 	}
@@ -87,11 +87,12 @@ func (r *Repository) Rules(request *http.Request) (*Rules, error) {
 // RemoteConfiguration returns a remote configuration for v2 endpoint based on
 // the cluster map defined in the settings and loaded on startup
 func (r *Repository) RemoteConfiguration(request *http.Request, ocpVersion string) (*RemoteConfiguration, error) {
-	filepath, err := r.store.GetRemoteConfigurationFilepath(ocpVersion)
+	isCanary := r.store.IsCanary(request)
+	filepath, err := r.store.GetRemoteConfigurationFilepath(isCanary, ocpVersion)
 	if err != nil {
 		return nil, err
 	}
-	data := r.store.ReadRemoteConfig(request, filepath)
+	data := r.store.ReadRemoteConfig(isCanary, filepath)
 	if data == nil {
 		return nil, fmt.Errorf("store data not found for '%s'", filepath)
 	}

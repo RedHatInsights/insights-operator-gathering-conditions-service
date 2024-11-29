@@ -12,19 +12,22 @@ import (
 )
 
 // ClusterMapping map OCP versions to remote configurations
-type ClusterMapping [][]string
+type ClusterMapping  struct {
+	version string
+	mapping [][]string
+}
 
 // IsValid check the list is in order (based on the versions), that the versions
 // can be parsed and that the remote configurations are accessible
-func (cm ClusterMapping) IsValid(remoteConfigurationPath string, conditionsVersion string) bool {
+func (cm ClusterMapping) IsValid(remoteConfigurationPath string) bool {
 	versions := []semver.Version{} // used to check if it's sorted
 
-	if len(cm) == 0 {
-		log.Error().Interface("raw", cm).Msg("Cluster map needs to contain at least one pair of version and filepath")
+	if len(cm.mapping) == 0 {
+		log.Error().Interface("raw", cm.mapping).Msg("Cluster map needs to contain at least one pair of version and filepath")
 		return false
 	}
 
-	for _, slice := range cm {
+	for _, slice := range cm.mapping {
 		if len(slice) != 2 {
 			log.Error().Int("len", len(slice)).Strs("slice", slice).Msg("Unexpected slice length")
 			return false
@@ -38,7 +41,7 @@ func (cm ClusterMapping) IsValid(remoteConfigurationPath string, conditionsVersi
 		versions = append(versions, versionParsed)
 
 		filepath := slice[1]
-		fullFilepath := fmt.Sprintf("%s/%s/%s", remoteConfigurationPath, conditionsVersion, filepath)
+		fullFilepath := fmt.Sprintf("%s/%s/%s", remoteConfigurationPath, cm.version, filepath)
 		if _, err := os.Stat(fullFilepath); errors.Is(err, os.ErrNotExist) {
 			log.Error().Str("filepath", fullFilepath).
 				Msg("Remote configuration filepath couldn't be accessed")
@@ -72,7 +75,7 @@ func (cm ClusterMapping) IsValid(remoteConfigurationPath string, conditionsVersi
 // than 3.0.0
 func (cm ClusterMapping) GetFilepathForVersion(ocpVersionParsed semver.Version) (string, error) {
 	// check the version is not greater than the first slice
-	firstVersion, err := semver.Make(cm[0][0])
+	firstVersion, err := semver.Make(cm.mapping[0][0])
 	if err != nil {
 		log.Error().Str("version", firstVersion.String()).Err(err).Msg("Invalid semver")
 		return "", err
@@ -88,11 +91,11 @@ func (cm ClusterMapping) GetFilepathForVersion(ocpVersionParsed semver.Version) 
 		return "", &merrors.NotFoundError{
 			ErrString: errMsg}
 	} else if comparison == 0 {
-		return cm[0][1], nil
+		return cm.mapping[0][1], nil
 	}
 
-	previousFilepath := cm[0][1]
-	for _, slice := range cm[1:] {
+	previousFilepath := cm.mapping[0][1]
+	for _, slice := range cm.mapping[1:] {
 		version := slice[0]
 		filepath := slice[1]
 		versionParsed, err := semver.Make(version)
@@ -115,5 +118,5 @@ func (cm ClusterMapping) GetFilepathForVersion(ocpVersionParsed semver.Version) 
 
 	log.Debug().Str("ocpVersion", ocpVersionParsed.String()).
 		Msg("Returning latest remote configuration")
-	return cm[len(cm)-1][1], nil
+	return cm.mapping[len(cm.mapping)-1][1], nil
 }
