@@ -145,14 +145,18 @@ type mockStorage struct {
 	getRemoteConfigurationFilepathMockError error
 }
 
-func (m *mockStorage) ReadConditionalRules(*http.Request, string) []byte {
+func (m *mockStorage) IsCanary(*http.Request) bool {
+	return true
+}
+
+func (m *mockStorage) ReadConditionalRules(bool, string) []byte {
 	return m.conditionalRules
 }
 
-func (m *mockStorage) ReadRemoteConfig(*http.Request, string) []byte {
+func (m *mockStorage) ReadRemoteConfig(bool, string) []byte {
 	return m.remoteConfig
 }
 
-func (m *mockStorage) GetRemoteConfigurationFilepath(string) (string, error) {
+func (m *mockStorage) GetRemoteConfigurationFilepath(bool, string) (string, error) {
 	return m.remoteConfigFilepath, m.getRemoteConfigurationFilepathMockError
 }

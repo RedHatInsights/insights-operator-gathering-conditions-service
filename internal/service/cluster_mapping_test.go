@@ -13,53 +13,58 @@ const testFilesPath = "../../tests/rapid-recommendations"
 
 func TestClusterMappingIsValid(t *testing.T) {
 	t.Run("valid map", func(t *testing.T) {
-		var sut service.ClusterMapping = [][]string{
+		mapping := [][]string{
 			{"1.0.0", "experimental_1.json"},
 			{"2.0.0", "experimental_2.json"},
 			{"3.0.0", "config_default.json"},
 		}
-		assert.True(t, sut.IsValid(testFilesPath, service.StableVersion))
+		sut := service.NewClusterMapping(service.StableVersion, mapping)
+		assert.True(t, sut.IsValid(testFilesPath))
 	})
 
 	t.Run("invalid map: invalid version", func(t *testing.T) {
-		var sut service.ClusterMapping = [][]string{
+		mapping := [][]string{
 			{"1.0.0", "experimental_1.json"},
 			{"not a valid version", "experimental_2.json"},
 			{"3.0.0", "config_default.json"},
 		}
-		assert.False(t, sut.IsValid(testFilesPath, service.StableVersion))
+		sut := service.NewClusterMapping(service.StableVersion, mapping)
+		assert.False(t, sut.IsValid(testFilesPath))
 	})
 
 	t.Run("invalid map: JSON not found", func(t *testing.T) {
-		var sut service.ClusterMapping = [][]string{
+		mapping := [][]string{
 			{"1.0.0", "experimental_1.json"},
 			{"2.0.0", "not-found.json"},
 			{"3.0.0", "config_default.json"},
 		}
-		assert.False(t, sut.IsValid(testFilesPath, service.StableVersion))
+		sut := service.NewClusterMapping(service.StableVersion, mapping)
+		assert.False(t, sut.IsValid(testFilesPath))
 	})
 
 	t.Run("invalid map: versions unsorted", func(t *testing.T) {
-		var sut service.ClusterMapping = [][]string{
+		mapping := [][]string{
 			{"1.0.0", "experimental_1.json"},
 			{"3.0.0", "experimental_2.json"},
 			{"2.0.0", "config_default.json"},
 		}
-		assert.False(t, sut.IsValid(testFilesPath, service.StableVersion))
+		sut := service.NewClusterMapping(service.StableVersion, mapping)
+		assert.False(t, sut.IsValid(testFilesPath))
 	})
 
 	t.Run("invalid map: map contains a tripple instead of key-values pairs", func(t *testing.T) {
-		var sut service.ClusterMapping = [][]string{
+		mapping := [][]string{
 			{"1.0.0", "experimental_1.json", "some-element"},
 			{"2.0.0", "experimental_2.json"},
 			{"3.0.0", "config_default.json"},
 		}
-		assert.False(t, sut.IsValid(testFilesPath, service.StableVersion))
+		sut := service.NewClusterMapping(service.StableVersion, mapping)
+		assert.False(t, sut.IsValid(testFilesPath))
 	})
 
 	t.Run("invalid map: map is empty", func(t *testing.T) {
-		var sut service.ClusterMapping = [][]string{}
-		assert.False(t, sut.IsValid(testFilesPath, service.StableVersion))
+		sut := service.NewClusterMapping(service.StableVersion, [][]string{})
+		assert.False(t, sut.IsValid(testFilesPath))
 	})
 }
 
@@ -102,11 +107,12 @@ func TestClusterMappingGetFilepathForVersion(t *testing.T) {
 			},
 		}
 
-		var sut service.ClusterMapping = [][]string{
+		mapping := [][]string{
 			{"1.0.0", "experimental_1.json"},
 			{"2.0.0", "experimental_2.json"},
 			{"3.0.0", "config_default.json"},
 		}
+		sut := service.NewClusterMapping(service.StableVersion, mapping)
 
 		for _, tc := range testCases {
 			t.Run(tc.ocpVersion, func(t *testing.T) {

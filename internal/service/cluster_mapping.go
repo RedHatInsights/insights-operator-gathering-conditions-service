@@ -12,9 +12,16 @@ import (
 )
 
 // ClusterMapping map OCP versions to remote configurations
-type ClusterMapping  struct {
+type ClusterMapping struct {
 	version string
 	mapping [][]string
+}
+
+func NewClusterMapping(version string, mapping [][]string) *ClusterMapping {
+	return &ClusterMapping{
+		version: version,
+		mapping: mapping,
+	}
 }
 
 // IsValid check the list is in order (based on the versions), that the versions
