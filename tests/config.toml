@@ -6,7 +6,8 @@ enable_cors = false
 [storage]
 rules_path = "tests/conditions"
 remote_configuration = "./tests/rapid-recommendations"
-cluster_mapping = "./tests/rapid-recommendations/cluster-mapping.json"
+cluster_mapping = "./tests/mapping/"
+cluster_mapping_file = "cluster-mapping.json"
 
 [canary]
 unleash_enabled = false

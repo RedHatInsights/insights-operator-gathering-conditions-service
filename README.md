@@ -85,7 +85,7 @@ Service provides option of canary rollout for new version of configurations. The
 
 ## Configure
 
-Configuration is done by `toml` config, taking the `config/config.toml` in the working directory if no other configuration is provided. This can be overriden by `INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_CONFIG_FILE` environment variable.
+Configuration is done by `toml` config, taking the `config.toml` in the working directory if no other configuration is provided. This can be overriden by `INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_CONFIG_FILE` environment variable.
 
 You can also override specific configuration options by setting specific
 environment variables in this form:
@@ -96,16 +96,18 @@ For example, for a configuration like this
 
 ```
 [storage]
-remote_configuration = "./conditions/v2"
-cluster_mapping = "cluster-mapping.json"
+remote_configuration = "./conditions"
+cluster_mapping = "./mapping"
 ```
 
 you would override these values as follows:
 
 ```
 export INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__REMOTE_CONFIGURATION=tests/rapid-recommendations
-export INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__CLUSTER_MAPPING=tests/rapid-recommendations/cluster-mapping.json
+export INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__CLUSTER_MAPPING=tests/mapping/
 ```
+
+`remote_configuration`, `conditions` and `cluster_mapping` configuration options describe locations of respective content served by the service. However, each of these also contain separate `stable` and `canary` subdirectories containing different versions of the content. `cluster_mapping_file` option then describes the name of the file within `${cluster_mapping}/stable` and`${cluster_mapping}/canary`, and this file maps different OCP versions to the specific content under `${remote_configuration}/stable` (or `${remote_configuration}/canary`).
 
 ## Conditions
 
@@ -151,7 +153,7 @@ There are some flags for different purposes:
 As part of [CCXDEV-12849](https://issues.redhat.com/browse/CCXDEV-12849) we
 introduced a new feature to map remote configurations to different OCP versions.
 
-In order to use it you need to set the `cluster_mapping` and
+In order to use it you need to set the `cluster_mapping`, `cluster_mapping_file` and
 `remote_configuration` fields in [config.toml] or use environment variables.
 The cluster map should look like this:
 ```
