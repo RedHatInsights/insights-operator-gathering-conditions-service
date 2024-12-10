@@ -1,6 +1,6 @@
 #!/bin/bash
 
-STABLE_VERSION=1.1.2
+STABLE_VERSION=1.1.3
 CANARY_VERSION=1.1.3
 
 # Clone the conditions repo and build it to gather the conditions
