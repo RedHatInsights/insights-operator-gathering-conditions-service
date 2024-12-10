@@ -1,7 +1,7 @@
 #!/bin/bash
 
 STABLE_VERSION=1.1.2
-CANARY_VERSION=1.1.2
+CANARY_VERSION=1.1.3
 
 # Clone the conditions repo and build it to gather the conditions
 if [ ! -d 'insights-operator-gathering-conditions' ]; then git clone https://github.com/RedHatInsights/insights-operator-gathering-conditions; fi
