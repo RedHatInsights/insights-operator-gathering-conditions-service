@@ -12,8 +12,7 @@ jobs:
     strategy:
       matrix:
         go-version:
-          - "1.20"
-          - "1.21"
+          - "1.22"
     name: Linters for Go ${{ matrix.go-version}}
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +24,7 @@ jobs:
         run: go build
       - name: GO formatting
         run: make fmt
-      - name: GO lint 
+      - name: GO lint
         run: make lint
       - name: GO vet
         run: make vet
