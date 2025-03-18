@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.22.9
 
 require (
-	github.com/BurntSushi/toml v1.4.0
+	github.com/BurntSushi/toml v1.5.0
 	github.com/RedHatInsights/insights-operator-utils v1.25.12
 	github.com/Unleash/unleash-client-go/v4 v4.3.0
 	github.com/blang/semver/v4 v4.0.0
