@@ -58,7 +58,7 @@ abcgo: ## Run ABC metrics checker
 openapi-check:  ## Validate the OpenAPI specification files
 	./check_openapi.sh
 
-conditions:  ## Clone the conditions repo and build it to gather the conditions
+conditions: get_conditions.sh ## Clone the conditions repo and build it to gather the conditions
 	./get_conditions.sh
 
 check-config: ${BINARY} conditions ## Check all the configuration files are parsable
