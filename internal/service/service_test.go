@@ -165,10 +165,10 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 	}
 
 	const (
-		clusterMappingPath      = "../../tests/mapping/"
-		validClusterMapping     = "cluster-mapping.json"
-		notFoundClusterMapping  = "not-found-cluster-mapping.json"
-		internalServerError     = `{"status":"Internal Server Error"}`
+		clusterMappingPath     = "../../tests/mapping/"
+		validClusterMapping    = "cluster-mapping.json"
+		notFoundClusterMapping = "not-found-cluster-mapping.json"
+		internalServerError    = `{"status":"Internal Server Error"}`
 	)
 
 	testCases := []testCase{
