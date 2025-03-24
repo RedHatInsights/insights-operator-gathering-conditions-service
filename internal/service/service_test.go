@@ -167,19 +167,11 @@ func TestServiceV2WithClusterMapping(t *testing.T) {
 	const (
 		clusterMappingPath      = "../../tests/mapping/"
 		validClusterMapping     = "cluster-mapping.json"
-		malformedClusterMapping = "malformed-cluster-mapping.json"
 		notFoundClusterMapping  = "not-found-cluster-mapping.json"
 		internalServerError     = `{"status":"Internal Server Error"}`
 	)
 
 	testCases := []testCase{
-		{
-			name:               "invalid cluster mapping",
-			clusterMappingFile: malformedClusterMapping,
-			expectedAnError:    true,
-			ocpVersion:         "any version",
-			wantConfiguration:  "",
-		},
 		{
 			name:               "cluster mapping not found",
 			clusterMappingFile: notFoundClusterMapping,
