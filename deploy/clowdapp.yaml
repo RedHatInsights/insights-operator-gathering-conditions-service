@@ -53,7 +53,7 @@ objects:
           public:
             enabled: true
             apiPaths:
-              - /gathering/
+              - /api/gathering/
           private:
             enabled: false
           metrics:
