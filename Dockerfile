@@ -18,7 +18,7 @@
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest AS conditions
 
-RUN microdnf install --nodocs -y jq git
+RUN microdnf install --nodocs -y jq git python3.11 python3.11-pip go-toolset
 
 COPY get_conditions.sh .
 
@@ -55,7 +55,6 @@ COPY --from=builder /etc/pki /etc/pki
 # copy the conditions
 COPY --from=conditions  /conditions /conditions
 COPY --from=conditions  /remote-configurations /remote-configurations
-COPY --from=conditions  /mapping /mapping
 
 USER 1001
 
