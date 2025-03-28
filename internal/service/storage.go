@@ -19,10 +19,10 @@ package service
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -52,16 +52,14 @@ type UnleashClientInterface interface {
 type StorageInterface interface {
 	IsCanary(request *http.Request) bool
 	ReadConditionalRules(isCanary bool, res string) []byte
-	ReadRemoteConfig(isCanary bool, p string) []byte
+	ReadRemoteConfig(p string) []byte
 	GetRemoteConfigurationFilepath(isCanary bool, ocpVersion string) (string, error)
 }
 
 // StorageConfig structure contains configuration for resource storage.
 type StorageConfig struct {
-	RulesPath               string `mapstructure:"rules_path" toml:"rules_path"`
-	RemoteConfigurationPath string `mapstructure:"remote_configuration" toml:"remote_configuration"`
-	ClusterMappingPath      string `mapstructure:"cluster_mapping" toml:"cluster_mapping"`
-	ClusterMappingFile      string `mapstructure:"cluster_mapping_file" toml:"cluster_mapping_file"`
+	RulesPath                string `mapstructure:"rules_path" toml:"rules_path"`
+	RemoteConfigurationsPath string `mapstructure:"remote_configurations" toml:"remote_configurations"`
 }
 
 // CanaryConfig structure contains configuration for canary rollout
@@ -121,27 +119,23 @@ func (c *UnleashClient) IsCanary(canaryArgument string) bool {
 
 // Storage type represents container for resources.
 type Storage struct {
-	conditionalRulesPath    string
-	remoteConfigurationPath string
-	cache                   Cache
-	clusterMappingPath      string
-	clusterMappingFile      string
-	stableClusterMapping    *ClusterMapping
-	canaryClusterMapping    *ClusterMapping
-	unleashClient           UnleashClientInterface
-	unleashEnabled          bool
+	conditionalRulesPath     string
+	remoteConfigurationsPath string
+	cache                    Cache
+	stableClusterMapping     *ClusterMapping
+	canaryClusterMapping     *ClusterMapping
+	unleashClient            UnleashClientInterface
+	unleashEnabled           bool
 }
 
 // NewStorage constructs new storage object.
 func NewStorage(storageConfig StorageConfig, unleashEnabled bool, unleashClient UnleashClientInterface) (*Storage, error) {
 	log.Debug().Interface("config", storageConfig).Msg("Constructing storage object")
 	s := Storage{
-		conditionalRulesPath:    storageConfig.RulesPath,
-		remoteConfigurationPath: storageConfig.RemoteConfigurationPath,
-		clusterMappingPath:      storageConfig.ClusterMappingPath,
-		clusterMappingFile:      storageConfig.ClusterMappingFile,
-		unleashEnabled:          unleashEnabled,
-		unleashClient:           unleashClient,
+		conditionalRulesPath:     storageConfig.RulesPath,
+		remoteConfigurationsPath: storageConfig.RemoteConfigurationsPath,
+		unleashEnabled:           unleashEnabled,
+		unleashClient:            unleashClient,
 	}
 
 	cm, err := s.loadClusterMapping(StableVersion)
@@ -162,24 +156,21 @@ func NewStorage(storageConfig StorageConfig, unleashEnabled bool, unleashClient 
 }
 
 func (s *Storage) loadClusterMapping(version string) (*ClusterMapping, error) {
-	if s.clusterMappingPath == "" {
-		errStr := "cluster mapping directory path is not defined"
+	if s.remoteConfigurationsPath == "" {
+		errStr := "Remote configurations directory path is not defined"
 		log.Error().Msg(errStr)
 		return nil, errors.New(errStr)
 	}
 
-	if s.clusterMappingFile == "" {
-		errStr := "cluster mapping file name is not defined"
-		log.Error().Msg(errStr)
-		return nil, errors.New(errStr)
-	}
+	configsRootDir := filepath.Join(s.remoteConfigurationsPath, version)
 
 	// Parse the cluster map
 	cm := ClusterMapping{
-		version: version,
+		rootDir: configsRootDir,
 		mapping: [][]string{},
 	}
-	fullFilepath := fmt.Sprintf("%s/%s/%s", s.clusterMappingPath, version, s.clusterMappingFile)
+
+	fullFilepath := filepath.Join(configsRootDir, "cluster_version_mapping.json")
 	log.Info().Msg(fullFilepath)
 	rawData := s.readDataFromPath(fullFilepath)
 	if rawData == nil {
@@ -193,7 +184,7 @@ func (s *Storage) loadClusterMapping(version string) (*ClusterMapping, error) {
 
 	log.Debug().Interface("cluster-map", cm.mapping).Msg("Cluster map loaded")
 
-	if cm.IsValid(s.remoteConfigurationPath) {
+	if cm.IsValid() {
 		log.Info().Str("version", version).Msg("The cluster map JSON is valid")
 	} else {
 		log.Error().Str("version", version).Msg("The cluster map is invalid")
@@ -226,19 +217,14 @@ func (s *Storage) ReadConditionalRules(isCanary bool, path string) []byte {
 	if isCanary {
 		version = CanaryVersion
 	}
-	conditionalRulesPath := fmt.Sprintf("%s/%s/%s", s.conditionalRulesPath, version, path)
+	conditionalRulesPath := filepath.Join(s.conditionalRulesPath, version, path)
 	return s.readDataFromPath(conditionalRulesPath)
 }
 
-// ReadRemoteConfig tries to find remote configuration with given name in the storage
-func (s *Storage) ReadRemoteConfig(isCanary bool, path string) []byte {
+// ReadRemoteConfig tries to find remote configuration with given path in the storage
+func (s *Storage) ReadRemoteConfig(path string) []byte {
 	log.Debug().Str("path to resource", path).Msg("Finding resource")
-	version := StableVersion
-	if isCanary {
-		version = CanaryVersion
-	}
-	remoteConfigPath := fmt.Sprintf("%s/%s/%s", s.remoteConfigurationPath, version, path)
-	return s.readDataFromPath(remoteConfigPath)
+	return s.readDataFromPath(path)
 }
 
 // GetRemoteConfigurationFilepath returns the filepath to the remote configuration

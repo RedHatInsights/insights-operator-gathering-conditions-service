@@ -55,7 +55,6 @@ COPY --from=builder /etc/pki /etc/pki
 # copy the conditions
 COPY --from=conditions  /conditions /conditions
 COPY --from=conditions  /remote-configurations /remote-configurations
-COPY --from=conditions  /mapping /mapping
 
 USER 1001
 

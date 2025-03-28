@@ -2,8 +2,8 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"os"
+	"path/filepath"
 	"reflect"
 
 	merrors "github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/errors"
@@ -13,20 +13,20 @@ import (
 
 // ClusterMapping map OCP versions to remote configurations
 type ClusterMapping struct {
-	version string
+	rootDir string
 	mapping [][]string
 }
 
-func NewClusterMapping(version string, mapping [][]string) *ClusterMapping {
+func NewClusterMapping(rootDir string, mapping [][]string) *ClusterMapping {
 	return &ClusterMapping{
-		version: version,
+		rootDir: rootDir,
 		mapping: mapping,
 	}
 }
 
 // IsValid check the list is in order (based on the versions), that the versions
 // can be parsed and that the remote configurations are accessible
-func (cm ClusterMapping) IsValid(remoteConfigurationPath string) bool {
+func (cm ClusterMapping) IsValid() bool {
 	versions := []semver.Version{} // used to check if it's sorted
 
 	if len(cm.mapping) == 0 {
@@ -48,7 +48,10 @@ func (cm ClusterMapping) IsValid(remoteConfigurationPath string) bool {
 		versions = append(versions, versionParsed)
 
 		filepath := slice[1]
-		fullFilepath := fmt.Sprintf("%s/%s/%s", remoteConfigurationPath, cm.version, filepath)
+		fullFilepath, err := cm.getFullFilePath(filepath)
+		if err != nil {
+			return false
+		}
 		if _, err := os.Stat(fullFilepath); errors.Is(err, os.ErrNotExist) {
 			log.Error().Str("filepath", fullFilepath).
 				Msg("Remote configuration filepath couldn't be accessed")
@@ -98,7 +101,7 @@ func (cm ClusterMapping) GetFilepathForVersion(ocpVersionParsed semver.Version) 
 		return "", &merrors.NotFoundError{
 			ErrString: errMsg}
 	} else if comparison == 0 {
-		return cm.mapping[0][1], nil
+		return cm.getFullFilePath(cm.mapping[0][1])
 	}
 
 	previousFilepath := cm.mapping[0][1]
@@ -114,10 +117,10 @@ func (cm ClusterMapping) GetFilepathForVersion(ocpVersionParsed semver.Version) 
 		comparison := ocpVersionParsed.Compare(versionParsed)
 		if comparison == 0 {
 			// this means the ocp version is equal to the current version
-			return filepath, nil
+			return cm.getFullFilePath(filepath)
 		} else if comparison < 0 {
 			// this means the ocp version is below the current version
-			return previousFilepath, nil
+			return cm.getFullFilePath(previousFilepath)
 		}
 
 		previousFilepath = filepath
@@ -125,5 +128,15 @@ func (cm ClusterMapping) GetFilepathForVersion(ocpVersionParsed semver.Version) 
 
 	log.Debug().Str("ocpVersion", ocpVersionParsed.String()).
 		Msg("Returning latest remote configuration")
-	return cm.mapping[len(cm.mapping)-1][1], nil
+	return cm.getFullFilePath(cm.mapping[len(cm.mapping)-1][1])
+}
+
+func (cm ClusterMapping) getFullFilePath(relativePath string) (string, error) {
+	if !filepath.IsLocal(relativePath) {
+		log.Error().
+			Str("path", relativePath).
+			Msg("Relative path is not local")
+		return "", errors.New("non-local relative path")
+	}
+	return filepath.Join(cm.rootDir, relativePath), nil
 }

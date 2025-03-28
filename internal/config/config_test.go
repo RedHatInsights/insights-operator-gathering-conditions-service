@@ -47,9 +47,8 @@ var (
 			Type:    "",
 		},
 		StorageConfig: service.StorageConfig{
-			RulesPath:               "rules_path",
-			RemoteConfigurationPath: "remote_configurations",
-			ClusterMappingPath:      "./tests/rapid-recommendations/cluster-mapping.json",
+			RulesPath:                "rules_path",
+			RemoteConfigurationsPath: "remote_configurations",
 		},
 		CanaryConfig: service.CanaryConfig{
 			UnleashEnabled: false,

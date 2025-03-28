@@ -19,6 +19,7 @@ package service_test
 import (
 	"encoding/json"
 	"net/http"
+	"path/filepath"
 	"testing"
 
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
@@ -26,11 +27,9 @@ import (
 )
 
 const (
-	validRulesFile     = "rules.json"
-	rulesFolder        = "testdata/v1"
-	v2Folder           = "testdata/v2"
-	clusterMappingPath = "testdata/mapping"
-	clusterMappingFile = "cluster-mapping.json"
+	validRulesFile = "rules.json"
+	rulesFolder    = "testdata/v1"
+	v2Folder       = "testdata/v2"
 )
 
 type MockUnleashClient struct{}
@@ -50,30 +49,24 @@ func TestNewStorage(t *testing.T) {
 		{
 			name: "config is valid",
 			config: service.StorageConfig{
-				RulesPath:               "testdata/v1",
-				RemoteConfigurationPath: "testdata/v2",
-				ClusterMappingPath:      "testdata/mapping",
-				ClusterMappingFile:      "cluster-mapping.json",
+				RulesPath:                "testdata/v1",
+				RemoteConfigurationsPath: "testdata/v2",
 			},
 			expectError: false,
 		},
 		{
 			name: "config is invalid: stable version of data does not exit",
 			config: service.StorageConfig{
-				RulesPath:               "testdata/v1",
-				RemoteConfigurationPath: "testdata/v2_missing_stable",
-				ClusterMappingPath:      "testdata/mapping",
-				ClusterMappingFile:      "cluster-mapping.json",
+				RulesPath:                "testdata/v1",
+				RemoteConfigurationsPath: "testdata/v2_missing_stable",
 			},
 			expectError: true,
 		},
 		{
 			name: "config is invalid: canary version of data does not exit",
 			config: service.StorageConfig{
-				RulesPath:               "testdata/v1",
-				RemoteConfigurationPath: "testdata/v2_missing_canary",
-				ClusterMappingPath:      "testdata/mapping",
-				ClusterMappingFile:      "cluster-mapping.json",
+				RulesPath:                "testdata/v1",
+				RemoteConfigurationsPath: "testdata/v2_missing_canary",
 			},
 			expectError: true,
 		},
@@ -125,10 +118,8 @@ func TestReadConditionalRules(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			storage, err := service.NewStorage(
 				service.StorageConfig{
-					RulesPath:               rulesFolder,
-					ClusterMappingPath:      clusterMappingPath,
-					ClusterMappingFile:      clusterMappingFile,
-					RemoteConfigurationPath: v2Folder,
+					RulesPath:                rulesFolder,
+					RemoteConfigurationsPath: v2Folder,
 				}, false, nil)
 			assert.NoError(t, err)
 			checkConditionalRules(t, storage, tc.rulesFile, tc.expectedRules, &http.Request{})
@@ -139,10 +130,8 @@ func TestReadConditionalRules(t *testing.T) {
 		// run Find anothertime to test the cache function
 		storage, err := service.NewStorage(
 			service.StorageConfig{
-				RulesPath:               rulesFolder,
-				ClusterMappingPath:      clusterMappingPath,
-				ClusterMappingFile:      clusterMappingFile,
-				RemoteConfigurationPath: v2Folder,
+				RulesPath:                rulesFolder,
+				RemoteConfigurationsPath: v2Folder,
 			}, false, nil)
 		assert.NoError(t, err)
 		for i := 0; i < 2; i++ {
@@ -175,10 +164,8 @@ func TestReadRulesCanaryRollout(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			storage, err := service.NewStorage(
 				service.StorageConfig{
-					RulesPath:               rulesFolder,
-					ClusterMappingPath:      clusterMappingPath,
-					ClusterMappingFile:      clusterMappingFile,
-					RemoteConfigurationPath: v2Folder,
+					RulesPath:                rulesFolder,
+					RemoteConfigurationsPath: v2Folder,
 				}, true, &MockUnleashClient{})
 			assert.NoError(t, err)
 			req, err := http.NewRequest("GET", "http://example.com", nil)
@@ -203,7 +190,7 @@ func checkConditionalRules(t *testing.T, storage *service.Storage, rulesFile str
 
 func checkRemoteConfig(t *testing.T, storage *service.Storage, remoteConfigFile string, expectedRemoteConfig service.RemoteConfiguration, r *http.Request) {
 	var remoteConfig service.RemoteConfiguration
-	data := storage.ReadRemoteConfig(storage.IsCanary(r), remoteConfigFile)
+	data := storage.ReadRemoteConfig(remoteConfigFile)
 	if len(data) == 0 {
 		remoteConfig = service.RemoteConfiguration{}
 	} else {
@@ -221,22 +208,22 @@ func TestReadRemoteConfiguration(t *testing.T) {
 	}{
 		{
 			name:                 "file exists and is empty",
-			remoteConfigFile:     "empty.json",
+			remoteConfigFile:     filepath.Join(v2Folder, "stable", "empty.json"),
 			expectedRemoteConfig: service.RemoteConfiguration{},
 		},
 		{
 			name:                 "file doesn't exit",
-			remoteConfigFile:     "not-found.json",
+			remoteConfigFile:     filepath.Join(v2Folder, "stable", "not-found.json"),
 			expectedRemoteConfig: service.RemoteConfiguration{},
 		},
 		{
 			name:                 "file exists and is valid",
-			remoteConfigFile:     validRulesFile,
+			remoteConfigFile:     filepath.Join(v2Folder, "stable", validRulesFile),
 			expectedRemoteConfig: validStableRemoteConfiguration,
 		},
 		{
 			name:                 "reading from 'directory' instead of file",
-			remoteConfigFile:     "",
+			remoteConfigFile:     filepath.Join(v2Folder, "stable"),
 			expectedRemoteConfig: service.RemoteConfiguration{},
 		},
 	}
@@ -245,9 +232,7 @@ func TestReadRemoteConfiguration(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			storage, err := service.NewStorage(
 				service.StorageConfig{
-					RemoteConfigurationPath: v2Folder,
-					ClusterMappingPath:      clusterMappingPath,
-					ClusterMappingFile:      clusterMappingFile,
+					RemoteConfigurationsPath: v2Folder,
 				}, false, nil)
 			assert.NoError(t, err)
 			checkRemoteConfig(t, storage, tt.remoteConfigFile, tt.expectedRemoteConfig, &http.Request{})
@@ -255,7 +240,7 @@ func TestReadRemoteConfiguration(t *testing.T) {
 	}
 }
 
-func TestReadRemoteConfigurationCanaryRollout(t *testing.T) {
+func TestGetRemoteConfigurationCanaryRollout(t *testing.T) {
 	tests := []struct {
 		name                 string
 		canaryArgument       string
@@ -265,13 +250,11 @@ func TestReadRemoteConfigurationCanaryRollout(t *testing.T) {
 		{
 			name:                 "cluster is served with stable version of remote config",
 			canaryArgument:       stableUserAgent,
-			remoteConfigFile:     validRulesFile,
 			expectedRemoteConfig: validStableRemoteConfiguration,
 		},
 		{
 			name:                 "cluster is served with canary version of remote config",
 			canaryArgument:       canaryUserAgent,
-			remoteConfigFile:     validRulesFile,
 			expectedRemoteConfig: validCanaryRemoteConfiguration,
 		},
 	}
@@ -279,15 +262,15 @@ func TestReadRemoteConfigurationCanaryRollout(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			storage, err := service.NewStorage(
 				service.StorageConfig{
-					RemoteConfigurationPath: v2Folder,
-					ClusterMappingPath:      clusterMappingPath,
-					ClusterMappingFile:      clusterMappingFile,
+					RemoteConfigurationsPath: v2Folder,
 				}, true, &MockUnleashClient{})
 			assert.NoError(t, err)
 			req, err := http.NewRequest("GET", "http://example.com", nil)
 			assert.NoError(t, err)
 			req.Header.Add("User-Agent", tt.canaryArgument)
-			checkRemoteConfig(t, storage, tt.remoteConfigFile, tt.expectedRemoteConfig, req)
+			remoteConfigFile, err := storage.GetRemoteConfigurationFilepath(storage.IsCanary(req), "4.17.0")
+			assert.NoError(t, err)
+			checkRemoteConfig(t, storage, remoteConfigFile, tt.expectedRemoteConfig, req)
 		})
 	}
 }

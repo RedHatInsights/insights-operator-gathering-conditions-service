@@ -9,9 +9,7 @@ type = "jwt"
 
 [storage]
 rules_path = "./conditions"
-remote_configuration = "./remote-configurations"
-cluster_mapping = "./mapping"
-cluster_mapping_file = "cluster-mapping.json"
+remote_configurations = "./remote-configurations"
 
 [canary]
 unleash_enabled = false
