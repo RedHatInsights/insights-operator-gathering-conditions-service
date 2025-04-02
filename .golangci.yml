@@ -32,9 +32,6 @@ formatters:
   enable:
     - gofmt
     - goimports
-run:
-    skip-files:
-        - export_test.go
 issues:
     fix: true
     new: true
