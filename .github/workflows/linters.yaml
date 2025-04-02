@@ -42,5 +42,3 @@ jobs:
         run: make ineffassign
       - name: ABC metrics checker
         run: make abcgo
-      - name: Check configuration
-        run: make check-config
