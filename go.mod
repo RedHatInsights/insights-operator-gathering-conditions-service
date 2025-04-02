@@ -12,7 +12,7 @@ require (
 	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1
 	github.com/redhatinsights/app-common-go v1.6.8
-	github.com/rs/zerolog v1.33.0
+	github.com/rs/zerolog v1.34.0
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
 	github.com/tisnik/go-capture v1.0.1
@@ -37,8 +37,8 @@ require (
 	github.com/RedHatInsights/cloudwatch v0.0.0-20210111105023-1df2bdfe3291 // indirect
 	github.com/RedHatInsights/kafka-zerolog v1.0.0 // indirect
 	github.com/Shopify/sarama v1.27.1 // indirect
-	github.com/archdx/zerolog-sentry v1.8.4 // indirect
-	github.com/aws/aws-sdk-go v1.55.5 // indirect
+	github.com/archdx/zerolog-sentry v1.8.5 // indirect
+	github.com/aws/aws-sdk-go v1.55.6 // indirect
 	github.com/bitly/go-simplejson v0.5.0 // indirect
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
