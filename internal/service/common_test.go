@@ -153,7 +153,7 @@ func (m *mockStorage) ReadConditionalRules(bool, string) []byte {
 	return m.conditionalRules
 }
 
-func (m *mockStorage) ReadRemoteConfig(bool, string) []byte {
+func (m *mockStorage) ReadRemoteConfig(string) []byte {
 	return m.remoteConfig
 }
 
