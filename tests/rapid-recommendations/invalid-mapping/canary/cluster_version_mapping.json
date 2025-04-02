@@ -1,0 +1,5 @@
+[
+    ["4.0.0", "empty.json"],
+    ["4.17.0-0", "missing.jon"],
+    ["4.17.0", "../stable/empty.json"]
+]
