@@ -9,8 +9,7 @@ type = ""
 
 [storage]
 rules_path = "rules_path"
-remote_configuration = "remote_configurations"
-cluster_mapping = "./tests/rapid-recommendations/cluster-mapping.json"
+remote_configurations = "remote_configurations"
 
 [canary]
 unleash_enabled = false
