@@ -52,6 +52,8 @@ objects:
         webServices:
           public:
             enabled: true
+            apiPaths:
+              - /api/gathering/
           private:
             enabled: false
           metrics:
@@ -165,6 +167,7 @@ objects:
 
       [storage]
       rules_path = "/conditions"
+      remote_configurations = "/remote-configurations"
 
 - kind: Service
   apiVersion: v1
