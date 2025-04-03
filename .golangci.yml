@@ -35,3 +35,5 @@ formatters:
 issues:
     fix: true
     new: true
+    exclude-files:
+      - export_test.go
