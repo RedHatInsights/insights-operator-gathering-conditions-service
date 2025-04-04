@@ -18,7 +18,7 @@
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest AS conditions
 
-RUN microdnf install --nodocs -y jq git
+RUN microdnf install --nodocs -y jq git python3.11 python3.11-pip go-toolset
 
 COPY get_conditions.sh .
 
