@@ -1,6 +1,6 @@
 module github.com/RedHatInsights/insights-operator-gathering-conditions-service
 
-go 1.21.0
+go 1.22
 
 toolchain go1.22.9
 
@@ -31,7 +31,7 @@ require (
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/twmb/murmur3 v1.1.8 // indirect
-	google.golang.org/protobuf v1.36.1 // indirect
+	google.golang.org/protobuf v1.36.6 // indirect
 )
 
 require (
