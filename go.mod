@@ -40,7 +40,7 @@ require (
 	github.com/Shopify/sarama v1.27.1 // indirect
 	github.com/archdx/zerolog-sentry v1.8.5 // indirect
 	github.com/aws/aws-sdk-go v1.55.6 // indirect
-	github.com/bitly/go-simplejson v0.5.0 // indirect
+	github.com/bitly/go-simplejson v0.5.1 // indirect
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
