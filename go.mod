@@ -56,7 +56,7 @@ require (
 	github.com/jcmturner/gofork v1.7.6 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mozillazg/request v0.8.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
