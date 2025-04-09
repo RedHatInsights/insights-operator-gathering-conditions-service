@@ -43,8 +43,7 @@ then
     echo -e "${RED_BG}[FAIL]${NC} Functions with too high ABC metrics detected!"
     exit 1
 else
-    echo -e "${GREEN_BG}[OK]${NC} ABC metrics are ok for all functions in all packages"
-    exit 0
+    echo -e "${GREEN_BG}[OK]${NC} ABC metrics are ok for all functions in main.go"
 fi
 
 
@@ -53,7 +52,6 @@ then
     echo -e "${RED_BG}[FAIL]${NC} Functions with too high ABC metrics detected!"
     exit 1
 else
-    echo -e "${GREEN_BG}[OK]${NC} ABC metrics are ok for all functions in all packages"
-    exit 0
+    echo -e "${GREEN_BG}[OK]${NC} ABC metrics are ok for all functions in internal package"
 fi
 
