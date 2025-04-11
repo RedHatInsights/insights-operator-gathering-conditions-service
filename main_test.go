@@ -148,6 +148,7 @@ func BenchmarkMyHTTPServer(b *testing.B) {
 	fmt.Printf("Requests per second: %f\n", requestsPerSecond)
 }
 
+// #nosec G404
 func getRandomVersion() string {
 	const maxVersion = 99
 	return fmt.Sprintf(

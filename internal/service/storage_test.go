@@ -188,7 +188,7 @@ func checkConditionalRules(t *testing.T, storage *service.Storage, rulesFile str
 	assert.Equal(t, expectedRules, rules)
 }
 
-func checkRemoteConfig(t *testing.T, storage *service.Storage, remoteConfigFile string, expectedRemoteConfig service.RemoteConfiguration, r *http.Request) {
+func checkRemoteConfig(t *testing.T, storage *service.Storage, remoteConfigFile string, expectedRemoteConfig service.RemoteConfiguration, _ *http.Request) {
 	var remoteConfig service.RemoteConfiguration
 	data := storage.ReadRemoteConfig(remoteConfigFile)
 	if len(data) == 0 {

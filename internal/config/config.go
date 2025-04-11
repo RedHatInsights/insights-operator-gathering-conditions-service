@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Package config provides the tooling to interact with the service configuration
 package config
 
 import (
