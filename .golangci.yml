@@ -34,4 +34,3 @@ formatters:
     - goimports
 issues:
     fix: true
-    new: true
