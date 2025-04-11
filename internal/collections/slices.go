@@ -14,9 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Package collections contains helper functions to work with collections.
 package collections
-
-// Helper functions to work with collections.
 
 // StringInSlice tests whether the given string is contained in slice of strings
 func StringInSlice(a string, list []string) bool {

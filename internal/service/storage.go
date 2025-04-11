@@ -157,7 +157,7 @@ func NewStorage(storageConfig StorageConfig, unleashEnabled bool, unleashClient 
 
 func (s *Storage) loadClusterMapping(version string) (*ClusterMapping, error) {
 	if s.remoteConfigurationsPath == "" {
-		errStr := "Remote configurations directory path is not defined"
+		errStr := "remote configurations directory path is not defined"
 		log.Error().Msg(errStr)
 		return nil, errors.New(errStr)
 	}
@@ -287,6 +287,7 @@ func (s *Storage) readFile(path string) ([]byte, error) {
 	return data, nil
 }
 
+// GetClusterID obtain the cluster ID from user agent
 func GetClusterID(r *http.Request) string {
 	userAgent := r.UserAgent()
 	if !strings.Contains(userAgent, "cluster/") {

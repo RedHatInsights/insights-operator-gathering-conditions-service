@@ -17,6 +17,7 @@ type ClusterMapping struct {
 	mapping [][]string
 }
 
+// NewClusterMapping creates a new ClusterMapping from a root dir and a mapping
 func NewClusterMapping(rootDir string, mapping [][]string) *ClusterMapping {
 	return &ClusterMapping{
 		rootDir: rootDir,
