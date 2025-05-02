@@ -28,6 +28,9 @@ jobs:
         run: ./check_coverage.sh
       - name: Display code coverage
         run: make coverage
+      - uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: OpenAPI Check
         run: make openapi-check
       - name: REST API Tests
