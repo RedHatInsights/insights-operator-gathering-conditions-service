@@ -23,9 +23,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
 	clowder "github.com/redhatinsights/app-common-go/pkg/api/v1"
-
 	"github.com/BurntSushi/toml"
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/server"
 	"github.com/RedHatInsights/insights-operator-gathering-conditions-service/internal/service"
