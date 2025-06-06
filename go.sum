@@ -14,8 +14,8 @@ github.com/Shopify/sarama v1.27.1 h1:iUlzHymqWsITyttu6KxazcAz8WEj5FqcwFK/oEi7rE8
 github.com/Shopify/sarama v1.27.1/go.mod h1:g5s5osgELxgM+Md9Qni9rzo7Rbt+vvFQI4bt/Mc93II=
 github.com/Shopify/toxiproxy v2.1.4+incompatible h1:TKdv8HiTLgE5wdJuEML90aBgNWsokNbMijUGhmcoBJc=
 github.com/Shopify/toxiproxy v2.1.4+incompatible/go.mod h1:OXgGpZ6Cli1/URJOF1DMxUHB2q5Ap20/P/eIdh4G0pI=
-github.com/Unleash/unleash-client-go/v4 v4.4.0 h1:QkYAjckvAiz4CuQ0R3dYBNWAplQpprZHz3SrbwQ22TY=
-github.com/Unleash/unleash-client-go/v4 v4.4.0/go.mod h1:ns1xYiC76XXUt+06NjzuJcpnXEoLeP2xHnzOgvXS8W0=
+github.com/Unleash/unleash-client-go/v4 v4.5.0 h1:gYmLnhmOIakjU7lNFXmOuerp3pQOIwNvb7vChj3apZY=
+github.com/Unleash/unleash-client-go/v4 v4.5.0/go.mod h1:ns1xYiC76XXUt+06NjzuJcpnXEoLeP2xHnzOgvXS8W0=
 github.com/archdx/zerolog-sentry v1.8.5 h1:W24e5+yfZiQ83yd9OjBw+o6ERUzyUlCpoBS97gUlwK8=
 github.com/archdx/zerolog-sentry v1.8.5/go.mod h1:XrFHGe1CH5DQk/XSySu/IJSi5C9XR6+zpc97zVf/c4c=
 github.com/aws/aws-sdk-go v1.30.11/go.mod h1:5zCpMtNQVjRREroY7sYe8lOMRSxkhG6MZveU8YkpAk0=
