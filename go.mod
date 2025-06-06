@@ -6,7 +6,7 @@ toolchain go1.24.3
 
 require (
 	github.com/BurntSushi/toml v1.5.0
-	github.com/RedHatInsights/insights-operator-utils v1.25.13
+	github.com/RedHatInsights/insights-operator-utils v1.25.14
 	github.com/Unleash/unleash-client-go/v4 v4.4.0
 	github.com/blang/semver/v4 v4.0.0
 	github.com/gorilla/handlers v1.5.2
@@ -50,7 +50,7 @@ require (
 	github.com/eapache/queue v1.1.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
-	github.com/getsentry/sentry-go v0.32.0 // indirect
+	github.com/getsentry/sentry-go v0.33.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
 	github.com/jcmturner/gofork v1.7.6 // indirect
