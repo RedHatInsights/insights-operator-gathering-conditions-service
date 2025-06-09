@@ -32,6 +32,3 @@ formatters:
   enable:
     - gofmt
     - goimports
-issues:
-    fix: true
-    new: true

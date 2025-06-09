@@ -131,7 +131,7 @@ func checkResponse(
 	expectedBody string,
 	t *testing.T,
 ) {
-	res, err := http.Get(url)
+	res, err := http.Get(url) // #nosec G107
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -152,7 +152,7 @@ func checkResponse(
 		}
 		defer closeResponseBody(t, res)
 
-		fmt.Println(body)
+		fmt.Println(string(body))
 
 		var expected map[string]interface{}
 		err = json.NewDecoder(strings.NewReader(expectedBody)).Decode(&expected)
