@@ -155,139 +155,119 @@ func TestServiceV2(t *testing.T) {
 
 func TestServiceV2WithClusterMapping(t *testing.T) {
 	type testCase struct {
-		name               string
-		clusterMappingFile string
-		expectedAnError    bool
-		ocpVersion         string
-		wantConfiguration  string
-		expect400          bool
-		expect404          bool
+		name              string
+		remoteConfigsPath string
+		expectedAnError   bool
+		ocpVersion        string
+		wantConfiguration string
+		expect400         bool
+		expect404         bool
 	}
 
 	const (
-		clusterMappingPath      = "../../tests/mapping/"
-		validClusterMapping     = "cluster-mapping.json"
-		malformedClusterMapping = "malformed-cluster-mapping.json"
-		notFoundClusterMapping  = "not-found-cluster-mapping.json"
-		internalServerError     = `{"status":"Internal Server Error"}`
+		validRemoteConfigsPath = "../../tests/rapid-recommendations/valid"
+		internalServerError    = `{"status":"Internal Server Error"}`
 	)
 
 	testCases := []testCase{
 		{
-			name:               "invalid cluster mapping",
-			clusterMappingFile: malformedClusterMapping,
-			expectedAnError:    true,
-			ocpVersion:         "any version",
-			wantConfiguration:  "",
+			name:              "cluster mapping not found",
+			remoteConfigsPath: "../../tests/rapid-recommendations/missing-mapping/",
+			expectedAnError:   true,
+			ocpVersion:        "",
+			wantConfiguration: "",
 		},
 		{
-			name:               "cluster mapping not found",
-			clusterMappingFile: notFoundClusterMapping,
-			expectedAnError:    true,
-			ocpVersion:         "",
-			wantConfiguration:  "",
+			name:              "cluster mapping is uninvalid",
+			remoteConfigsPath: "../../tests/rapid-recommendations/invalid-mapping/",
+			expectedAnError:   true,
+			ocpVersion:        "",
+			wantConfiguration: "",
 		},
 		{
-			name:               "cluster mapping is undefined",
-			clusterMappingFile: "",
-			expectedAnError:    true,
-			ocpVersion:         "",
-			wantConfiguration:  "",
+			name:              "valid cluster mapping and version out of range",
+			expectedAnError:   false,
+			ocpVersion:        "any version",
+			wantConfiguration: configDefaultConfiguration,
+			expect400:         true,
 		},
 		{
-			name:               "valid cluster mapping and version out of range",
-			clusterMappingFile: validClusterMapping,
-			expectedAnError:    false,
-			ocpVersion:         "any version",
-			wantConfiguration:  configDefaultConfiguration,
-			expect400:          true,
+			name:            "cluster version prior to 4.0",
+			expectedAnError: false,
+			ocpVersion:      "1.2.3",
+			expect404:       true,
 		},
 		{
-			name:               "cluster version prior to 4.0",
-			clusterMappingFile: validClusterMapping,
-			expectedAnError:    false,
-			ocpVersion:         "1.2.3",
-			expect404:          true,
+			name:              "cluster version is 4.0.0",
+			expectedAnError:   false,
+			ocpVersion:        "4.0.0",
+			wantConfiguration: emptyConfiguration,
 		},
 		{
-			name:               "cluster version is 4.0.0",
-			clusterMappingFile: validClusterMapping,
-			expectedAnError:    false,
-			ocpVersion:         "4.0.0",
-			wantConfiguration:  emptyConfiguration,
+			name:              "cluster version is between 4.0.0 and 4.17.0-0",
+			expectedAnError:   false,
+			ocpVersion:        "4.5.6",
+			wantConfiguration: emptyConfiguration,
 		},
 		{
-			name:               "cluster version is between 4.0.0 and 4.17.0-0",
-			clusterMappingFile: validClusterMapping,
-			expectedAnError:    false,
-			ocpVersion:         "4.5.6",
-			wantConfiguration:  emptyConfiguration,
+			name:              "cluster version is 4.17.0-0",
+			expectedAnError:   false,
+			ocpVersion:        "4.17.0-0",
+			wantConfiguration: experimental1Configuration,
 		},
 		{
-			name:               "cluster version is 4.17.0-0",
-			clusterMappingFile: validClusterMapping,
-			expectedAnError:    false,
-			ocpVersion:         "4.17.0-0",
-			wantConfiguration:  experimental1Configuration,
+			name:              "cluster version is between 4.17.0-0 and 4.17.0",
+			expectedAnError:   false,
+			ocpVersion:        "4.17.0-5",
+			wantConfiguration: experimental1Configuration,
 		},
 		{
-			name:               "cluster version is between 4.17.0-0 and 4.17.0",
-			clusterMappingFile: validClusterMapping,
-			expectedAnError:    false,
-			ocpVersion:         "4.17.0-5",
-			wantConfiguration:  experimental1Configuration,
+			name:              "cluster version is between 4.17.0 and 4.17.5",
+			expectedAnError:   false,
+			ocpVersion:        "4.17.3",
+			wantConfiguration: experimental2Configuration,
 		},
 		{
-			name:               "cluster version is between 4.17.0 and 4.17.5",
-			clusterMappingFile: validClusterMapping,
-			expectedAnError:    false,
-			ocpVersion:         "4.17.3",
-			wantConfiguration:  experimental2Configuration,
+			name:              "cluster version is between 4.17.5 and 4.17.6",
+			expectedAnError:   false,
+			ocpVersion:        "4.17.6-alpha",
+			wantConfiguration: bugWorkaroundConfiguration,
 		},
 		{
-			name:               "cluster version is between 4.17.5 and 4.17.6",
-			clusterMappingFile: validClusterMapping,
-			expectedAnError:    false,
-			ocpVersion:         "4.17.6-alpha",
-			wantConfiguration:  bugWorkaroundConfiguration,
+			name:              "cluster version is a CI release of 4.17.6",
+			expectedAnError:   false,
+			ocpVersion:        "4.17.6-0.ci-2024-08-19-220527",
+			wantConfiguration: bugWorkaroundConfiguration,
 		},
 		{
-			name:               "cluster version is a CI release of 4.17.6",
-			clusterMappingFile: validClusterMapping,
-			expectedAnError:    false,
-			ocpVersion:         "4.17.6-0.ci-2024-08-19-220527",
-			wantConfiguration:  bugWorkaroundConfiguration,
+			name:              "cluster version is a release candidate of 4.17.6",
+			expectedAnError:   false,
+			ocpVersion:        "4.17.6-rc.0",
+			wantConfiguration: bugWorkaroundConfiguration,
 		},
 		{
-			name:               "cluster version is a release candidate of 4.17.6",
-			clusterMappingFile: validClusterMapping,
-			expectedAnError:    false,
-			ocpVersion:         "4.17.6-rc.0",
-			wantConfiguration:  bugWorkaroundConfiguration,
+			name:              "cluster version is a prerelease of 4.17.6",
+			expectedAnError:   false,
+			ocpVersion:        "4.17.6-alpha",
+			wantConfiguration: bugWorkaroundConfiguration,
 		},
 		{
-			name:               "cluster version is a prerelease of 4.17.6",
-			clusterMappingFile: validClusterMapping,
-			expectedAnError:    false,
-			ocpVersion:         "4.17.6-alpha",
-			wantConfiguration:  bugWorkaroundConfiguration,
-		},
-		{
-			name:               "cluster version greater than 4.17.6",
-			clusterMappingFile: validClusterMapping,
-			expectedAnError:    false,
-			ocpVersion:         "5.6.7",
-			wantConfiguration:  experimental2Configuration,
+			name:              "cluster version greater than 4.17.6",
+			expectedAnError:   false,
+			ocpVersion:        "5.6.7",
+			wantConfiguration: experimental2Configuration,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			remoteConfigsPath := tc.remoteConfigsPath
+			if remoteConfigsPath == "" {
+				remoteConfigsPath = validRemoteConfigsPath
+			}
 			store, err := service.NewStorage(service.StorageConfig{
-				RulesPath:               "../../tests/conditions",
-				RemoteConfigurationPath: "../../tests/rapid-recommendations",
-				ClusterMappingPath:      clusterMappingPath,
-				ClusterMappingFile:      tc.clusterMappingFile,
+				RulesPath:                "../../tests/conditions",
+				RemoteConfigurationsPath: remoteConfigsPath,
 			}, true, &MockUnleashClient{})
 			if tc.expectedAnError {
 				assert.Error(t, err, "this configuration should have made the service crash")

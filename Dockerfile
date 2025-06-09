@@ -16,18 +16,18 @@
 # Conditions
 ###################
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal:latest AS conditions
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest AS conditions
 
-RUN microdnf install --nodocs -y jq git
+RUN microdnf install --nodocs -y jq git python3.11 python3.11-pip go-toolset
 
 COPY get_conditions.sh .
 
-RUN ./get_conditions.sh 
+RUN ./get_conditions.sh
 
 ###################
 # Builder
 ###################
-FROM registry.access.redhat.com/ubi8/go-toolset:1.22.9-2.1740072407 AS builder
+FROM registry.access.redhat.com/ubi9/go-toolset:latest AS builder
 
 USER 0
 
@@ -41,7 +41,7 @@ RUN make build && \
 ###################
 # Service
 ###################
-FROM registry.access.redhat.com/ubi8/ubi-micro:latest
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest
 
 # copy the service
 COPY --from=builder /opt/app-root/src/config.toml /config.toml
@@ -55,7 +55,6 @@ COPY --from=builder /etc/pki /etc/pki
 # copy the conditions
 COPY --from=conditions  /conditions /conditions
 COPY --from=conditions  /remote-configurations /remote-configurations
-COPY --from=conditions  /mapping /mapping
 
 USER 1001
 

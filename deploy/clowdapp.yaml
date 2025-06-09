@@ -52,6 +52,8 @@ objects:
         webServices:
           public:
             enabled: true
+            apiPaths:
+              - /api/gathering/
           private:
             enabled: false
           metrics:
@@ -60,12 +62,6 @@ objects:
           env:
             - name: INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_CONFIG_FILE
               value: /data/config.toml
-            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SERVER__ADDRESS
-              value: ":8000"
-            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__RULES_PATH
-              value: /conditions
-            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__REMOTE_CONFIGURATION
-              value: /remote-configurations
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CANARY__UNLEASH_ENABLED
               value: ${UNLEASH_ENABLED}
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CANARY__UNLEASH_URL
@@ -165,6 +161,7 @@ objects:
 
       [storage]
       rules_path = "/conditions"
+      remote_configurations = "/remote-configurations"
 
 - kind: Service
   apiVersion: v1

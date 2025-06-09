@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: default clean build fmt lint vet cyclo ineffassign shellcheck errcheck goconst gosec abcgo json-check openapi-check style run test test-postgres cover integration_tests rest_api_tests sqlite_db license before_commit help godoc install_docgo install_addlicense
+.PHONY: default clean build fmt lint shellcheck abcgo openapi-check style run test cover integration_tests license before_commit help godoc install_docgo install_addlicense install_golangci-lint
 
 SOURCES:=$(shell find . -name '*.go')
 BINARY:=insights-operator-gathering-conditions-service
@@ -16,40 +16,16 @@ build: ${BINARY} ## Build binary containing service executable
 ${BINARY}: ${SOURCES}
 	./build.sh
 
-fmt: ## Run go fmt -w for all sources
+fmt: install_golangci-lint ## Run go formatting
 	@echo "Running go formatting"
-	./gofmt.sh
+	golangci-lint fmt
 
-lint: ## Run golint
-	@echo "Running go lint"
-	./golint.sh
-
-vet: ## Run go vet. Report likely mistakes in source code
-	@echo "Running go vet"
-	./govet.sh
-
-cyclo: ## Run gocyclo
-	@echo "Running gocyclo"
-	./gocyclo.sh
-
-ineffassign: ## Run ineffassign checker
-	@echo "Running ineffassign checker"
-	./ineffassign.sh
+lint: install_golangci-lint ## Run go liting
+	@echo "Running go linting"
+	golangci-lint run --fix
 
 shellcheck: ## Run shellcheck
 	./shellcheck.sh
-
-errcheck: ## Run errcheck
-	@echo "Running errcheck"
-	./goerrcheck.sh
-
-goconst: ## Run goconst checker
-	@echo "Running goconst checker"
-	./goconst.sh ${VERBOSE}
-
-gosec: ## Run gosec checker
-	@echo "Running gosec checker"
-	./gosec.sh ${VERBOSE}
 
 abcgo: ## Run ABC metrics checker
 	@echo "Run ABC metrics checker"
@@ -58,13 +34,13 @@ abcgo: ## Run ABC metrics checker
 openapi-check:  ## Validate the OpenAPI specification files
 	./check_openapi.sh
 
-conditions:  ## Clone the conditions repo and build it to gather the conditions
+conditions: get_conditions.sh ## Clone the conditions repo and build it to gather the conditions
 	./get_conditions.sh
 
 check-config: ${BINARY} conditions ## Check all the configuration files are parsable
 	./${BINARY} --check-config
 
-style: fmt vet lint cyclo shellcheck errcheck goconst gosec ineffassign abcgo check-config ## Run all the formatting related commands (fmt, vet, lint, cyclo) + check shell scripts
+style: fmt lint abcgo shellcheck check-config ## Run all the formatting related commands (fmt, lint, abc) + check shell scripts
 
 run: ${BINARY} ## Build the project and executes the binary
 	./$^
@@ -116,6 +92,9 @@ install_addlicense: export GO111MODULE=off
 install_addlicense:
 	[[ `command -v addlicense` ]] || GO111MODULE=off go get -u github.com/google/addlicense
 
+
+install_golangci-lint:
+	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
 
 ## --------------------------------------
 ## Go Module

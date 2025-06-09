@@ -92,7 +92,7 @@ func (r *Repository) RemoteConfiguration(request *http.Request, ocpVersion strin
 	if err != nil {
 		return nil, err
 	}
-	data := r.store.ReadRemoteConfig(isCanary, filepath)
+	data := r.store.ReadRemoteConfig(filepath)
 	if data == nil {
 		return nil, fmt.Errorf("store data not found for '%s'", filepath)
 	}

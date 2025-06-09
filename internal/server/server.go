@@ -14,12 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Package server exposes the service as a REST API
 package server
 
 import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
@@ -91,8 +93,9 @@ func (server *Server) Start() error {
 	}
 
 	server.HTTPServer = &http.Server{
-		Addr:    addr,
-		Handler: server.Router,
+		Addr:              addr,
+		Handler:           server.Router,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 
 	if server.Config.UseHTTPS {

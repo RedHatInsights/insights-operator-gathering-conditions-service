@@ -33,6 +33,7 @@ const (
 	// #nosec G101
 	malformedTokenMessage = "Malformed authentication token"
 	invalidTokenMessage   = "Invalid/Malformed auth token"
+	jwtAuthType           = "jwt"
 )
 
 // ContextKey is a type for user authentication token in request
@@ -92,7 +93,7 @@ func (server *Server) Authentication(next http.Handler, noAuthURLs []string) htt
 		var decoded []byte
 
 		// decode auth. token to JSON string
-		if server.AuthConfig.Type == "jwt" {
+		if server.AuthConfig.Type == jwtAuthType {
 			decoded, err = base64.RawURLEncoding.DecodeString(token)
 		} else {
 			decoded, err = base64.StdEncoding.DecodeString(token)
@@ -109,7 +110,7 @@ func (server *Server) Authentication(next http.Handler, noAuthURLs []string) htt
 		tk := &Token{}
 
 		// if we took JWT token, it has different structure then x-rh-identity
-		if server.AuthConfig.Type == "jwt" {
+		if server.AuthConfig.Type == jwtAuthType {
 			jwtPayload := &JWTPayload{}
 			err = json.Unmarshal(decoded, jwtPayload)
 			if err != nil {
@@ -182,7 +183,7 @@ func (server *Server) getAuthTokenHeader(_ http.ResponseWriter, r *http.Request)
 	var tokenHeader string
 	// In case of testing on local machine we don't take x-rh-identity
 	// header, but instead Authorization with JWT token in it
-	if server.AuthConfig.Type == "jwt" {
+	if server.AuthConfig.Type == jwtAuthType {
 		log.Debug().Msg("Retrieving jwt token")
 
 		// Grab the token from the header
