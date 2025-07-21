@@ -30,12 +30,6 @@ logging_to_cloud_watch_enabled = false
 logging_to_sentry_enabled = true
 logging_to_kafka_enabled = false
 
-[kafka_zerolog]
-broker = ""
-topic = ""
-cert_path = ""
-level = ""
-
 [cloudwatch]
 aws_access_id = "a key id"
 aws_secret_key = "tshhhh it is a secret"

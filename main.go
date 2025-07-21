@@ -201,7 +201,6 @@ func initLogger() error {
 		config.LoggingConfig(),
 		config.CloudWatchConfig(),
 		config.SentryLoggingConfig(),
-		config.KafkaZerologConfig(),
 	)
 }
 

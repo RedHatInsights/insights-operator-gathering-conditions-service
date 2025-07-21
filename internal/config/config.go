@@ -54,7 +54,6 @@ type Configuration struct {
 	LoggingConfig       logger.LoggingConfiguration       `mapstructure:"logging" toml:"logging"`
 	CloudWatchConfig    logger.CloudWatchConfiguration    `mapstructure:"cloudwatch" toml:"cloudwatch"`
 	SentryLoggingConfig logger.SentryLoggingConfiguration `mapstructure:"sentry" toml:"sentry"`
-	KafkaZerologConfig  logger.KafkaZerologConfiguration  `mapstructure:"kafka_zerolog" toml:"kafka_zerolog"`
 }
 
 // Config has exactly the same structure as *.toml file
@@ -150,11 +149,6 @@ func CloudWatchConfig() logger.CloudWatchConfiguration {
 // SentryLoggingConfig function returns the sentry log configuration.
 func SentryLoggingConfig() logger.SentryLoggingConfiguration {
 	return Config.SentryLoggingConfig
-}
-
-// KafkaZerologConfig function returns the configuration of ZeroLog for Kafka.
-func KafkaZerologConfig() logger.KafkaZerologConfiguration {
-	return Config.KafkaZerologConfig
 }
 
 // updateConfigFromClowder updates the current config with the values defined in clowder
