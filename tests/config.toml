@@ -24,9 +24,3 @@ log_level="debug"
 logging_to_cloudwatch_enabled = false
 logging_to_sentry_enabled = true
 logging_to_kafka_enabled = false
-
-[kafka_zerolog]
-broker = ""
-topic = ""
-cert_path = ""
-level = ""

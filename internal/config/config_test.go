@@ -60,12 +60,6 @@ var (
 		SentryLoggingConfig: logger.SentryLoggingConfiguration{
 			SentryDSN: "dsn",
 		},
-		KafkaZerologConfig: logger.KafkaZerologConfiguration{
-			Broker:   "broker",
-			Topic:    "topic",
-			CertPath: "cert_path",
-			Level:    "level",
-		},
 	}
 	emptyConfig = config.Configuration{}
 
@@ -205,9 +199,6 @@ func TestGetConfigFunctions(t *testing.T) {
 	})
 	t.Run("SentryLoggingConfig", func(t *testing.T) {
 		assert.Equal(t, config.Config.SentryLoggingConfig, config.SentryLoggingConfig())
-	})
-	t.Run("KafkaZerologConfig", func(t *testing.T) {
-		assert.Equal(t, config.Config.KafkaZerologConfig, config.KafkaZerologConfig())
 	})
 }
 
