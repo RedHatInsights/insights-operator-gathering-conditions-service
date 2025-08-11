@@ -72,8 +72,6 @@ objects:
               value: ${CLOUDWATCH_DEBUG}
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CLOUDWATCH__STREAM_NAME
               value: ${IOGCS_LOG_STREAM}
-            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CLOUDWATCH__CREATE_STREAM_IF_NOT_EXISTS
-              value: ${CREATE_STREAM_IF_NOT_EXISTS}
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CLOUDWATCH__AWS_REGION
               valueFrom:
                 secretKeyRef:
@@ -211,8 +209,6 @@ parameters:
   required: true
 - name: IOGCS_LOG_STREAM
   value: $HOSTNAME
-- name: CREATE_STREAM_IF_NOT_EXISTS
-  value: "true"
 - name: CPU_REQUEST
   value: '100m'
 - name: MEMORY_REQUEST
