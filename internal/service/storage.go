@@ -26,8 +26,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Unleash/unleash-client-go/v4"
-	"github.com/Unleash/unleash-client-go/v4/context"
+	"github.com/Unleash/unleash-go-sdk/v5"
+	"github.com/Unleash/unleash-go-sdk/v5/context"
 
 	"github.com/blang/semver/v4"
 
