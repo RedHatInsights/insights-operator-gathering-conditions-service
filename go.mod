@@ -14,7 +14,7 @@ require (
 	github.com/redhatinsights/app-common-go v1.6.8
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/viper v1.20.1
-	github.com/stretchr/testify v1.11.0
+	github.com/stretchr/testify v1.11.1
 	github.com/tisnik/go-capture v1.0.1
 	github.com/verdverm/frisby v0.0.0-20170604211311-b16556248a9a
 	golang.org/x/sync v0.16.0
