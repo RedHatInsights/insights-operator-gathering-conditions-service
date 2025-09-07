@@ -1,6 +1,6 @@
 module github.com/RedHatInsights/insights-operator-gathering-conditions-service
 
-go 1.23.0
+go 1.24.0
 
 toolchain go1.25.1
 
@@ -17,7 +17,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/tisnik/go-capture v1.0.1
 	github.com/verdverm/frisby v0.0.0-20170604211311-b16556248a9a
-	golang.org/x/sync v0.16.0
+	golang.org/x/sync v0.17.0
 )
 
 require (
