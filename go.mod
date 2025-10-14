@@ -2,7 +2,6 @@ module github.com/RedHatInsights/insights-operator-gathering-conditions-service
 
 go 1.24.0
 
-
 require (
 	github.com/BurntSushi/toml v1.5.0
 	github.com/RedHatInsights/insights-operator-utils v1.27.0
@@ -20,7 +19,7 @@ require (
 )
 
 require (
-	github.com/IBM/sarama v1.46.1 // indirect
+	github.com/IBM/sarama v1.46.2 // indirect
 	github.com/Masterminds/semver/v3 v3.4.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.39.2 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.7.1 // indirect
@@ -68,7 +67,7 @@ require (
 	github.com/eapache/queue v1.1.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
-	github.com/getsentry/sentry-go v0.35.3 // indirect
+	github.com/getsentry/sentry-go v0.36.0 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
 	github.com/jcmturner/gofork v1.7.6 // indirect
