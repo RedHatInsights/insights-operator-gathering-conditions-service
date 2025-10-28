@@ -67,7 +67,7 @@ require (
 	github.com/eapache/queue v1.1.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
-	github.com/getsentry/sentry-go v0.36.1 // indirect
+	github.com/getsentry/sentry-go v0.36.2 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
 	github.com/jcmturner/gofork v1.7.6 // indirect
