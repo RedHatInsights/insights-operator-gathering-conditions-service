@@ -161,6 +161,28 @@ objects:
       rules_path = "/conditions"
       remote_configurations = "/remote-configurations"
 
+      [canary]
+      unleash_enabled = false
+      unleash_url = ""
+      unleash_token = ""
+
+      [logging]
+      log_level = ""
+      logging_to_sentry_enabled = false
+      logging_to_cloud_watch_enabled = false
+
+      [cloudwatch]
+      debug = false
+      stream_name = ""
+      aws_region = ""
+      log_group = ""
+      aws_access_id = ""
+      aws_secret_key = ""
+
+      [sentry]
+      dsn = ""
+      environment = ""
+
 - kind: Service
   apiVersion: v1
   metadata:
