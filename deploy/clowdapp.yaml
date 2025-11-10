@@ -62,27 +62,36 @@ objects:
           env:
             - name: INSIGHTS_OPERATOR_CONDITIONAL_SERVICE_CONFIG_FILE
               value: /data/config.toml
+
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CANARY__UNLEASH_ENABLED
               value: ${UNLEASH_ENABLED}
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CANARY__UNLEASH_URL
               value: ${UNLEASH_URL}
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CANARY__UNLEASH_TOKEN
+              value: ${UNLEASH_TOKEN}
+
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__LOGGING__LOG_LEVEL
+              value: ${LOG_LEVEL}
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__LOGGING__LOGGING_TO_SENTRY_ENABLED
+              value: ${SENTRY_ENABLED}
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__LOGGING__LOGGING_TO_CLOUD_WATCH_ENABLED
               value: ${LOGGING_TO_CLOUD_WATCH_ENABLED}
+
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CLOUDWATCH__DEBUG
               value: ${CLOUDWATCH_DEBUG}
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CLOUDWATCH__STREAM_NAME
               value: ${IOGCS_LOG_STREAM}
-            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CLOUDWATCH__AWS_REGION
-              valueFrom:
-                secretKeyRef:
-                  name: cloudwatch
-                  key: aws_region
-                  optional: true
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CLOUDWATCH__LOG_GROUP
               valueFrom:
                 secretKeyRef:
                   name: cloudwatch
                   key: log_group_name
+                  optional: true
+            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CLOUDWATCH__AWS_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: cloudwatch
+                  key: aws_region
                   optional: true
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__CLOUDWATCH__AWS_ACCESS_ID
               valueFrom:
@@ -96,6 +105,7 @@ objects:
                   name: cloudwatch
                   key: aws_secret_access_key
                   optional: true
+
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SENTRY__DSN
               valueFrom:
                 secretKeyRef:
@@ -104,10 +114,7 @@ objects:
                   optional: true
             - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__SENTRY__ENVIRONMENT
               value: ${ENV_NAME}
-            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__LOGGING__LOG_LEVEL
-              value: ${LOG_LEVEL}
-            - name: INSIGHTS_OPERATOR_GATHERING_CONDITIONS_SERVICE__STORAGE__UNLEASH_TOKEN
-              value: ${UNLEASH_TOKEN}
+
           image: ${IMAGE}:${IMAGE_TAG}
           livenessProbe:
             failureThreshold: 3
@@ -247,3 +254,5 @@ parameters:
   value: "false"
 - name: UNLEASH_URL
   value: ""
+- name: SENTRY_ENABLED
+  value: "false"
