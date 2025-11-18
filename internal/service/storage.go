@@ -232,7 +232,7 @@ func (s *Storage) ReadRemoteConfig(path string) []byte {
 func (s *Storage) GetRemoteConfigurationFilepath(isCanary bool, ocpVersion string) (string, error) {
 	ocpVersionParsed, err := semver.Make(ocpVersion)
 	if err != nil {
-		log.Error().Str("ocpVersion", ocpVersion).Err(err).Msg("Invalid semver")
+		log.Info().Str("ocpVersion", ocpVersion).Err(err).Msg("Invalid semver")
 		return "", &merrors.RouterParsingError{
 			ParamName:  "ocpVersion",
 			ParamValue: ocpVersion,

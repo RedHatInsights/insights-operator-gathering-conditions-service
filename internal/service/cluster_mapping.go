@@ -88,14 +88,14 @@ func (cm ClusterMapping) GetFilepathForVersion(ocpVersionParsed semver.Version) 
 	// check the version is not greater than the first slice
 	firstVersion, err := semver.Make(cm.mapping[0][0])
 	if err != nil {
-		log.Error().Str("version", firstVersion.String()).Err(err).Msg("Invalid semver")
+		log.Info().Str("version", firstVersion.String()).Err(err).Msg("Invalid semver")
 		return "", err
 	}
 
 	comparison := ocpVersionParsed.Compare(firstVersion)
 	if comparison < 0 {
 		errMsg := "the given OCP version is lower than the first one in the cluster map"
-		log.Error().
+		log.Info().
 			Str("version", firstVersion.String()).
 			Str("ocpVersion", ocpVersionParsed.String()).
 			Msg(errMsg)
