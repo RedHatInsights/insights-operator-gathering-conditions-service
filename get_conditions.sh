@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-STABLE_VERSION=1.1.3
+STABLE_VERSION=1.2.0
 CANARY_VERSION=1.2.0
 
 
