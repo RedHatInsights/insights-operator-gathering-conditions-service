@@ -124,13 +124,14 @@ func (server *Server) Stop(ctx context.Context) error {
 
 // HandleServerError handles separate server errors and sends appropriate responses
 func HandleServerError(writer http.ResponseWriter, err error) {
-	log.Error().Type("errType", err).Err(err).Msg("handleServerError()")
+	logFunc := log.Error
 
 	var respErr error
 
 	switch err := err.(type) {
 	case *errors.RouterMissingParamError, *errors.RouterParsingError, *errors.NoBodyError, *errors.ValidationError:
 		respErr = SendBadRequest(writer, err.Error())
+		logFunc = log.Warn
 	case *errors.NotFoundError:
 		respErr = SendNotFound(writer, err.Error())
 	case *json.UnmarshalTypeError:
@@ -142,6 +143,8 @@ func HandleServerError(writer http.ResponseWriter, err error) {
 	default:
 		respErr = SendInternalServerError(writer, "Internal Server Error")
 	}
+
+	logFunc().Type("errType", err).Err(err).Msg("handleServerError()")
 
 	if respErr != nil {
 		log.Error().Err(respErr).Msg(errors.ResponseDataError)
