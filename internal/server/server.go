@@ -134,12 +134,16 @@ func HandleServerError(writer http.ResponseWriter, err error) {
 		logFunc = log.Warn
 	case *errors.NotFoundError:
 		respErr = SendNotFound(writer, err.Error())
+		logFunc = log.Warn
 	case *json.UnmarshalTypeError:
 		respErr = SendBadRequest(writer, "bad type in json data")
+		logFunc = log.Warn
 	case *errors.UnauthorizedError:
 		respErr = SendUnauthorized(writer, err.Error())
+		logFunc = log.Warn
 	case *errors.ForbiddenError:
 		respErr = SendForbidden(writer, err.Error())
+		logFunc = log.Warn
 	default:
 		respErr = SendInternalServerError(writer, "Internal Server Error")
 	}
