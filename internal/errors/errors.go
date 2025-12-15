@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 // Package errors provide custom error related structs and utilities
+//
+//nolint:revive // Package name intentionally matches stdlib for consistency with error handling patterns
 package errors
 
 import (
