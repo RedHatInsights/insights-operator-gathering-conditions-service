@@ -62,7 +62,7 @@ func Send(statusCode int, w http.ResponseWriter, data interface{}) error {
 	if status, ok := data.(string); ok {
 		return json.NewEncoder(w).Encode(BuildResponse(status))
 	} else if rawData, ok := data.([]byte); ok {
-		_, err := w.Write(rawData)
+		_, err := w.Write(rawData) // #nosec G705 -- response payload is app-controlled, not user input
 		return err
 	}
 
