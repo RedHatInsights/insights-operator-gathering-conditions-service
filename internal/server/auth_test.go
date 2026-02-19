@@ -210,7 +210,7 @@ func testServerWithRequest(t *testing.T, configAuth server.AuthConfig, token str
 		}
 	}
 	client := &http.Client{}
-	res, err := client.Do(request)
+	res, err := client.Do(request) // #nosec G704 -- test server URL is local, not user-controlled
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -244,7 +244,7 @@ func TestAuth(t *testing.T) {
 		{
 			name:           "Proper JWT token",
 			authConfig:     configAuth1,
-			token:          "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X251bWJlciI6IjUyMTM0NzYiLCJvcmdfaWQiOiIxMjM0In0.Y9nNaZXbMEO6nz2EHNaCvHxPM0IaeT7GGR-T8u8h_nr_2b5dYsCQiZGzzkBupRJruHy9K6acgJ08JN2Q28eOAEVk_ZD2EqO43rSOS6oe8uZmVo-nCecdqovHa9PqW8RcZMMxVfGXednw82kKI8j1aT_nbJ1j9JZt3hnHM4wtqydelMij7zKyZLHTWFeZbDDCuEIkeWA6AdIBCMdywdFTSTsccVcxT2rgv4mKpxY1Fn6Vu_Xo27noZW88QhPTHbzM38l9lknGrvJVggrzMTABqWEXNVHbph0lXjPWsP7pe6v5DalYEBN2r3a16A6s3jPfI86cRC6_oeXotlW6je0iKQ",
+			token:          "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X251bWJlciI6IjUyMTM0NzYiLCJvcmdfaWQiOiIxMjM0In0.Y9nNaZXbMEO6nz2EHNaCvHxPM0IaeT7GGR-T8u8h_nr_2b5dYsCQiZGzzkBupRJruHy9K6acgJ08JN2Q28eOAEVk_ZD2EqO43rSOS6oe8uZmVo-nCecdqovHa9PqW8RcZMMxVfGXednw82kKI8j1aT_nbJ1j9JZt3hnHM4wtqydelMij7zKyZLHTWFeZbDDCuEIkeWA6AdIBCMdywdFTSTsccVcxT2rgv4mKpxY1Fn6Vu_Xo27noZW88QhPTHbzM38l9lknGrvJVggrzMTABqWEXNVHbph0lXjPWsP7pe6v5DalYEBN2r3a16A6s3jPfI86cRC6_oeXotlW6je0iKQ", // #nosec G101 -- test fixture, not a real credential
 			expectedStatus: 200,
 		},
 		{
@@ -256,7 +256,7 @@ func TestAuth(t *testing.T) {
 		{
 			name:           "Malformed JSON in JWT token",
 			authConfig:     configAuth1,
-			token:          "Bearer bm90LWpzb24K.bm90LWpzb24K.bm90LWpzb24K",
+			token:          "Bearer bm90LWpzb24K.bm90LWpzb24K.bm90LWpzb24K", // #nosec G101 -- test fixture
 			expectedStatus: 401,
 		},
 		{
@@ -268,7 +268,7 @@ func TestAuth(t *testing.T) {
 		{
 			name:           "Proper XRH token",
 			authConfig:     configAuth2,
-			token:          "eyJpZGVudGl0eSI6IHsiaW50ZXJuYWwiOiB7Im9yZ19pZCI6ICIxMjM0In19fQo=",
+			token:          "eyJpZGVudGl0eSI6IHsiaW50ZXJuYWwiOiB7Im9yZ19pZCI6ICIxMjM0In19fQo=", // #nosec G101 -- test fixture
 			expectedStatus: 200,
 		},
 		{
