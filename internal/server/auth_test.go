@@ -286,7 +286,7 @@ func TestAuth(t *testing.T) {
 		{
 			name:           "Stripped XRH token",
 			authConfig:     configAuth2,
-			token:          "aW52YWxpZCBqc29uCg==",
+			token:          "aW52YWxpZCBqc29uCg==", // #nosec G101 -- test fixture
 			expectedStatus: 401,
 		},
 	}
