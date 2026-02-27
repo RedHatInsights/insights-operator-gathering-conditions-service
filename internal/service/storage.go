@@ -26,8 +26,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Unleash/unleash-go-sdk/v5"
-	"github.com/Unleash/unleash-go-sdk/v5/context"
+	"github.com/Unleash/unleash-go-sdk/v6"
+	"github.com/Unleash/unleash-go-sdk/v6/context"
 
 	"github.com/blang/semver/v4"
 
@@ -114,7 +114,7 @@ func NewUnleashClient(cfg CanaryConfig) (*UnleashClient, error) {
 
 // IsCanary queries Unleash to determine whether to serve stable or canary version of data
 func (c *UnleashClient) IsCanary(canaryArgument string) bool {
-	return unleash.IsEnabled(c.unleashToggle, unleash.WithContext(context.Context{UserId: canaryArgument}))
+	return unleash.IsEnabled(c.unleashToggle, unleash.FeatureOptions{Ctx: context.Context{UserId: canaryArgument}})
 }
 
 // Storage type represents container for resources.
