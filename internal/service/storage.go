@@ -265,7 +265,7 @@ func (s *Storage) readDataFromPath(path string) []byte {
 }
 
 func (s *Storage) readFile(path string) ([]byte, error) {
-	f, err := os.Open(path) // #nosec G304
+	f, err := os.Open(path) // #nosec G304,G703 -- path is constructed internally, not from user input
 	if err != nil {
 		return nil, err
 	}
