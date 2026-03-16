@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/RedHatInsights/insights-operator-utils v1.27.0
-	github.com/Unleash/unleash-go-sdk/v6 v6.2.0
+	github.com/Unleash/unleash-go-sdk/v6 v6.4.0
 	github.com/blang/semver/v4 v4.0.0
 	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1
