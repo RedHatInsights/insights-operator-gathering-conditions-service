@@ -8,8 +8,8 @@ github.com/RedHatInsights/insights-operator-utils v1.27.0 h1:/9s6xwzsF8iGmv5FeAr
 github.com/RedHatInsights/insights-operator-utils v1.27.0/go.mod h1:cMknNXfzE81QL1xBufQb/+kfJ2aemlvyBhp2AoZbSZY=
 github.com/RedHatInsights/insights-results-types v1.23.5 h1:Cy280q62m1DG6nvy+HHXyfj3U/GgR6su9qkYc2+sz1M=
 github.com/RedHatInsights/insights-results-types v1.23.5/go.mod h1:Cz4DzWtf860oCPtdjIRa26ZbDP++rMhCSPZvgXEuSHQ=
-github.com/Unleash/unleash-go-sdk/v6 v6.2.0 h1:0iZLveDuKm8Ul4pKbQ5FKBtioQHQ3q0rjQ8HHlOZgoc=
-github.com/Unleash/unleash-go-sdk/v6 v6.2.0/go.mod h1:lfD5d3Ten7ECXQFpfmyMUnGC/9+ONPUGwlAbue7zuEk=
+github.com/Unleash/unleash-go-sdk/v6 v6.4.0 h1:cdQN/MFPRalE7rVS2DG0OwNXKE6LXmOiQLHoyBxMY6M=
+github.com/Unleash/unleash-go-sdk/v6 v6.4.0/go.mod h1:lfD5d3Ten7ECXQFpfmyMUnGC/9+ONPUGwlAbue7zuEk=
 github.com/archdx/zerolog-sentry v1.8.5 h1:W24e5+yfZiQ83yd9OjBw+o6ERUzyUlCpoBS97gUlwK8=
 github.com/archdx/zerolog-sentry v1.8.5/go.mod h1:XrFHGe1CH5DQk/XSySu/IJSi5C9XR6+zpc97zVf/c4c=
 github.com/aws/aws-sdk-go-v2 v1.41.4 h1:10f50G7WyU02T56ox1wWXq+zTX9I1zxG46HYuG1hH/k=
