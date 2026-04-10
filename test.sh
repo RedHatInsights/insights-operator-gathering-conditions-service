@@ -26,7 +26,7 @@ if [[ $* == *verbose* ]] || [[ -n "${VERBOSE}" ]]; then
     VERBOSE_OUTPUT=true
 fi
 
-# shellcheck disable=SC2317
+# shellcheck disable=SC2329
 function cleanup() {
     print_descendent_pids() {
         pids=$(pgrep -P "$1")

@@ -26,7 +26,7 @@ sequenceDiagram
     RT ->> AI: Set the canary and stable versions<br/>CANARY_VERSION = 1.0.2<br/>STABLE_VERSION = 1.0.1
     PT ->> AI: Review and merge the PR
     AI ->> GCS: Update prod deployment
-    
+
     rect rgb(250,128,114)
         alt canary or stable version not found
             GCS ->> GCS: CrashLoopBackOff
@@ -42,7 +42,7 @@ sequenceDiagram
     rect rgb(143,188,143)
         GCS -->> CC: Get version 1.0.2
     end
-    
+
     RT ->> Monitoring: Analyze the canary archives and check they are generated well
 
     alt canary archives are wrong
