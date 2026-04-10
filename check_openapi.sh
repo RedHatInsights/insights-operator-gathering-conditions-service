@@ -16,9 +16,18 @@
 echo "Testing OpenAPI specifications file"
 # shellcheck disable=2181
 
-if docker run --rm -v "${PWD}":/local/:Z openapitools/openapi-generator-cli validate -i ./local/openapi.json; then
-    echo "OpenAPI spec file is OK"
+if command -v podman >/dev/null 2>&1; then
+	CONTAINER_RUNTIME=podman
+elif command -v docker >/dev/null 2>&1; then
+	CONTAINER_RUNTIME=docker
 else
-    echo "OpenAPI spec file validation failed"
-    exit 1
+	echo "error: neither podman nor docker is installed" >&2
+	exit 1
+fi
+
+if "$CONTAINER_RUNTIME" run --rm -v "${PWD}":/local/:Z openapitools/openapi-generator-cli validate -i ./local/openapi.json; then
+	echo "OpenAPI spec file is OK"
+else
+	echo "OpenAPI spec file validation failed"
+	exit 1
 fi

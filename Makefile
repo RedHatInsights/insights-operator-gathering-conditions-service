@@ -1,6 +1,8 @@
 SHELL := /bin/bash
 
-.PHONY: default clean build fmt lint shellcheck abcgo openapi-check style run test cover integration_tests license before_commit help godoc install_docgo install_addlicense install_golangci-lint
+.PHONY: default clean build golangci-lintfmt lint shellcheck abcgo openapi-check style run test \
+	cover integration_tests license before_commit help godoc install_docgo install_addlicense \
+	container-buid container-run
 
 SOURCES:=$(shell find . -name '*.go')
 BINARY:=insights-operator-gathering-conditions-service
@@ -16,20 +18,23 @@ build: ${BINARY} ## Build binary containing service executable
 ${BINARY}: ${SOURCES}
 	./build.sh
 
-fmt: install_golangci-lint ## Run go formatting
+golangci-lint: ## Run golangci-lint
+	pre-commit run --all-files golangci-lint-full
+
+fmt: ## Run go formatting
 	@echo "Running go formatting"
 	golangci-lint fmt
 
-lint: install_golangci-lint ## Run go liting
+lint: ## Run go liting
 	@echo "Running go linting"
 	golangci-lint run --fix
 
 shellcheck: ## Run shellcheck
-	./shellcheck.sh
+	pre-commit run --all-files shellcheck
 
 abcgo: ## Run ABC metrics checker
 	@echo "Run ABC metrics checker"
-	./abcgo.sh ${VERBOSE}
+	pre-commit run --all-files abcgo
 
 openapi-check:  ## Validate the OpenAPI specification files
 	./check_openapi.sh
@@ -40,7 +45,7 @@ conditions: get_conditions.sh ## Clone the conditions repo and build it to gathe
 check-config: ${BINARY} conditions ## Check all the configuration files are parsable
 	./${BINARY} --check-config
 
-style: fmt lint abcgo shellcheck check-config ## Run all the formatting related commands (fmt, lint, abc) + check shell scripts
+style: golangci-lint abcgo shellcheck check-config ## Run all the formatting related commands (fmt, lint, abc) + check shell scripts
 
 run: ${BINARY} ## Build the project and executes the binary
 	./$^
@@ -61,7 +66,8 @@ integration_tests: ${BINARY} ## Run all integration tests
 license: install_addlicense
 	addlicense -c "Red Hat, Inc" -l "apache" -v ./
 
-before_commit: style test integration_tests openapi-check license ## Checks done before commit
+before_commit: test integration_tests openapi-check license ## Checks done before commit
+	pre-commit run --all-files
 	./check_coverage.sh
 
 help: ## Show this help screen
@@ -93,9 +99,6 @@ install_addlicense:
 	[[ `command -v addlicense` ]] || GO111MODULE=off go get -u github.com/google/addlicense
 
 
-install_golangci-lint:
-	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
-
 ## --------------------------------------
 ## Go Module
 ## --------------------------------------
@@ -104,11 +107,9 @@ install_golangci-lint:
 ## Container
 ## --------------------------------------
 
-.PHONY: container-buid
 container-build: ## Build the container image
 	$(CONTAINER_RUNTIME) build -t $(CONTAINER_IMAGE_NAME) .
 
-.PHONY: container-run
 container-run: ## Run the container image
 	$(CONTAINER_RUNTIME) run \
 		--rm \
