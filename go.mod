@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/BurntSushi/toml v1.6.0
-	github.com/RedHatInsights/insights-operator-utils v1.27.0
+	github.com/RedHatInsights/insights-operator-utils v1.28.0
 	github.com/Unleash/unleash-go-sdk/v6 v6.4.0
 	github.com/blang/semver/v4 v4.0.0
 	github.com/gorilla/handlers v1.5.2
@@ -39,6 +39,7 @@ require (
 	github.com/aws/smithy-go v1.25.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/getsentry/sentry-go/zerolog v0.46.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/jcmturner/aescts/v2 v2.0.0 // indirect
@@ -60,7 +61,6 @@ require (
 )
 
 require (
-	github.com/archdx/zerolog-sentry v1.8.5 // indirect
 	github.com/bitly/go-simplejson v0.5.1 // indirect
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/buger/jsonparser v1.1.2 // indirect
@@ -69,7 +69,7 @@ require (
 	github.com/eapache/queue v1.1.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
-	github.com/getsentry/sentry-go v0.45.1 // indirect
+	github.com/getsentry/sentry-go v0.46.0 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
 	github.com/jcmturner/gofork v1.7.6 // indirect
 	github.com/klauspost/compress v1.18.5 // indirect
