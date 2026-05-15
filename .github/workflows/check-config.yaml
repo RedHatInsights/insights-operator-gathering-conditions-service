@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 env:
   PYTHON_VERSION: "3.11"
-  GO_VERSION: "1.23"
+  GO_VERSION: "1.25"
 
 jobs:
   check:
