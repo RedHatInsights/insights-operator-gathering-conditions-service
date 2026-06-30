@@ -52,7 +52,7 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.27 // indirect
 	github.com/prometheus/client_model v0.6.2 // indirect
 	github.com/prometheus/common v0.69.0 // indirect
-	github.com/prometheus/procfs v0.20.1 // indirect
+	github.com/prometheus/procfs v0.21.0 // indirect
 	github.com/stretchr/objx v0.5.3 // indirect
 	github.com/twmb/murmur3 v1.1.8 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
