@@ -48,7 +48,6 @@ const (
 // Configuration is a structure holding the whole service configuration
 type Configuration struct {
 	ServerConfig        server.Config                     `mapstructure:"server" toml:"server"`
-	AuthConfig          server.AuthConfig                 `mapstructure:"auth" toml:"auth"`
 	StorageConfig       service.StorageConfig             `mapstructure:"storage" toml:"storage"`
 	CanaryConfig        service.CanaryConfig              `mapstructure:"canary" toml:"canary"`
 	LoggingConfig       logger.LoggingConfiguration       `mapstructure:"logging" toml:"logging"`
@@ -119,11 +118,6 @@ func LoadConfiguration(defaultConfigFile string) error {
 // ServerConfig function returns actual server configuration.
 func ServerConfig() server.Config {
 	return Config.ServerConfig
-}
-
-// AuthConfig function returns actual auth configuration.
-func AuthConfig() server.AuthConfig {
-	return Config.AuthConfig
 }
 
 // StorageConfig function returns actual storage configuration.
