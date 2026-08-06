@@ -108,37 +108,6 @@ func (e *RouterParsingError) Error() string {
 	)
 }
 
-// AuthenticationError happens during auth problems, for example malformed token
-type AuthenticationError struct {
-	ErrString string
-}
-
-// Error method transforms error structure to a string representation
-func (e *AuthenticationError) Error() string {
-	return e.ErrString
-}
-
-// UnauthorizedError means server can't authorize you, for example the token is missing or malformed
-type UnauthorizedError struct {
-	ErrString string
-}
-
-// Error method transforms error structure to a string representation
-func (e *UnauthorizedError) Error() string {
-	return e.ErrString
-}
-
-// ForbiddenError means user does not have permission to do a particular
-// action, for example the account belongs to a different organization
-type ForbiddenError struct {
-	ErrString string
-}
-
-// Error method transforms error structure to a string representation
-func (e *ForbiddenError) Error() string {
-	return e.ErrString
-}
-
 // NoBodyError error meaning that client didn't provide body when it's required
 type NoBodyError struct{}
 

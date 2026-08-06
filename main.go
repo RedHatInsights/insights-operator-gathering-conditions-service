@@ -128,7 +128,6 @@ func RunServer() error {
 	var httpServer *server.Server
 
 	serverConfig := config.ServerConfig()
-	authConfig := config.AuthConfig()
 
 	svc, err := InitService()
 	if err != nil {
@@ -154,7 +153,7 @@ func RunServer() error {
 		service.NewHandler(svc).Register(router)
 
 		// Create the HTTP Server
-		httpServer = server.New(serverConfig, authConfig, router)
+		httpServer = server.New(serverConfig, router)
 
 		return httpServer.Start()
 	})
