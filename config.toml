@@ -3,10 +3,6 @@ address = ":8000"
 use_https = false
 enable_cors = false
 
-[auth]
-enabled = false
-type = "jwt"
-
 [storage]
 rules_path = "./conditions"
 remote_configurations = "./remote-configurations"
