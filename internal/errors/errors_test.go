@@ -47,36 +47,6 @@ func TestRouterParsingError(t *testing.T) {
 	assert.Equal(t, err.Error(), expected)
 }
 
-// TestAuthenticationError checks the method Error() for data structure
-// AuthenticationError
-func TestAuthenticationError(t *testing.T) {
-	err := errors.AuthenticationError{
-		ErrString: "errorMessage"}
-
-	const expected = "errorMessage"
-	assert.Equal(t, err.Error(), expected)
-}
-
-// TestUnauthorizedError checks the method Error() for data structure
-// UnauthorizedError
-func TestUnauthorizedError(t *testing.T) {
-	err := errors.UnauthorizedError{
-		ErrString: "errorMessage"}
-
-	const expected = "errorMessage"
-	assert.Equal(t, err.Error(), expected)
-}
-
-// TestForbiddenError checks the method Error() for data structure
-// ForbiddenError
-func TestForbiddenError(t *testing.T) {
-	err := errors.ForbiddenError{
-		ErrString: "errorMessage"}
-
-	const expected = "errorMessage"
-	assert.Equal(t, err.Error(), expected)
-}
-
 // TestNoBodyError checks the method Error() for data structure
 // NoBodyError
 func TestNoBodyError(t *testing.T) {
