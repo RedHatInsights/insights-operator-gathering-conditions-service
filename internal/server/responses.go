@@ -89,16 +89,6 @@ func SendBadRequest(w http.ResponseWriter, errorMessage string) error {
 	return Send(http.StatusBadRequest, w, errorMessage)
 }
 
-// SendUnauthorized returns error response for unauthorized access with status Unauthorized 401
-func SendUnauthorized(w http.ResponseWriter, errorMessage string) error {
-	return Send(http.StatusUnauthorized, w, errorMessage)
-}
-
-// SendForbidden returns response with status Forbidden 403
-func SendForbidden(w http.ResponseWriter, errorMessage string) error {
-	return Send(http.StatusForbidden, w, errorMessage)
-}
-
 // SendNotFound returns response with status Not Found 404
 func SendNotFound(w http.ResponseWriter, errorMessage string) error {
 	return Send(http.StatusNotFound, w, errorMessage)
