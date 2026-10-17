@@ -39,7 +39,7 @@ require (
 	github.com/aws/smithy-go v1.28.5 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/getkin/kin-openapi v0.149.0 // indirect
+	github.com/getkin/kin-openapi v0.150.0 // indirect
 	github.com/getsentry/sentry-go/zerolog v0.50.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
@@ -54,7 +54,7 @@ require (
 	github.com/prometheus/client_model v0.6.3 // indirect
 	github.com/prometheus/common v0.72.1 // indirect
 	github.com/prometheus/procfs v0.22.0 // indirect
-	github.com/stretchr/objx v0.5.3 // indirect
+	github.com/stretchr/objx v0.7.0 // indirect
 	github.com/twmb/murmur3 v1.2.1 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	google.golang.org/protobuf v1.36.12 // indirect
