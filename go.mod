@@ -39,7 +39,7 @@ require (
 	github.com/aws/smithy-go v1.28.5 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/getkin/kin-openapi v0.150.0 // indirect
+	github.com/getkin/kin-openapi v0.151.0 // indirect
 	github.com/getsentry/sentry-go/zerolog v0.50.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
